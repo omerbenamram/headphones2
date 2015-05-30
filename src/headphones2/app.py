@@ -19,6 +19,15 @@ def home():
     return serve_template('index.html', title='Home')
 
 
+@app.route('/upcoming')
+def upcoming():
+    session = connect()
+    upcoming = session.query(Album).join(Release).filter(Release.release_date > datetime.datetime.today()).order_by(
+        Release.release_date)
+    wanted = upcoming.filter(Album.status == 'wanted')
+    return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming, wanted=wanted)
+
+
 @app.route('/getArtists.json')
 def get_artists():
     display_start = int(request.args.get('iDisplayStart', '0'))

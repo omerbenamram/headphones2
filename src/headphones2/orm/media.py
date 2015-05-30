@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum
 
 Base = declarative_base()
 
@@ -28,6 +28,7 @@ class Album(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
+    status = Enum(['wanted'])
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist', backref=backref('albums', order_by=id))

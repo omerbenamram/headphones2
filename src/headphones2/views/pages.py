@@ -1,6 +1,7 @@
 import datetime
 from flask import Blueprint, request
 import logbook
+from headphones2.utils import find_artist_by_name, find_releases
 from .templates import serve_template
 from ..orm import *
 
@@ -65,11 +66,29 @@ def search():
     name = request.args['name']
     type = request.args['type']
 
-    # if type == 'artist':
-    # searchresults = mb.findArtist(name, limit=100)
-    # else:
-    #     searchresults = mb.findRelease(name, limit=100)
-    searchresults = []
+    if type == 'artist':
+        results = find_artist_by_name(name, limit=10)
+
+        formatted_results = []
+
+        for result in results:
+            formatted_results.append({
+                'score': result['ext:score'],
+                'id': result['id'],
+                'uniquename': result['name'],
+            })
+    else:
+        assert False
+        results = find_releases(name, limit=10)
+
+        formatted_results = []
+
+        for result in results:
+            formatted_results.append({
+                'score': result['ext:score'],
+                'id': result['id'],
+                'title': result['title'],
+            })
 
     return serve_template(templatename="searchresults.html", title='Search Results "{name}"'.format(name=name),
-                          searchresults=searchresults, name=name, type=type)
+                          searchresults=formatted_results, name=name, type=type)

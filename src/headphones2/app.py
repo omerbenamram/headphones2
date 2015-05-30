@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, send_from_directory
 import logbook
-from headphones2.views import pages, api
+from headphones2.views import pages, api, cache
 
 
 STATIC_PATH = os.path.abspath(os.path.join(__file__, '..', '..', 'frontend'))
@@ -14,7 +14,7 @@ logger = logbook.Logger('headphones2.app')
 
 app.register_blueprint(pages)
 app.register_blueprint(api)
-
+cache.init_app(app)
 
 @app.route('/<path:path>')
 def serv_static(path):

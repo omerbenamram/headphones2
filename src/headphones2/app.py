@@ -1,16 +1,21 @@
 import os
 
-from flask import Flask, send_file, send_from_directory
+from flask import Flask, send_file, send_from_directory, render_template
 
-BUILD_PATH = os.path.abspath(os.path.join(__file__, '..', 'frontend', 'build'))
+from headphones2.orm.connector import connect
+from headphones2.orm.media import Artist, Album, Release, Track
+
+BUILD_PATH = os.path.abspath(os.path.join(__file__, '..', 'frontend', 'interfaces', 'default'))
 
 app = Flask(__name__, instance_path=os.path.dirname(__file__), static_folder=BUILD_PATH)
 app.debug = True
 
 
 @app.route('/')
-def hello_word():
-    return send_file(app.static_folder + '/index.html')
+def home():
+    session = connect()
+    artists = session.query(Artist.id.like('%'))
+    return render_template(app.static_folder + '/index.html', artists=artists)
 
 
 @app.route('/media/build/<path:path>')

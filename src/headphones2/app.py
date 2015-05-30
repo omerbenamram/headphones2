@@ -43,6 +43,13 @@ def upcoming():
     return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming_data, wanted=wanted_data)
 
 
+@app.route('/manage')
+def manage():
+    session = connect()
+    empty_artists = session.query(Artist).filter(~Artist.albums.any())
+    return serve_template(templatename="manage.html", title="Manage", emptyArtists=empty_artists)
+
+
 @app.route('/markAlbums')
 def mark_albums():
     action = request.args['action']

@@ -8,5 +8,11 @@ setup(
     license='GPL',
     author='Omer',
     author_email='omerbenamram@gmail.com',
-    description='', requires=['sqlalchemy', 'flask', 'mako', 'beets']
+    description='',
+    requires=['sqlalchemy', 'flask', 'mako', 'beets'],
+    entry_points={
+        'console_scripts': [
+            'headphones = headphones2.app:main',
+        ]
+    }
 )

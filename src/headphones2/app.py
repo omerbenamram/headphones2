@@ -50,6 +50,18 @@ def manage():
     return serve_template(templatename="manage.html", title="Manage", emptyArtists=empty_artists)
 
 
+@app.route('/history')
+def history():
+    session = connect()
+    history = []  # session.query(Snached).filter(~Snached.status.ilike('Seed%')).order_by(Snached.date_added.desc())
+    return serve_template(templatename="history.html", title="History", history=history)
+
+
+@app.route('/logs')
+def logs():
+    return serve_template(templatename="logs.html", title="Log", lineList=[])
+
+
 @app.route('/markAlbums')
 def mark_albums():
     action = request.args['action']
@@ -64,6 +76,15 @@ def mark_albums():
     session.commit()
 
     # TODO: call 'search'
+
+
+@app.route('/getLog')
+def get_logs():
+    return json.dumps({
+        'iTotalDisplayRecords': 0,
+        'iTotalRecords': 0,
+        'aaData': [],
+    })
 
 
 @app.route('/getArtists.json')

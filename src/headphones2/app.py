@@ -16,9 +16,7 @@ app.debug = True
 
 @app.route('/')
 def home():
-    session = connect()
-    artists = session.query(Artist.id.like('%'))
-    return serve_template('index.html', title='Home', artists=artists)
+    return serve_template('index.html', title='Home')
 
 
 @app.route('/getArtists.json')

@@ -6,6 +6,7 @@ from flask import Flask, send_file, send_from_directory, render_template, reques
 
 from headphones2.orm.connector import connect
 from headphones2.orm.media import Artist, Album, Release, Track
+from headphones2.orm.serialize import album_to_dict
 from headphones2.templates import serve_template
 
 STATIC_PATH = os.path.abspath(os.path.join(__file__, '..', '..', 'frontend'))
@@ -22,10 +23,20 @@ def home():
 @app.route('/upcoming')
 def upcoming():
     session = connect()
-    upcoming = session.query(Album).join(Release).filter(Release.release_date > datetime.datetime.today()).order_by(
-        Release.release_date)
-    wanted = upcoming.filter(Album.status == 'wanted')
-    return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming, wanted=wanted)
+    upcoming_albums = session.query(Album).join(Release) \
+        .filter(Release.release_date > datetime.datetime.today()) \
+        .order_by(Release.release_date)
+    wanted_albums = upcoming_albums.filter(Album.status == 'wanted')
+
+    upcoming_data = []
+    for album in upcoming_albums:
+        upcoming_data.append(album_to_dict(album))
+
+    wanted_data = []
+    for album in wanted_albums:
+        wanted_data.append(album_to_dict(album))
+
+    return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming_data, wanted=wanted_data)
 
 
 @app.route('/getArtists.json')

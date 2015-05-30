@@ -18,8 +18,8 @@ class Artist(Base):
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
     def __repr__(self):
-        return '<Artist {name}, musicbrainz_id {id}>'.format(name=self.name,
-                                                             id=self.musicbrainz_id)
+        return '<Artist {name} ({id})>'.format(name=self.name,
+                                               id=self.musicbrainz_id)
 
 
 class Album(Base):
@@ -28,14 +28,15 @@ class Album(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
+    type = Column(String)
     status = Enum(['wanted'])
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist', backref=backref('albums', order_by=id))
 
     def __repr__(self):
-        return '<Album {name}, id {id}>'.format(name=self.title,
-                                                date=self.musicbrainz_id)
+        return '<Album {name} ({id})>'.format(name=self.title,
+                                              id=self.musicbrainz_id)
 
 
 class Release(Base):
@@ -51,8 +52,8 @@ class Release(Base):
     album = relationship('Album', backref=backref('releases', order_by=id))
 
     def __repr__(self):
-        return '<Album {album}, release_id {id}>'.format(album=self.album,
-                                                         id=self.id)
+        return '<Album {album} ({id})>'.format(album=self.album,
+                                               id=self.id)
 
 
 class Track(Base):
@@ -70,6 +71,7 @@ class Track(Base):
     release = relationship('Release', backref=backref('tracks', order_by=id))
 
     def __repr__(self):
-        return '<Track {releasename}/{number}-{name}>'.format(releasename=self.release.name,
-                                                              number=self.number,
-                                                              name=self.name)
+        return '<Track {releasename}[{number}] {name} ({id})>'.format(releasename=self.release.name,
+                                                                      number=self.number,
+                                                                      name=self.name,
+                                                                      id=self.musicbrainz_id)

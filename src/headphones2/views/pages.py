@@ -1,5 +1,5 @@
 import datetime
-from flask import Blueprint
+from flask import Blueprint, request
 import logbook
 from .templates import serve_template
 from ..orm import *
@@ -50,5 +50,26 @@ def history():
 
 @pages.route('/logs')
 def logs():
-    return serve_template(templatename="logs.html", title="Log", lineList=[])
+    return serve_template(templatename="logs.html", title="Log")
 
+
+@pages.route('/manageArtists')
+def manage_artists():
+    session = connect()
+    artists = session.query(Artist).order_by(Artist.name)
+    return serve_template(templatename="manageartists.html", title="Manage Artists", artists=artists)
+
+
+@pages.route('/search')
+def search():
+    name = request.args['name']
+    type = request.args['type']
+
+    # if type == 'artist':
+    # searchresults = mb.findArtist(name, limit=100)
+    # else:
+    #     searchresults = mb.findRelease(name, limit=100)
+    searchresults = []
+
+    return serve_template(templatename="searchresults.html", title='Search Results "{name}"'.format(name=name),
+                          searchresults=searchresults, name=name, type=type)

@@ -9,11 +9,6 @@ TEMPLATE_DIR = os.path.join(headphones2.__path__[0], '..', 'frontend', 'interfac
 import sys
 sys.modules['headphones'] = headphones2
 
-# import sys
-#
-# sys.path.append(r'C:\ohad\workspace\headphones')
-# import headphones
-
 
 def serve_template(templatename, **kwargs):
     _hplookup = TemplateLookup(directories=[TEMPLATE_DIR])

@@ -23,34 +23,37 @@ def home():
 
 @app.route('/getArtists.json')
 def get_artists():
-    iDisplayStart = int(request.args.get('iDisplayStart', '0'))
-    iDisplayLength = int(request.args.get('iDisplayLength', '100'))
-    sSearch = request.args.get('sSearch', '')
-    iSortCol_0 = request.args.get('iSortCol_0', '')
-    sSortDir_0 = request.args.get('sSortDir_0', 'asc')
+    display_start = int(request.args.get('iDisplayStart', '0'))
+    display_length = int(request.args.get('iDisplayLength', '100'))
+    search_query = request.args.get('sSearch', '')
+    sort_column = request.args.get('iSortCol_0', '')
+    is_sort_asc = request.args.get('sSortDir_0', 'asc') == 'asc'
 
-    filtered = []
-    totalcount = 0
     session = connect()
+    query = session.query(Artist)
 
-    sortcolumn = Artist.name
-    if iSortCol_0 == '2':
+    if sort_column == '2':
         # Status column.
-        sortcolumn = Artist.status
-    elif iSortCol_0 == '3':
-        # 'ReleaseDate'
-        sortcolumn = Release.release_date
-    elif iSortCol_0 == '4':
+        if is_sort_asc:
+            query = query.order_by(Artist.status.asc())
+        else:
+            query = query.order_by(Artist.status.desc())
+    elif sort_column == '3':
+        # Release Date column.
+        query = query.join(Album).join(Release)
+        if is_sort_asc:
+            query = query.order_by(Release.release_date.asc())
+        else:
+            query = query.order_by(Release.release_date.desc())
+    elif sort_column == '4':
         sortbyhavepercent = True
 
-    if sSearch == "":
-        filtered = session.query(Artist).order_by(Artist.name.asc())
-    else:
-        filtered = session.query(Artist).filter_by(name=sSearch).order_by(Artist.name.asc())
+    if search_query:
+        query = query.filter(Artist.name.ilike('%{}%'.format(search_query)))
 
-    totalcount = filtered.count()
+    totalcount = query.count()
 
-    artists = filtered[iDisplayStart:(iDisplayStart + iDisplayLength)]
+    artists = query[display_start:display_start + display_length]
     rows = []
     for artist in artists:
         row = {
@@ -67,11 +70,12 @@ def get_artists():
         }
 
         latest_album = artist.albums.join(Release).order_by(Release.release_date.desc()).first()
+        latest_release = latest_album.releases.order_by(Release.release_date.desc()).first()
         if latest_album:
-            row['ReleaseDate'] = ""
+            row['ReleaseDate'] = latest_release.release_date
             row['LatestAlbum'] = latest_album.name
             row['AlbumID'] = latest_album.id
-            if artist['ReleaseDate'] > datetime.date.today():
+            if latest_release.release_date > datetime.date.today():
                 row['ReleaseInFuture'] = "True"
 
         rows.append(row)

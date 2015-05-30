@@ -29,7 +29,7 @@ class Album(Base):
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
     type = Column(String)
-    status = Enum(['wanted'])
+    status = Enum(['wanted', 'skipped', 'ignored', 'downloaded'])
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist', backref=backref('albums', order_by=id))

@@ -8,5 +8,5 @@ setup(
     license='GPL',
     author='Omer',
     author_email='omerbenamram@gmail.com',
-    description='', requires=['sqlalchemy', 'flask']
+    description='', requires=['sqlalchemy', 'flask', 'mako', 'beets']
 )

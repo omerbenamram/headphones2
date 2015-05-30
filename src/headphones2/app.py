@@ -3,6 +3,7 @@ import os
 import datetime
 
 from flask import Flask, send_file, send_from_directory, render_template, request
+import logbook
 
 from headphones2.orm.connector import connect
 from headphones2.orm.media import Artist, Album, Release, Track
@@ -11,11 +12,14 @@ from headphones2.templates import serve_template
 
 STATIC_PATH = os.path.abspath(os.path.join(__file__, '..', '..', 'frontend'))
 
-app = Flask(__name__, instance_path=os.path.dirname(__file__), static_folder=STATIC_PATH)
+app = Flask('headphones2', instance_path=os.path.dirname(__file__), static_folder=STATIC_PATH)
 app.debug = True
+
+logger = logbook.Logger('headphones2.app')
 
 
 @app.route('/')
+@app.route('/home')
 def home():
     return serve_template('index.html', title='Home')
 
@@ -37,6 +41,22 @@ def upcoming():
         wanted_data.append(album_to_dict(album))
 
     return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming_data, wanted=wanted_data)
+
+
+@app.route('/markAlbums')
+def mark_albums():
+    action = request.args['action']
+    if action == 'WantedNew' or action == 'WantedLossless':
+        action = 'Wanted'
+
+    session = connect()
+
+    album = session.query(Album).filter_by(id='bla').first()
+    logger.info('Marking {} as {}'.format(album, action))
+    album.status = action.lower()
+    session.commit()
+
+    # TODO: call 'search'
 
 
 @app.route('/getArtists.json')

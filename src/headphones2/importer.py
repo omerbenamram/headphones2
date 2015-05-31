@@ -1,6 +1,7 @@
 import datetime
+
 from headphones2.orm import *
-from headphones2.utils import find_albums, musicbrainzngs, get_release_groups_for_artist, get_releases_for_release_group
+from headphones2.utils import musicbrainzngs, get_release_groups_for_artist, get_releases_for_release_group
 
 
 def datetime_from_string(date_str):

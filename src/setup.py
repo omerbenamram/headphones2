@@ -9,7 +9,7 @@ setup(
     author='Omer',
     author_email='omerbenamram@gmail.com',
     description='',
-    requires=['sqlalchemy', 'flask', 'mako', 'beets'],
+    requires=['sqlalchemy', 'flask', 'mako', 'beets', 'logbook', 'requests'],
     entry_points={
         'console_scripts': [
             'headphones = headphones2.app:main',

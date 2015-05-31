@@ -6,6 +6,16 @@ musicbrainzngs.set_useragent("test", "0.1", "https://github.com/test/pasten3")
 musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
 
 
+def get_artwork_for_album(rgid):
+    """
+    returns a dict with 'large' and 'small' using musicbrainz api
+    """
+    try:
+        cover_art = musicbrainzngs.get_release_group_image_list(rgid)
+        return cover_art['images'][0]['thumbnails']
+    except musicbrainzngs.ResponseError:
+        return None
+
 def get_release_groups_for_artist(artist_id, fetch_extras=False):
     return musicbrainzngs.browse_release_groups(artist=artist_id,
                                                 release_type=None if fetch_extras else 'album')['release-group-list']
@@ -24,7 +34,6 @@ def find_artist_by_name(name, limit=10, wanted_keys=('name', 'id', 'country', 'e
     return [{k: v for k, v in d.items() if k in wanted_keys} for d in sorted_by_score]
 
 
-# TODO: search by releasegrouop ID
 def find_releases(name, limit=10, artist_id=None,
                   wanted_keys=('name', 'id', 'title', 'country', 'release-group', 'ext:score', 'asin')):
     strict = True if artist_id else False
@@ -35,7 +44,6 @@ def find_releases(name, limit=10, artist_id=None,
 
 
 # album == release_group
-# TODO: return better dict
 def find_albums(name, limit=10, artist_id=None,
                 wanted_keys=(
                         'name', 'id', 'title', 'country', 'release-group', 'ext:score', 'asin', 'artist-credit',

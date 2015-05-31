@@ -1,13 +1,39 @@
 import json
 import datetime
-from flask import Blueprint, request
+import flask
 import logbook
-from ..orm import *
 
+from flask import Blueprint, request
+import requests
+
+from ..orm import *
+from ..utils import get_artwork_for_album
+from .cache import cache
 
 logger = logbook.Logger(__name__)
 
 api = Blueprint('api', __name__)
+
+@cache.cached()
+@api.route('/coverart/<string:rgid>/<string:size>')
+def get_cover_art(rgid, size):
+    """
+    :param rgid: musicbrainz releasegroup_id
+    :param size: large (500px) or small (250px)
+    :return: binary jpeg
+    """
+    urls = get_artwork_for_album(rgid)
+    if not urls:
+        return None
+
+    chosen = urls.get(size)
+    img = requests.get(chosen)
+    if not img.ok:
+        return None
+
+    resp = flask.make_response(img.content)
+    resp.content_type = "image/jpeg"
+    return resp
 
 
 @api.route('/markAlbums')

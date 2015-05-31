@@ -15,10 +15,9 @@ interactions:
         id="ef1b7cc0-cd26-36f4-8ea0-04d9623786c7"><name>Netherlands</name><sort-name>Netherlands</sort-name><iso-3166-1-code-list><iso-3166-1-code>NL</iso-3166-1-code></iso-3166-1-code-list></area><life-span><begin>1995</begin></life-span></artist></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['480']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:38:56 GMT']
+      date: ['Sun, 31 May 2015 08:52:51 GMT']
       etag: ['"0da6240e9320ab2027ce2911e9f4efe3"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -53,10 +52,9 @@ interactions:
         type="Album" id="f0e30af9-2682-3a5e-83e0-4f4ed9dc6632"><title>Ayreonauts Only</title><first-release-date>2000</first-release-date><primary-type>Album</primary-type></release-group></release-group-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['2606']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:38:57 GMT']
+      date: ['Sun, 31 May 2015 08:52:52 GMT']
       etag: ['"3e051128d082d6d539874ba07bea934f"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -233,10 +231,9 @@ interactions:
         id="3a522058-f89a-40ae-8c75-53488497c13d"><title>The Dream Sequencer Reprise</title><length>216040</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['21417']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:38:59 GMT']
+      date: ['Sun, 31 May 2015 08:52:53 GMT']
       etag: ['"ce00cc3f6a318f89ba4118134bfc13b3"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -644,10 +641,9 @@ interactions:
         4: Unification</title><length>1340000</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['49161']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:01 GMT']
+      date: ['Sun, 31 May 2015 08:52:54 GMT']
       etag: ['"1842345ad473484ace597e39e2fd493b"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -792,10 +788,9 @@ interactions:
         id="3c1a6e30-ecf5-4c44-a4d0-0a4b492efbfc"><title>Another Time, Another Space</title><length>319734</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['16424']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:06 GMT']
+      date: ['Sun, 31 May 2015 08:52:55 GMT']
       etag: ['"d5acd0e88610082361ed0375af1ecbf8"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -1159,10 +1154,9 @@ interactions:
         Red / e) Spirit on the Wind / f) Complete the Circle</title><length>738546</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>"}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['42584']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:09 GMT']
+      date: ['Sun, 31 May 2015 08:52:56 GMT']
       etag: ['"ea27c85e91edd1dbdba79e9a7a00f996"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -1271,10 +1265,9 @@ interactions:
         id="d6307a46-6c73-4d98-9766-2829ed06b375"><title>The New Migrator</title><length>495360</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['12360']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:15 GMT']
+      date: ['Sun, 31 May 2015 08:52:58 GMT']
       etag: ['"337c558cafc792516ae333e631a15311"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -1453,10 +1446,9 @@ interactions:
         id="82f03dc2-3875-497f-808c-87b79e006b62"><title>Epilogue: The Memory Remains</title><length>556000</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['19734']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:16 GMT']
+      date: ['Sun, 31 May 2015 08:52:59 GMT']
       etag: ['"ba9494f83f0380778887dea9583268a0"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -1572,10 +1564,9 @@ interactions:
         id="d6307a46-6c73-4d98-9766-2829ed06b375"><title>The New Migrator</title><length>495360</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['12167']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:18 GMT']
+      date: ['Sun, 31 May 2015 08:53:00 GMT']
       etag: ['"249a037c7ee0d0a6f195e721f713d263"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -1758,10 +1749,9 @@ interactions:
         id="b9311e2c-7c52-40e1-9401-f78624103ab6"><title>The Charm of the Seer / [untitled]</title><length>541200</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['18594']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:20 GMT']
+      date: ['Sun, 31 May 2015 08:53:00 GMT']
       etag: ['"9bc6c536004e1ce11ae834a055001365"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -2075,10 +2065,9 @@ interactions:
         id="62a6740c-4c66-4700-a8aa-df1fd9fec32a"><title>Day Twenty: Confrontation</title><length>423573</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['38164']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:21 GMT']
+      date: ['Sun, 31 May 2015 08:53:01 GMT']
       etag: ['"8aefd56115a26fe9f9119e4cd53903f8"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -2172,10 +2161,9 @@ interactions:
         (single version)</title><length>218960</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['10375']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:24 GMT']
+      date: ['Sun, 31 May 2015 08:53:03 GMT']
       etag: ['"e614eaa209ca5acfda4f25eefe8dec3d"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}
@@ -2220,10 +2208,9 @@ interactions:
         id="244c2a4b-1e55-4a22-8e11-6d89a17b071a"><title>Cold Metal</title><length>429893</length></recording></track></track-list></medium></medium-list></release></release-list></metadata>'}
     headers:
       access-control-allow-origin: ['*']
-      connection: [close]
       content-length: ['3692']
       content-type: [application/xml; charset=utf-8]
-      date: ['Sat, 30 May 2015 19:39:25 GMT']
+      date: ['Sun, 31 May 2015 08:53:03 GMT']
       etag: ['"efbb382c610937fdb4e86a264bc75c01"']
       server: [nginx/1.1.19]
     status: {code: 200, message: OK}

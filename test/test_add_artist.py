@@ -1,11 +1,11 @@
 import datetime
 import os
 import pytest
-import vcr
 from headphones2.importer import add_artist_to_db
 from headphones2.orm import *
 from headphones2.orm.connector import create_all_tables, DB_FILE
 from headphones2.utils import musicbrainzngs
+from conftest import vcr
 musicbrainzngs.set_rate_limit(False)
 
 
@@ -20,7 +20,7 @@ def session(tmpdir):
     session.close()
 
 
-@vcr.use_cassette('fixtures/vcr_cassettes/test_add_artist_to_db_ayreon.yaml', record_mode='once')
+@vcr.use_cassette()
 def test_add_artist_to_db(session):
     artist_id = '7bbfd77c-1102-4831-9ba8-246fb67460b3'  # Ayreon.
 

@@ -150,7 +150,7 @@ def get_artists():
         latest_album = artist.albums.join(Release).order_by(Release.release_date.desc()).first()
         latest_release = latest_album.releases.order_by(Release.release_date.desc()).first()
         if latest_album:
-            row['ReleaseDate'] = latest_release.release_date.__str__()
+            row['ReleaseDate'] = latest_release.release_date.isoformat()
             row['LatestAlbum'] = latest_album.title
             row['AlbumID'] = latest_album.id
             if latest_release.release_date > datetime.datetime.today():

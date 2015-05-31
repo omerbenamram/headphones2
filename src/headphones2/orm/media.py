@@ -8,6 +8,7 @@ Base = declarative_base()
 Many to one relation in ascending order.
 Artist --> Albums --> Releases --> Tracks
 '''
+STATUSES = ['wanted', 'skipped', 'ignored', 'downloaded']
 
 
 class Artist(Base):
@@ -16,6 +17,9 @@ class Artist(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
+
+    status = Enum(STATUSES)
+
     albums = relationship('Album', lazy='dynamic')
 
     def __repr__(self):
@@ -30,12 +34,12 @@ class Album(Base):
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
     type = Column(String)
-    status = Enum(['wanted', 'skipped', 'ignored', 'downloaded'])
+    status = Enum(STATUSES)
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist')
 
-    releases = relationship('Release')
+    releases = relationship('Release', lazy='dynamic')
 
     def __repr__(self):
         return '<Album {name} ({id})>'.format(name=self.title,
@@ -53,6 +57,8 @@ class Release(Base):
 
     album_id = Column(Integer, ForeignKey('albums.id'))
     album = relationship('Album')
+
+    tracks = relationship('Track', lazy='dynamic')
 
     def __repr__(self):
         return '<Album {album} ({id})>'.format(album=self.album,
@@ -72,8 +78,12 @@ class Track(Base):
     length = Column(Integer)
     bitrate = Column(Integer)
 
+    location = Column(String)
+    matched = Column(String)
+    format = Column(String)
+
     release_id = Column(Integer, ForeignKey('releases.id'))
-    release = relationship('Release', backref=backref('tracks', order_by=id))
+    release = relationship('Release')
 
     def __repr__(self):
         return '<Track {releasename}[{number}] {name} ({id})>'.format(releasename=self.release.name,

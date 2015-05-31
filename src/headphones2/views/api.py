@@ -103,8 +103,3 @@ def get_artists():
     return json.dumps(result)
 
 
-@api.route('/getArtists.json')
-def getImageLinks():
-    ArtistID = None
-    AlbumID = None
-

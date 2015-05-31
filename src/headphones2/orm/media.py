@@ -16,6 +16,7 @@ class Artist(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
+    albums = relationship('Album', lazy='dynamic')
 
     def __repr__(self):
         return '<Artist {name} ({id})>'.format(name=self.name,
@@ -32,7 +33,9 @@ class Album(Base):
     status = Enum(['wanted', 'skipped', 'ignored', 'downloaded'])
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
-    artist = relationship('Artist', backref=backref('albums', order_by=id))
+    artist = relationship('Artist')
+
+    releases = relationship('Release')
 
     def __repr__(self):
         return '<Album {name} ({id})>'.format(name=self.title,
@@ -44,12 +47,12 @@ class Release(Base):
 
     id = Column(Integer, primary_key=True)
     release_date = Column(DateTime)
-    name = Column(String)
-    musicbrainz_release_group_id = Column(String, unique=True, nullable=False)
-    number_of_tracks = Column(Integer)
+    title = Column(String)
+    asin = Column(String)
+    musicbrainz_id = Column(String, unique=True, nullable=False)
 
     album_id = Column(Integer, ForeignKey('albums.id'))
-    album = relationship('Album', backref=backref('releases', order_by=id))
+    album = relationship('Album')
 
     def __repr__(self):
         return '<Album {album} ({id})>'.format(album=self.album,
@@ -63,8 +66,10 @@ class Track(Base):
     name = Column(String)
     title = Column(String)
     number = Column(Integer)
+    media_number = Column(Integer)
+
     musicbrainz_id = Column(String, unique=True)
-    duration = Column(Integer)
+    length = Column(Integer)
     bitrate = Column(Integer)
 
     release_id = Column(Integer, ForeignKey('releases.id'))

@@ -65,18 +65,26 @@ def get_artist_artwork(mbid, size):
 
 @api.route('/markAlbums')
 def mark_albums():
-    action = request.args['action']
+    request_args = dict(request.args)
+    action = request_args.pop('action')[0]
+    artist_id = request_args.pop('ArtistID')[0]
+
     if action == 'WantedNew' or action == 'WantedLossless':
         action = 'Wanted'
 
     session = connect()
 
-    album = session.query(Album).filter_by(id='bla').first()
-    logger.info('Marking {} as {}'.format(album, action))
-    album.status = action.lower()
+    for album_id, on_or_off in request_args.items():
+        album = session.query(Album).filter_by(musicbrainz_id=album_id).one()
+        if on_or_off == ['on']:
+            logger.info('Marking {} as {}'.format(album, action))
+            album.status = Status.from_name(action)
+
     session.commit()
 
     # TODO: call 'search'
+
+    return ''
 
 
 @api.route('/getLog')

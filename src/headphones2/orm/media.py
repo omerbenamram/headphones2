@@ -19,6 +19,14 @@ class Status(enum.Enum):
     Snatched = 4
     Downloaded = 5
 
+    @classmethod
+    def from_name(cls, name):
+        for status in cls:
+            if status.name == name:
+                return status
+
+        raise ValueError('{name} is not a valid {cls_name}'.format(name=name, cls_name=cls.__name__))
+
 
 class Artist(Base):
     __tablename__ = 'artists'

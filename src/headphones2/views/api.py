@@ -1,5 +1,6 @@
 import json
 import datetime
+
 import flask
 import logbook
 
@@ -7,14 +8,15 @@ from flask import Blueprint, request, abort
 import requests
 
 from ..orm import *
-from ..utils import get_artwork_for_album
+from ..utils import get_artwork_for_album, lastfm_api_wrapper
 from .cache import cache
 
 logger = logbook.Logger(__name__)
 
 api = Blueprint('api', __name__)
 
-@api.route('/coverart/album/<string:rgid>/<string:size>')
+
+@api.route('/artwork/album/<string:rgid>/<string:size>')
 @cache.cached()
 def get_album_cover_art(rgid, size):
     """
@@ -28,6 +30,31 @@ def get_album_cover_art(rgid, size):
 
     chosen = urls.get(size)
     img = requests.get(chosen)
+    if not img.ok:
+        abort(404)
+
+    resp = flask.make_response(img.content)
+    resp.content_type = "image/jpeg"
+    return resp
+
+
+@api.route('/artwork/artist/<string:mbid>/<string:size>')
+@cache.cached()
+def get_artist_artwork(mbid, size):
+    """
+    :param mbid: musicbrainz artist_id
+    :param size: large (500px) or small (250px)
+    :return: binary jpeg
+    """
+    artist_info = lastfm_api_wrapper("artist.getinfo", mbid=mbid)
+    if not artist_info:
+        abort(404)
+
+    artist_artwork = artist_info['artist']['image']
+    # convert response list of dicts to something more usable
+    size_dict = {d['size']: d['#text'] for d in artist_artwork}
+    img = requests.get(size_dict[size])
+
     if not img.ok:
         abort(404)
 
@@ -127,5 +154,3 @@ def get_artists():
     }
 
     return json.dumps(result)
-
-

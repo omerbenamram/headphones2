@@ -40,7 +40,7 @@
 <%def name="body()">
 	<div id="artistheader" class="clearfix">
 		<div id="artistImg">
-			<img id="artistImage" class="albumArt" alt="" src="coverart/artist/${artist['ArtistID']}/large"/>
+			<img id="artistImage" class="albumArt" alt="" src="artwork/artist/${artist['ArtistID']}/large"/>
 		</div>
 		<h1 id="artistname">
 			<a href="http://musicbrainz.org/artist/${artist['ArtistID']}" id="artistnamelink">${artist['ArtistName']}</a>
@@ -79,7 +79,7 @@
 		%for album in albums:
 			<tr class="grade${album['Grade']}">
 				<td id="select"><input type="checkbox" name="${album['AlbumID']}" class="checkbox" /></td>
-				<td id="albumart"><img class="albumArtnostretch" id="${album['AlbumID']}" src="coverart/album/${album['AlbumID']}/small" height="64" width="64"></td>
+				<td id="albumart"><img class="albumArtnostretch" id="${album['AlbumID']}" src="artwork/album/${album['AlbumID']}/small" height="64" width="64"></td>
 				<td id="albumname"><a href="albumPage?AlbumID=${album['AlbumID']}">${album['AlbumTitle']}</a></td>
 				<td id="reldate">${album['ReleaseDate']}</td>
 				<td id="type">${album['Type']}</td>

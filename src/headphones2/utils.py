@@ -1,10 +1,23 @@
 import musicbrainzngs
 import logbook
+import requests
 
 logger = logbook.Logger(__name__)
 musicbrainzngs.set_useragent("test", "0.1", "https://github.com/test/pasten3")
 musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
 
+TIMEOUT = 60.0 # seconds
+REQUEST_LIMIT = 1.0 / 5 # seconds
+ENTRY_POINT = "http://ws.audioscrobbler.com/2.0/"
+API_KEY = "395e6ec6bb557382fc41fde867bce66f"
+
+
+def lastfm_api_wrapper(method, **kwargs):
+    kwargs["method"] = method
+    kwargs.setdefault("api_key", API_KEY)
+    kwargs.setdefault("format", "json")
+
+    return requests.get(ENTRY_POINT, timeout=TIMEOUT, params=kwargs).json()
 
 def get_artwork_for_album(rgid):
     """

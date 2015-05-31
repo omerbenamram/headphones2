@@ -3,7 +3,7 @@ import datetime
 import flask
 import logbook
 
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 import requests
 
 from ..orm import *
@@ -14,8 +14,8 @@ logger = logbook.Logger(__name__)
 
 api = Blueprint('api', __name__)
 
-@cache.cached()
 @api.route('/coverart/<string:rgid>/<string:size>')
+@cache.cached()
 def get_cover_art(rgid, size):
     """
     :param rgid: musicbrainz releasegroup_id
@@ -24,12 +24,12 @@ def get_cover_art(rgid, size):
     """
     urls = get_artwork_for_album(rgid)
     if not urls:
-        return None
+        abort(404)
 
     chosen = urls.get(size)
     img = requests.get(chosen)
     if not img.ok:
-        return None
+        abort(404)
 
     resp = flask.make_response(img.content)
     resp.content_type = "image/jpeg"

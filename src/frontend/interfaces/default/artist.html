@@ -40,7 +40,7 @@
 <%def name="body()">
 	<div id="artistheader" class="clearfix">
 		<div id="artistImg">
-			<img id="artistImage" class="albumArt" alt="" src="artwork/artist/${artist['ArtistID']}"/>
+			<img id="artistImage" class="albumArt" alt="" src="/coverart/${artist['ArtistID']}/large"/>
 		</div>
 		<h1 id="artistname">
 			<a href="http://musicbrainz.org/artist/${artist['ArtistID']}" id="artistnamelink">${artist['ArtistName']}</a>

@@ -100,8 +100,9 @@ def search():
 @pages.route('/addArtist')
 def add_artist():
     artist_id = request.args['artistid']
-    # session = connect()
-    # add_artist_to_db(artist_id, session)
+    session = connect()
+    if not session.query(Artist).filter_by(musicbrainz_id=artist_id).first():
+        add_artist_to_db(artist_id, session)
 
     return redirect('/artistPage&ArtistID=' + artist_id)
 
@@ -170,9 +171,9 @@ def artist_page():
         #     bitrate = ''
         formatted_album['Bitrate'] = ''
 
-        album_formats = [track.format for track in release.tracks]
+        album_formats = set([track.format for track in release.tracks])
         if len(album_formats) == 1:
-            album_format = album_formats[0]
+            album_format = album_formats.pop()
         elif len(album_formats) > 1:
             album_format = 'Mixed'
         else:

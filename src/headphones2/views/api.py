@@ -131,13 +131,15 @@ def get_artists():
     artists = query[display_start:display_start + display_length]
     rows = []
     for artist in artists:
+        # TODO: Don't count tracks in each release multiple times..
+        total_tracks = sum([release.tracks.count() for album in artist.albums for release in album.releases])
         row = {
-            "ArtistID": artist.id,
+            "ArtistID": artist.musicbrainz_id,
             "ArtistName": artist.name,
             "ArtistSortName": artist.name,
-            "Status": artist.status,
-            "TotalTracks": artist.total_tracks,
-            "HaveTracks": artist.total_tracks > 0,  # TODO
+            "Status": artist.status.name,
+            "TotalTracks": total_tracks,
+            "HaveTracks": total_tracks > 0,  # TODO
             "LatestAlbum": "",
             "ReleaseDate": "",
             "ReleaseInFuture": "False",
@@ -147,10 +149,10 @@ def get_artists():
         latest_album = artist.albums.join(Release).order_by(Release.release_date.desc()).first()
         latest_release = latest_album.releases.order_by(Release.release_date.desc()).first()
         if latest_album:
-            row['ReleaseDate'] = latest_release.release_date
-            row['LatestAlbum'] = latest_album.name
+            row['ReleaseDate'] = latest_release.release_date.__str__()
+            row['LatestAlbum'] = latest_album.title
             row['AlbumID'] = latest_album.id
-            if latest_release.release_date > datetime.dateime.today():
+            if latest_release.release_date > datetime.datetime.today():
                 row['ReleaseInFuture'] = "True"
 
         rows.append(row)

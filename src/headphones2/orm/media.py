@@ -86,7 +86,6 @@ class Track(Base):
     __tablename__ = 'tracks'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
     title = Column(String)
     number = Column(Integer)
     media_number = Column(Integer)
@@ -103,7 +102,7 @@ class Track(Base):
     release = relationship('Release')
 
     def __repr__(self):
-        return '<Track {releasename}[{number}] {name} ({id})>'.format(releasename=self.release.name,
+        return '<Track {releasename}[{number}] {name} ({id})>'.format(releasename=self.release.title,
                                                                       number=self.number,
-                                                                      name=self.name,
+                                                                      name=self.title,
                                                                       id=self.musicbrainz_id)

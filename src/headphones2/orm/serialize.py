@@ -1,7 +1,8 @@
 def album_to_dict(album):
     return {
-        'AlbumID': album.id,
+        'AlbumID': album.musicbrainz_id,
         'ArtistName': album.artist.name,
+        'ArtistID': album.artist.musicbrainz_id,
         'AlbumTitle': album.title,
         'ReleaseDate': album.releases.first().release_date,
         'Type': album.type,

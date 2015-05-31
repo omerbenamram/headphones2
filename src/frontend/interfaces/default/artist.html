@@ -40,7 +40,7 @@
 <%def name="body()">
 	<div id="artistheader" class="clearfix">
 		<div id="artistImg">
-			<img id="artistImage" class="albumArt" alt="" src="/coverart/${artist['ArtistID']}/large"/>
+			<img id="artistImage" class="albumArt" alt="" src="coverart/artist/${artist['ArtistID']}/large"/>
 		</div>
 		<h1 id="artistname">
 			<a href="http://musicbrainz.org/artist/${artist['ArtistID']}" id="artistnamelink">${artist['ArtistName']}</a>
@@ -77,9 +77,9 @@
 		</thead>
 		<tbody>
 		%for album in albums:
-			<tr class="grade${Album['Grade']}">
+			<tr class="grade${album['Grade']}">
 				<td id="select"><input type="checkbox" name="${album['AlbumID']}" class="checkbox" /></td>
-				<td id="albumart"><img class="albumArtnostretch" id="${album['AlbumID']}" src="artwork/thumbs/album/${album['AlbumID']}" height="64" width="64"></td>
+				<td id="albumart"><img class="albumArtnostretch" id="${album['AlbumID']}" src="coverart/album/${album['AlbumID']}/small" height="64" width="64"></td>
 				<td id="albumname"><a href="albumPage?AlbumID=${album['AlbumID']}">${album['AlbumTitle']}</a></td>
 				<td id="reldate">${album['ReleaseDate']}</td>
 				<td id="type">${album['Type']}</td>
@@ -93,11 +93,11 @@
 				%endif
 				%if album['IsLossy'] and album['Status'] == 'Skipped':
 					[<a id="wantlossless" href="#" onclick="doAjaxCall('queueAlbum?AlbumID=${album['AlbumID']}&ArtistID=${album['ArtistID']}&lossless=True', $(this),'table')" data-success="Lossless version of '${album['AlbumTitle']}' added to queue">want lossless</a>]
-				%elif album['IsLossy'] in lossy_formats and (album['Status'] == 'Snatched' or album['Status'] == 'Downloaded'):
+				%elif album['IsLossy'] and (album['Status'] == 'Snatched' or album['Status'] == 'Downloaded'):
 					[<a id="wantlossless" href="#" onclick="doAjaxCall('queueAlbum?AlbumID=${album['AlbumID']}&ArtistID=${album['ArtistID']}&lossless=True', $(this),'table')" data-success="Retrying the same lossless version of '${album['AlbumTitle']}'">retry lossless</a>]
 				%endif
 				</td>
-				<td id="have"><span title="${album['Percent']}"><span><div class="progress-container"><div style="width:${percent}%"><div class="havetracks">${album['HaveTracks']}/${album['TotalTracks']}</div></div></div></td>
+				<td id="have"><span title="${album['Percent']}"><span><div class="progress-container"><div style="width:${album['Percent']}%"><div class="havetracks">${album['HaveTracks']}/${album['TotalTracks']}</div></div></div></td>
 				<td id="bitrate">${album['Bitrate']}</td>
 				<td id="albumformat">${album['Format']}</td>
 			</tr>

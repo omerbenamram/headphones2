@@ -18,7 +18,7 @@ class Artist(Base):
     name = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
-    status = Enum(STATUSES)
+    status = Column(Enum(*STATUSES))
 
     albums = relationship('Album', lazy='dynamic')
 
@@ -34,7 +34,7 @@ class Album(Base):
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
     type = Column(String)
-    status = Enum(STATUSES)
+    status = Column(Enum(*STATUSES))
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist')

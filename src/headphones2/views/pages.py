@@ -182,6 +182,7 @@ def artist_page():
 
         formatted_album['IsLossy'] = formatted_album['Format'] in config.LOSSY_MEDIA_FORMATS
 
+        formatted_albums.append(formatted_album)
 
     return serve_template(templatename="artist.html",
                           title=artist.name,

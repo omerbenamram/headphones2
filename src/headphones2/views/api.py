@@ -14,9 +14,9 @@ logger = logbook.Logger(__name__)
 
 api = Blueprint('api', __name__)
 
-@api.route('/coverart/<string:rgid>/<string:size>')
+@api.route('/coverart/album/<string:rgid>/<string:size>')
 @cache.cached()
-def get_cover_art(rgid, size):
+def get_album_cover_art(rgid, size):
     """
     :param rgid: musicbrainz releasegroup_id
     :param size: large (500px) or small (250px)

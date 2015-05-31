@@ -11,9 +11,10 @@ musicbrainzngs.set_rate_limit(False)
 
 @pytest.yield_fixture()
 def session(tmpdir):
-    db_file = os.path.join(tmpdir.strpath, 'temp.db')
+    db_file = DB_FILE #os.path.join(tmpdir.strpath, 'temp.db')
     if os.path.exists(db_file):
         os.remove(db_file)
+
     create_all_tables(db_file)
     session = connect(db_file)
     yield session
@@ -40,13 +41,5 @@ def test_add_artist_to_db(session):
 
     assert releases.count() == 5
     release = releases.filter_by(asin='B00F2HW220').first()
-    assert len(release.tracks) == 42
+    assert release.tracks.count() == 42
     assert release.release_date == datetime.datetime(2013, 10, 25)
-
-if __name__ == '__main__':
-    import py.path
-    import tempfile
-    tmpdir = py.path.local(tempfile.mkdtemp())
-    s = session(tmpdir).next()
-    test_add_artist_to_db(s)
-    s.close()

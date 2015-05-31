@@ -1,6 +1,8 @@
+import enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy_utils import ChoiceType
 
 Base = declarative_base()
 
@@ -8,7 +10,14 @@ Base = declarative_base()
 Many to one relation in ascending order.
 Artist --> Albums --> Releases --> Tracks
 '''
-STATUSES = ['wanted', 'skipped', 'ignored', 'downloaded']
+
+
+class Status(enum.Enum):
+    Wanted = 1
+    Skipped = 2
+    Ignored = 3
+    Snatched = 4
+    Downloaded = 5
 
 
 class Artist(Base):
@@ -18,7 +27,7 @@ class Artist(Base):
     name = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
-    status = Column(Enum(*STATUSES))
+    status = Column(ChoiceType(Status, impl=Integer()))
 
     albums = relationship('Album', lazy='dynamic')
 
@@ -34,7 +43,7 @@ class Album(Base):
     title = Column(String)
     musicbrainz_id = Column(String, unique=True, nullable=False)
     type = Column(String)
-    status = Column(Enum(*STATUSES))
+    status = Column(ChoiceType(Status, impl=Integer()))
 
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist')

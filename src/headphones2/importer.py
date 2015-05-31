@@ -14,7 +14,9 @@ def datetime_from_string(date_str):
 def add_artist_to_db(artist_id, session):
     artist_info = musicbrainzngs.get_artist_by_id(artist_id)['artist']
 
-    artist = Artist(name=artist_info['name'], musicbrainz_id=artist_id)
+    artist = Artist(name=artist_info['name'],
+                    musicbrainz_id=artist_id,
+                    status=Status.Wanted)
     session.add(artist)
 
     release_groups = get_release_groups_for_artist(artist.musicbrainz_id)
@@ -23,7 +25,9 @@ def add_artist_to_db(artist_id, session):
         album = Album(title=group_info['title'],
                       musicbrainz_id=group_info['id'],
                       type=group_info['type'],
-                      artist=artist)
+                      artist=artist,
+                      status=Status.Wanted
+        )
         session.add(album)
 
         releases = get_releases_for_release_group(album.musicbrainz_id)

@@ -1,7 +1,8 @@
 import datetime
 
 from headphones2.orm import *
-from headphones2.utils import musicbrainzngs, get_release_groups_for_artist, get_releases_for_release_group
+from headphones2.external.musicbrainz import musicbrainzngs, get_release_groups_for_artist, \
+    get_releases_for_release_group
 
 
 def datetime_from_string(date_str):
@@ -27,7 +28,7 @@ def add_artist_to_db(artist_id, session):
                       type=group_info['type'],
                       artist=artist,
                       status=Status.Wanted
-        )
+                      )
         session.add(album)
 
         releases = get_releases_for_release_group(album.musicbrainz_id)
@@ -37,6 +38,7 @@ def add_artist_to_db(artist_id, session):
                 release_date=datetime_from_string(release_info['date']),
                 title=release_info['title'],
                 asin=release_info.get('asin'),
+                country=release_info.get('country'),
                 album=album)
 
             session.add(release)
@@ -53,5 +55,9 @@ def add_artist_to_db(artist_id, session):
                         release=release
                     )
                     session.add(track)
+
+        chosen_release = session.query(Release).filter_by(album_id=album.id).order_by('release_date').first()
+        if chosen_release:
+            chosen_release.is_selected = True
 
     session.commit()

@@ -1,7 +1,7 @@
 import enum
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy_utils import ChoiceType
 
 Base = declarative_base()
@@ -70,7 +70,10 @@ class Release(Base):
     release_date = Column(DateTime)
     title = Column(String)
     asin = Column(String)
+    country = Column(String, default='')
     musicbrainz_id = Column(String, unique=True, nullable=False)
+
+    is_selected = Column(Boolean, default=False)
 
     album_id = Column(Integer, ForeignKey('albums.id'))
     album = relationship('Album')
@@ -78,8 +81,12 @@ class Release(Base):
     tracks = relationship('Track', lazy='dynamic')
 
     def __repr__(self):
-        return '<Album {album} ({id})>'.format(album=self.album,
-                                               id=self.id)
+        return '<Release {album} - Released in {date},' \
+               ' {country} - {tracks} Tracks ({id})>'.format(album=self.album.title,
+                                                             date=self.release_date,
+                                                             tracks=self.tracks.count(),
+                                                             country=self.country,
+                                                             id=self.id)
 
 
 class Track(Base):

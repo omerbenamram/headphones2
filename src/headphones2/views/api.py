@@ -8,7 +8,8 @@ from flask import Blueprint, request, abort
 import requests
 
 from ..orm import *
-from ..utils import get_artwork_for_album, lastfm_api_wrapper
+from headphones2.external.lastfm import lastfm_api_wrapper
+from headphones2.external.musicbrainz import get_artwork_for_album
 from .cache import cache
 
 logger = logbook.Logger(__name__)

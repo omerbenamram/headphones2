@@ -1,7 +1,8 @@
 import musicbrainzngs
 from headphones2.orm import connect
 from headphones2.orm.media import Artist, Album
-from headphones2.utils import find_artist_by_name, find_albums
+from headphones2.utils import find_albums
+from headphones2.external.musicbrainz import find_artist_by_name, find_albums
 
 AYREON_ID = '7bbfd77c-1102-4831-9ba8-246fb67460b3'
 

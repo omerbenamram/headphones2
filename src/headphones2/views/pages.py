@@ -1,10 +1,12 @@
 import datetime
-from flask import Blueprint, request, redirect, url_for
+
+from flask import Blueprint, request, redirect, abort
 import logbook
+
 from .. import config
 from ..importer import add_artist_to_db
 from ..orm.serialize import artist_to_dict
-from ..utils import find_artist_by_name, find_releases
+from headphones2.external.musicbrainz import find_artist_by_name, find_releases
 from .templates import serve_template
 from ..orm import *
 
@@ -111,7 +113,9 @@ def add_artist():
 def artist_page():
     artist_id = request.args['ArtistID']
     session = connect()
-    artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).one()
+    artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).first()
+    if not artist:
+        abort(404)
 
     # Serve the extras up as a dict to make things easier for new templates (append new extras to the end)
     # extras_list = headphones.POSSIBLE_EXTRAS
@@ -190,4 +194,3 @@ def artist_page():
                           artist=formatted_artist,
                           albums=formatted_albums,
                           extras={})
-

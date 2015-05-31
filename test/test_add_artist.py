@@ -1,10 +1,11 @@
 import datetime
 import os
 import pytest
+import musicbrainzngs
+
 from headphones2.importer import add_artist_to_db
 from headphones2.orm import *
 from headphones2.orm.connector import create_all_tables, DB_FILE
-from headphones2.utils import musicbrainzngs
 from conftest import vcr
 musicbrainzngs.set_rate_limit(False)
 

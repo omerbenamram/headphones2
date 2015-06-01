@@ -97,6 +97,19 @@ def get_logs():
     })
 
 
+@api.route('/getAlbumjson')
+def get_album():
+    album_id = request.args['AlbumID']
+    session = connect()
+    album = session.query(Album).filter_by(musicbrainz_id=album_id).first()
+    album_json = json.dumps({
+        'AlbumTitle': album.title,
+        'ArtistName': album.artist.name,
+        'Status': album.status.name
+    })
+    return album_json
+
+
 @api.route('/getArtists.json')
 def get_artists():
     display_start = int(request.args.get('iDisplayStart', '0'))

@@ -16,3 +16,12 @@ def artist_to_dict(artist):
         'ArtistName': artist.name,
         'Status': artist.status.name
     }
+
+
+def track_to_dict(track):
+    return {
+        'TrackNumber': track.number,
+        'TrackTitle': track.title,
+        'trackduration': track.length,
+        'location' : track.location
+    }

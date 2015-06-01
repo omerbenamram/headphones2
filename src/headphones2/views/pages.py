@@ -229,6 +229,7 @@ def album_page():
     title = ""
     totaltracks = release.tracks.count()
     albumduration = ""
+
     return serve_template(templatename="album.html",
                           title=title,
                           album=formatted_album,

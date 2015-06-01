@@ -1,24 +1,24 @@
-#  This file is part of Headphones.
+#  This file is part of headphones2.
 #
-#  Headphones is free software: you can redistribute it and/or modify
+#  headphones2 is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  Headphones is distributed in the hope that it will be useful,
+#  headphones2 is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with Headphones.  If not, see <http://www.gnu.org/licenses/>.
+#  along with headphones2.  If not, see <http://www.gnu.org/licenses/>.
 
 from beets.mediafile import MediaFile, FileTypeError, UnreadableFileError
 
 from operator import itemgetter
 
 import unicodedata
-import headphones
+import headphones2
 import datetime
 import fnmatch
 import shutil
@@ -206,7 +206,7 @@ def replace_all(text, dic, normalize=False):
                 else:
                     j = unicodedata.normalize('NFC', j)
             except TypeError:
-                j = unicodedata.normalize('NFC', j.decode(headphones.SYS_ENCODING, 'replace'))
+                j = unicodedata.normalize('NFC', j.decode(headphones2.SYS_ENCODING, 'replace'))
         text = text.replace(i, j)
     return text
 
@@ -282,7 +282,7 @@ def expand_subfolders(f):
     case, normal post processing will be better.
     """
 
-    from headphones import logger
+    from headphones2 import logger
 
     # Find all folders with media files in them
     media_folders = []
@@ -291,7 +291,7 @@ def expand_subfolders(f):
         for file in files:
             extension = os.path.splitext(file)[1].lower()[1:]
 
-            if extension in headphones.MEDIA_FORMATS:
+            if extension in headphones2.MEDIA_FORMATS:
                 if root not in media_folders:
                     media_folders.append(root)
 
@@ -361,7 +361,7 @@ def path_filter_patterns(paths, patterns, root=None):
     The root is optional, and only used for producing meaningful debug info.
     """
 
-    from headphones import logger
+    from headphones2 import logger
 
     ignored = 0
 
@@ -381,7 +381,7 @@ def extract_data(s):
 
     s = s.replace('_', ' ')
 
-    #headphones default format
+    #headphones2 default format
     pattern = re.compile(r'(?P<name>.*?)\s\-\s(?P<album>.*?)\s[\[\(](?P<year>.*?)[\]\)]', re.VERBOSE)
     match = pattern.match(s)
 
@@ -412,7 +412,7 @@ def extract_metadata(f):
     artists, albums and years found in the media files.
     """
 
-    from headphones import logger
+    from headphones2 import logger
 
     # Walk directory and scan all media files
     results = []
@@ -423,7 +423,7 @@ def extract_metadata(f):
             # Count the number of potential media files
             extension = os.path.splitext(file)[1].lower()[1:]
 
-            if extension in headphones.MEDIA_FORMATS:
+            if extension in headphones2.MEDIA_FORMATS:
                 count += 1
 
             # Try to read the file info
@@ -513,7 +513,7 @@ def get_downloaded_track_list(albumpath):
     for root, dirs, files in os.walk(albumpath):
         for _file in files:
             extension = os.path.splitext(_file)[1].lower()[1:]
-            if extension in headphones.MEDIA_FORMATS:
+            if extension in headphones2.MEDIA_FORMATS:
                 downloaded_track_list.append(os.path.join(root, _file))
 
     return downloaded_track_list
@@ -521,17 +521,17 @@ def get_downloaded_track_list(albumpath):
 
 def preserve_torrent_direcory(albumpath):
     """
-    Copy torrent directory to headphones-modified to keep files for seeding.
+    Copy torrent directory to headphones2-modified to keep files for seeding.
     """
-    from headphones import logger
-    new_folder = os.path.join(albumpath, 'headphones-modified'.encode(headphones.SYS_ENCODING, 'replace'))
-    logger.info("Copying files to 'headphones-modified' subfolder to preserve downloaded files for seeding")
+    from headphones2 import logger
+    new_folder = os.path.join(albumpath, 'headphones2-modified'.encode(headphones2.SYS_ENCODING, 'replace'))
+    logger.info("Copying files to 'headphones2-modified' subfolder to preserve downloaded files for seeding")
     try:
         shutil.copytree(albumpath, new_folder)
         return new_folder
     except Exception as e:
         logger.warn("Cannot copy/move files to temp folder: " + \
-                    new_folder.decode(headphones.SYS_ENCODING, 'replace') + \
+                    new_folder.decode(headphones2.SYS_ENCODING, 'replace') + \
                     ". Not continuing. Error: " + str(e))
         return None
 
@@ -548,7 +548,7 @@ def cue_split(albumpath):
     for root, dirs, files in os.walk(albumpath):
         for _file in files:
             extension = os.path.splitext(_file)[1].lower()[1:]
-            if extension in headphones.MEDIA_FORMATS:
+            if extension in headphones2.MEDIA_FORMATS:
                 count += 1
             elif extension == 'cue':
                 cue_count += 1
@@ -558,7 +558,7 @@ def cue_split(albumpath):
     # Split cue
     if cue_count and cue_count >= count and cue_dirs:
 
-        from headphones import logger, cuesplit
+        from headphones2 import logger, cuesplit
         logger.info("Attempting to split audio files by cue")
 
         cwd = os.getcwd()
@@ -591,9 +591,9 @@ def extract_logline(s):
 
 
 def extract_song_data(s):
-    from headphones import logger
+    from headphones2 import logger
 
-    #headphones default format
+    #headphones2 default format
     pattern = re.compile(r'(?P<name>.*?)\s\-\s(?P<album>.*?)\s\[(?P<year>.*?)\]', re.VERBOSE)
     match = pattern.match(s)
 
@@ -620,7 +620,7 @@ def extract_song_data(s):
 
 def smartMove(src, dest, delete=True):
 
-    from headphones import logger
+    from headphones2 import logger
 
     source_dir = os.path.dirname(src)
     filename = os.path.basename(src)
@@ -640,7 +640,7 @@ def smartMove(src, dest, delete=True):
                     os.rename(src, os.path.join(source_dir, newfile))
                     filename = newfile
                 except Exception as e:
-                    logger.warn('Error renaming %s: %s', src.decode(headphones.SYS_ENCODING, 'replace'), e)
+                    logger.warn('Error renaming %s: %s', src.decode(headphones2.SYS_ENCODING, 'replace'), e)
                 break
 
     try:
@@ -650,7 +650,7 @@ def smartMove(src, dest, delete=True):
             shutil.copy(os.path.join(source_dir, filename), os.path.join(dest, filename))
             return True
     except Exception as e:
-        logger.warn('Error moving file %s: %s', filename.decode(headphones.SYS_ENCODING, 'replace'), e)
+        logger.warn('Error moving file %s: %s', filename.decode(headphones2.SYS_ENCODING, 'replace'), e)
 
 def walk_directory(basedir, followlinks=True):
     """
@@ -759,7 +759,7 @@ def create_https_certificates(ssl_cert, ssl_key):
     This code is stolen from SickBeard (http://github.com/midgetspy/Sick-Beard).
     """
 
-    from headphones import logger
+    from headphones2 import logger
 
     from OpenSSL import crypto
     from certgen import createKeyPair, createCertRequest, createCertificate, \
@@ -771,7 +771,7 @@ def create_https_certificates(ssl_cert, ssl_key):
     cacert = createCertificate(careq, (careq, cakey), serial, (0, 60 * 60 * 24 * 365 * 10)) # ten years
 
     pkey = createKeyPair(TYPE_RSA, 2048)
-    req = createCertRequest(pkey, CN="Headphones")
+    req = createCertRequest(pkey, CN="headphones2")
     cert = createCertificate(req, (cacert, cakey), serial, (0, 60 * 60 * 24 * 365 * 10)) # ten years
 
     # Save the key and certificate to disk

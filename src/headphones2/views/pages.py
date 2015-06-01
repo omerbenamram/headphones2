@@ -204,6 +204,8 @@ def album_page():
     album = session.query(Album).filter_by(musicbrainz_id=album_id).first()
     release = album.releases[0]
 
+    formatted_album = album_to_dict(album)
+
     if not album:
         return redirect("/home")
 
@@ -229,8 +231,10 @@ def album_page():
     albumduration = ""
     return serve_template(templatename="album.html",
                           title=title,
-                          album=album,
-                          tracks=tracks,
+                          album=formatted_album,
+                          tracks=formatted_tracks,
                           description=description,
                           totaltracks=totaltracks,
-                          albumduration=albumduration)
+                          albumduration=albumduration,
+                          alternate_album_name='',
+                          grade='')

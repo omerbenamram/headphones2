@@ -4,6 +4,7 @@ from flask import Blueprint, request, redirect, abort
 import logbook
 
 from .. import config
+from headphones2 import helpers
 from ..importer import add_artist_to_db
 from ..orm.serialize import artist_to_dict
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
@@ -194,3 +195,28 @@ def artist_page():
                           artist=formatted_artist,
                           albums=formatted_albums,
                           extras={})
+
+
+@pages.route('/albumPage')
+def album_page():
+    album_id = request.args['AlbumID']
+    session = connect()
+    album = session.query(Album).filter_by(musicbrainz_id=album_id).first()
+    release = album.releases[0]
+
+    if not album:
+        return redirect("/home")
+
+    tracks = release.tracks
+    description = ""
+
+    title = ""
+    totaltracks= release.tracks.count()
+    albumduration = ""
+    return serve_template(templatename="album.html",
+                          title=title,
+                          album=album,
+                          tracks=tracks,
+                          description=description,
+                          totaltracks=totaltracks,
+                          albumduration=albumduration)

@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, send_from_directory
 import logbook
+from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages, api, cache
 
 
@@ -22,7 +23,8 @@ def serv_static(path):
 
 
 def main():
-    app.run()
+    with spin_consumers():
+        app.run()
 
 
 if __name__ == "__main__":

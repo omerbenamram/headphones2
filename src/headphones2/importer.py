@@ -28,7 +28,7 @@ def add_artist_to_db(artist_id, session):
                       type=group_info['type'],
                       artist=artist,
                       status=Status.Wanted
-                      )
+        )
         session.add(album)
 
         releases = get_releases_for_release_group(album.musicbrainz_id)

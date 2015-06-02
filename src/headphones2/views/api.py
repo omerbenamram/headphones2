@@ -6,6 +6,7 @@ import logbook
 
 from flask import Blueprint, request, abort
 import requests
+from headphones2.tasks.musicbrainz import get_artwork_for_album_task
 
 from ..orm import *
 from headphones2.external.lastfm import lastfm_api_wrapper
@@ -25,7 +26,7 @@ def get_album_cover_art(rgid, size='small'):
     :param size: large (500px) or small (250px)
     :return: binary jpeg
     """
-    urls = get_artwork_for_album(rgid)
+    urls = get_artwork_for_album_task(rgid).get(True)
     if not urls:
         abort(404)
 

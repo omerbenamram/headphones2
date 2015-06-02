@@ -2,7 +2,7 @@ import musicbrainzngs
 
 musicbrainzngs.set_useragent("test", "0.1", "https://github.com/test/pasten3")
 musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
-
+musicbrainzngs.set_rate_limit()
 
 def get_artwork_for_album(rgid):
     """

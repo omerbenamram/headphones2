@@ -4,7 +4,7 @@ import datetime
 import flask
 import logbook
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, redirect
 import requests
 
 from headphones2.tasks.musicbrainz import get_artwork_for_album_task
@@ -183,3 +183,13 @@ def get_artists():
     }
 
     return json.dumps(result)
+
+
+@api.route('/deleteArtist')
+def delete_artist():
+    artist_id = request.args['ArtistID']
+    session = connect()
+    artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).first()
+    session.delete(artist)
+    session.commit()
+    return redirect('/home')

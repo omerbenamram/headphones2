@@ -37,7 +37,7 @@ class Artist(Base):
 
     status = Column(ChoiceType(Status, impl=Integer()))
 
-    albums = relationship('Album', lazy='dynamic')
+    albums = relationship('Album', lazy='dynamic', cascade="delete")
 
     def __repr__(self):
         return '<Artist {name} ({id})>'.format(name=self.name,
@@ -56,7 +56,7 @@ class Album(Base):
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist')
 
-    releases = relationship('Release', lazy='dynamic')
+    releases = relationship('Release', lazy='dynamic', cascade="delete")
 
     def __repr__(self):
         return '<Album {name} ({id})>'.format(name=self.title,
@@ -78,7 +78,7 @@ class Release(Base):
     album_id = Column(Integer, ForeignKey('albums.id'))
     album = relationship('Album')
 
-    tracks = relationship('Track', lazy='dynamic')
+    tracks = relationship('Track', lazy='dynamic', cascade="delete")
 
     def __repr__(self):
         return '<Release {album} - Released in {date},' \

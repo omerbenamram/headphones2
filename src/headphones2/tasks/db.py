@@ -8,5 +8,3 @@ from .engine import huey
 def add_artist_task(artist_id):
     with closing(connect()) as session:
         add_artist_to_db(artist_id, session)
-
-

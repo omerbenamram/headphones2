@@ -7,7 +7,7 @@ import musicbrainzngs
 from headphones2.importer import add_artist_to_db
 from headphones2.orm import *
 from headphones2.orm.connector import create_all_tables
-from conftest import vcr
+from conftest import vcr, CASSETTE_LIBRARY_DIR
 
 musicbrainzngs.set_rate_limit(False)
 
@@ -25,8 +25,7 @@ def session(tmpdir):
     yield session
     session.close()
 
-# TODO: NOT WORKING (VCR)
-@vcr.use_cassette()
+
 @pytest.yield_fixture()
 def session_with_artist(tmpdir):
     db_file = os.path.join(tmpdir.strpath, 'temp.db')
@@ -35,7 +34,8 @@ def session_with_artist(tmpdir):
 
     create_all_tables(db_file)
     session = connect(db_file)
-    add_artist_to_db(AYREON_MBID, session)  # Tested separately
+    with vcr.use_cassette('test_add_artist_to_db'):
+        add_artist_to_db(AYREON_MBID, session)  # Tested separately
     session.commit()
     yield session
     session.close()

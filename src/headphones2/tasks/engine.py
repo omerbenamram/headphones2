@@ -4,8 +4,11 @@ import multiprocessing
 from huey import Huey
 from huey.consumer import Consumer
 
+NUM_OF_CONSUMER_PROCESSES = 2
+SQLITE_TASK_DB_PATH = r'C:\temp\tasks.db'
+USE_REDIS = True
 
-if True:
+if USE_REDIS:
     # Requiers a redis-server instance.
     # On windows: redis-server.exe --maxheap 30mb
     from huey.backends.redis_backend import RedisQueue, RedisDataStore
@@ -16,8 +19,8 @@ else:
     # Sqlite is limited to one consumer per db.
     from huey.backends.sqlite_backend import SqliteQueue, SqliteDataStore
 
-    result_store = SqliteDataStore('results')
-    queue = SqliteQueue('task_queue', r'C:\ohad\workspace\tasks.db')
+    result_store = SqliteDataStore('results', SQLITE_TASK_DB_PATH)
+    queue = SqliteQueue('task_queue', SQLITE_TASK_DB_PATH)
 
 huey = Huey(queue, result_store=result_store)
 
@@ -33,7 +36,7 @@ def spin_consumers():
     # huey_consumer.py headphones2.tasks.huey
 
     consumers = []
-    for _ in xrange(0):
+    for _ in xrange(NUM_OF_CONSUMER_PROCESSES):
         proc = multiprocessing.Process(target=_run_consumer)
         proc.start()
 

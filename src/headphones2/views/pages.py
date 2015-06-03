@@ -107,7 +107,7 @@ def add_artist():
     if not session.query(Artist).filter_by(musicbrainz_id=artist_id).first():
         add_artist_to_db(artist_id, session)
 
-    return redirect('/artistPage&ArtistID=' + artist_id)
+    return redirect('/artistPage?ArtistID=' + artist_id)
 
 
 @pages.route('/artistPage')

@@ -1,17 +1,21 @@
+import logbook
 import musicbrainzngs
 
 musicbrainzngs.set_useragent("test", "0.1", "https://github.com/test/pasten3")
 musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
 musicbrainzngs.set_rate_limit()
+logger = logbook.Logger(__name__)
 
 def get_artwork_for_album(rgid):
     """
     returns a dict with 'large' and 'small' using musicbrainz api
     """
     try:
+        logger.debug('fetching album art for album {id}'.format(id=rgid))
         cover_art = musicbrainzngs.get_release_group_image_list(rgid)
         return cover_art['images'][0]['thumbnails']
-    except musicbrainzngs.ResponseError:
+    except musicbrainzngs.ResponseError as e:
+        logger.debug('musicbrainz error thrown {}'.format(e.message))
         return None
 
 

@@ -69,7 +69,8 @@ def add_artist_to_db(artist_id, session):
                     )
                     session.add(track)
 
-        chosen_release = session.query(Release).filter_by(album_id=album.id).order_by('release_date').first()
+        # Chose oldest release (it's usually the original release)
+        chosen_release = session.query(Release).join(Album).filter(Album.musicbrainz_id == group_info['id']).order_by(Release.release_date.asc()).first()
         if chosen_release:
             chosen_release.is_selected = True
 

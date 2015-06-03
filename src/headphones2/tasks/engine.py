@@ -17,6 +17,7 @@ if USE_REDIS:
     result_store = RedisDataStore('results')
 else:
     # Sqlite is limited to one consumer per db.
+    NUM_OF_CONSUMER_PROCESSES = 1
     from huey.backends.sqlite_backend import SqliteQueue, SqliteDataStore
 
     result_store = SqliteDataStore('results', SQLITE_TASK_DB_PATH)

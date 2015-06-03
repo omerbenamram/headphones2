@@ -150,8 +150,8 @@ def get_artists():
     artists = query[display_start:display_start + display_length]
     rows = []
     for artist in artists:
-        # TODO: Don't count tracks in each release multiple times..
-        total_tracks = sum([release.tracks.count() for album in artist.albums for release in album.releases])
+        total_tracks = session.query(Track).join(Release).join(Album).join(Artist).filter(Release.is_selected,
+                                                                                          Artist.musicbrainz_id == artist.musicbrainz_id).count()
         row = {
             "ArtistID": artist.musicbrainz_id,
             "ArtistName": artist.name,

@@ -6,18 +6,15 @@ musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
 musicbrainzngs.set_rate_limit()
 logger = logbook.Logger(__name__)
 
+
 def get_artwork_for_album(rgid):
     """
     returns a dict with 'large' and 'small' using musicbrainz api
     """
-    try:
-        logger.debug('fetching album art for album {id}'.format(id=rgid))
-        cover_art = musicbrainzngs.get_release_group_image_list(rgid)
-        return cover_art['images'][0]['thumbnails']
-    except musicbrainzngs.ResponseError as e:
-        logger.debug('musicbrainz error thrown {}'.format(e.message))
-        return None
-
+    logger.debug('fetching album art for album {id}'.format(id=rgid))
+    results = {'small': 'http://coverartarchive.org/release-group/{rgid}/front-250.jpg'.format(rgid=rgid),
+               'large': 'http://coverartarchive.org/release-group/{rgid}/front-500.jpg'.format(rgid=rgid)}
+    return results
 
 def get_release_groups_for_artist(artist_id, fetch_extras=False):
     return musicbrainzngs.browse_release_groups(artist=artist_id,
@@ -27,8 +24,8 @@ def get_release_groups_for_artist(artist_id, fetch_extras=False):
 def get_releases_for_release_group(release_group_id, includes='recordings',
                                    wanted_keys=('barcode', 'title', 'country', 'medium-list', 'date', 'id', 'asin')):
     search_results = \
-    musicbrainzngs.browse_releases(release_group=release_group_id, release_type='album', includes=[includes])[
-        'release-list']
+        musicbrainzngs.browse_releases(release_group=release_group_id, release_type='album', includes=[includes])[
+            'release-list']
     return [{k: v for k, v in d.items() if k in wanted_keys} for d in search_results]
 
 

@@ -6,11 +6,10 @@ import logbook
 
 from flask import Blueprint, request, abort
 import requests
-from headphones2.tasks.musicbrainz import get_artwork_for_album_task
 
-from ..orm import *
+from headphones2.tasks.musicbrainz import get_artwork_for_album_task
 from headphones2.external.lastfm import lastfm_api_wrapper
-from headphones2.external.musicbrainz import get_artwork_for_album
+from ..orm import *
 from .cache import cache
 
 logger = logbook.Logger(__name__)
@@ -55,6 +54,11 @@ def get_artist_artwork(mbid, size='small'):
     artist_artwork = artist_info['artist']['image']
     # convert response list of dicts to something more usable
     size_dict = {d['size']: d['#text'] for d in artist_artwork}
+    chosen = size_dict[size]
+    if not chosen:
+        logger.warning(('No image found for ({id}, {size}'.format(id=mbid, size=size)))
+        abort(404)
+
     img = requests.get(size_dict[size])
 
     if not img.ok:

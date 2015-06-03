@@ -69,9 +69,9 @@ function getInfo(elem,id,type) {
 
 function getImageLinks(elem,id,type,unveil) {
 	if ( type == 'artist' ) {
-		var infoURL = "artwork/artist/" + id + "/small";
+		var infoURL = "/artwork/artist/" + id + "/small";
 	} else {
-		var infoURL = "artwork/album/" + id + "/small";
+		var infoURL = "/artwork/album/" + id + "/small";
 	}
 
 	// Get Data from the cache by ID

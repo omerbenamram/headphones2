@@ -13,11 +13,11 @@ class SimpleBeetsTagger(Tagger):
     def results(self):
         if not self._results:
             self.tag()
-
+        return self._results
 
     def tag(self):
         artist_name, album_name, album_recommendation_list, recommendation = \
             tag_album(self._task.items, search_artist=self._expected_artist, search_album=self._expected_album)
 
-    if recommendation is not Recommendation.none:
-        return album_recommendation_list[0].album_id
+        if recommendation is not Recommendation.none:
+            self._results.append(album_recommendation_list[0].album_id)

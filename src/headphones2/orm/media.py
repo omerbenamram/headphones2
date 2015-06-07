@@ -1,5 +1,9 @@
+from __future__ import division
+
 import enum
+
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy_utils import ChoiceType
@@ -69,7 +73,7 @@ class Release(Base):
     id = Column(Integer, primary_key=True)
     release_date = Column(DateTime)
     title = Column(String)
-    asin = Column(String)
+    asin = Column(String, default='')
     country = Column(String, default='')
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
@@ -79,6 +83,15 @@ class Release(Base):
     album = relationship('Album')
 
     tracks = relationship('Track', lazy='dynamic', cascade="delete")
+
+    @hybrid_property
+    def length(self):
+        return sum(track.length for track in self.tracks)
+
+    @hybrid_property
+    def average_bitrate(self):
+        tracks = [track.bitrate for track in self.tracks]
+        return sum(tracks)/len(tracks)
 
     def __repr__(self):
         return '<Release {album} - Released in {date},' \

@@ -24,9 +24,11 @@ MAX_RELEASES = 5
 
 class AcoustIDAlbumTagger(Tagger):
 
+    modifies = ['acoustid_fingerprint', 'acoustid_id']
+    kind = 'MetadataProcessor'
+
     def __init__(self):
-        pass
-        #super(AcoustIDAlbumTagger).__init__()
+        super(AcoustIDAlbumTagger, self).__init__()
 
     Result = namedtuple('Result', ['fingerprint', 'acoustid', 'recording_id', 'release_id'])
 
@@ -86,11 +88,12 @@ class AcoustIDAlbumTagger(Tagger):
 
     @staticmethod
     def process(item_list):
-        results = {item.path: AcoustIDAlbumTagger._acoustid_tag_file(item.path) for item in item_list}
+        results = {item: AcoustIDAlbumTagger._acoustid_tag_file(item.path) for item in item_list}
 
-        for path, item in results.iteritems():
-            item.acoustid_fingerprint = results[path].fingerprint
-            item.acoustid_id = results[path].acoustid
+        for item, result in results.iteritems():
+            item.acoustid_fingerprint = result.fingerprint
+            item.acoustid_id = result.acoustid
+            logger.debug('Writing metadata modifications to file {}'.format(item.path))
             item.write()
 
-        return AcoustIDAlbumTagger._match_releases(results.items())
+        return AcoustIDAlbumTagger._match_releases(results.values())

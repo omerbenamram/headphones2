@@ -27,20 +27,3 @@ class FolderIterator(object):
                 # avoid mess with files without suffixes being matched
                 if p.suffix and p.suffix in self.extensions:
                     yield Path(root).joinpath(p)
-
-
-def match_album(folder, match_artist_id='', match_album_id=''):
-    item_objects = [Item.from_path(str(p)) for p in FolderIterator(folder, extensions=['.mp3', '.flac'])]
-
-    acoustid_matches = []
-    for item in (p.__str__() for p in FolderIterator(folder, extensions=['.mp3', '.flac'])):
-        acoustid_matches.append(acoustid_match(logger, item))
-
-    artist_name, album_name, album_recommendation_list, recommendation = \
-        tag_album(item_objects, search_artist=match_artist_id, search_album=match_album_id)
-
-    # recommendation system is very strage, might just take first album regardless since tagging is excellent.
-    if recommendation is not Recommendation.none:
-        return album_recommendation_list[0].album_id
-
-    return None

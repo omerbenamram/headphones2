@@ -15,7 +15,7 @@ class SimpleBeetsTagger(Tagger):
             self.tag()
         return self._results
 
-    def tag(self):
+    def process(self):
         artist_name, album_name, album_recommendation_list, recommendation = \
             tag_album(self._task.items, search_artist=self._expected_artist, search_album=self._expected_album)
 

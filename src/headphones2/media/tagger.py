@@ -5,12 +5,9 @@ class Tagger(object):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, task):
-        self._task = task
+    def __init__(self):
+        pass
 
-    @property
-    def results(self):
-        raise NotImplementedError
-
-    def tag(self):
+    @staticmethod
+    def process(item_list):
         raise NotImplementedError

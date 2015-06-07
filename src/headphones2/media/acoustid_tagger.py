@@ -6,11 +6,11 @@ from __future__ import (division, absolute_import, print_function,
 from collections import namedtuple
 from collections import Counter
 from itertools import chain
+from pathlib import Path
 
 import acoustid
 import logbook
 
-from beets import util
 from headphones2.media.tagger import Tagger
 
 logger = logbook.Logger(__name__)
@@ -44,20 +44,20 @@ class AcoustIDAlbumTagger(Tagger):
         Gets metadata for a file from Acoustid.
         returns a Result object with Fingerprint, acoustid, recording_ids and release_ids
         """
-
+        path = Path(filepath)
         try:
-            duration, fingerprint = acoustid.fingerprint_file(util.syspath(filepath))
+            duration, fingerprint = acoustid.fingerprint_file(str(path))
         except acoustid.FingerprintGenerationError as exc:
-            logger.error(u'fingerprinting of {0} failed: {1}', util.displayable_path(repr(filepath)), exc)
+            logger.error(u'fingerprinting of {0} failed: {1}', filepath, exc)
             return None
 
         try:
             res = acoustid.lookup(API_KEY, fingerprint, duration, meta='recordings releases')
         except acoustid.AcoustidError as exc:
-            logger.debug(u'fingerprint matching {0} failed: {1}', util.displayable_path(repr(filepath)), exc)
+            logger.debug(u'fingerprint matching {0} failed: {1}', filepath, exc)
             return None
 
-        logger.debug(u'fingerprinted {0}', util.displayable_path(repr(filepath)))
+        logger.debug(u'fingerprinted {0}', filepath)
 
         # Ensure the response is usable and parse it.
         if res['status'] != 'ok' or not res.get('results'):

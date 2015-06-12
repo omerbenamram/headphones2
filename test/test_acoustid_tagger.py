@@ -1,6 +1,6 @@
 import pytest
 
-from headphones2.media.acoustid_tagger import AcoustIDAlbumTagger
+from headphones2.media.taggers.acoustid_tagger import AcoustIDAlbumTagger
 from headphones2.media.process_folder import FolderIterator
 from beets.library import Item
 from conftest import vcr

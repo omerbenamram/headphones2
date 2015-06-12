@@ -1,13 +1,20 @@
 import os
 
-from beets.library import Item
-from beets.autotag.match import tag_album, Recommendation
-from beetsplug.chroma import acoustid_match
 import logbook
+
+from pathlib import Path
+from beets.library import Item
+from postprocessorbase import POST_PROCESSORS, PostProcessorException
 
 logger = logbook.Logger()
 
-from pathlib import Path
+def lookahead(iterable):
+    it = iter(iterable)
+    last = it.next()
+    for val in it:
+        yield last, False
+        last = val
+    yield last, True
 
 class FolderIterator(object):
     """
@@ -27,3 +34,23 @@ class FolderIterator(object):
                 # avoid mess with files without suffixes being matched
                 if p.suffix and p.suffix in self.extensions:
                     yield Path(root).joinpath(p)
+
+
+def post_process_folder(folder):
+    logger.info("Started post processing for {}".format(folder))
+    logger.debug("Collecting media items from folders")
+    items = [Item.from_path(str(f)) for f in FolderIterator(folder)]
+    taggers = POST_PROCESSORS['tagger']
+    for processor, is_last in lookahead(taggers):
+        try:
+            logger.debug("Calling post processor {}".format(processor))
+            processor.process(items)
+        except PostProcessorException:
+            if is_last:
+                raise "Could not tag media in folder {}".format(folder)
+            continue
+
+    for processor in POST_PROCESSORS['extension']:
+        processor.process(items)
+
+    logger.info("Post processor compelted for {}".format(folder))

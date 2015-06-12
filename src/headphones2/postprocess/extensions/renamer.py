@@ -1,5 +1,5 @@
 import shutil
-from headphones2.media.postprocessorbase import PostProcessorBase
+from headphones2.postprocess.postprocessorbase import PostProcessorBase
 
 
 class Renamer(PostProcessorBase):

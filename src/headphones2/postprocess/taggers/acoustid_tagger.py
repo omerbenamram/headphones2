@@ -9,7 +9,7 @@ from pathlib import Path
 import acoustid
 import logbook
 
-from headphones2.media.postprocessorbase import PostProcessorBase
+from headphones2.postprocess.postprocessorbase import PostProcessorBase
 
 logger = logbook.Logger(__name__)
 

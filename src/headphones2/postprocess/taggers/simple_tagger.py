@@ -1,7 +1,7 @@
 import logbook
 
 from beets.autotag import tag_album, Recommendation, apply_metadata
-from headphones2.media.postprocessorbase import PostProcessorBase, PostProcessorException
+from headphones2.postprocess.postprocessorbase import PostProcessorBase, PostProcessorException
 
 logger = logbook.Logger(__name__)
 

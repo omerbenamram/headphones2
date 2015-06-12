@@ -1,6 +1,6 @@
 import abc
 
-# holds a list of post processors and their kind
+# a dict of lists of post processors by kind
 POST_PROCESSORS = {}
 
 

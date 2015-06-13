@@ -1,16 +1,17 @@
 import logbook
 
 from beets.autotag import tag_album, Recommendation, apply_metadata
-from headphones2.postprocess.postprocessorbase import PostProcessorBase, PostProcessorException
+from headphones2.postprocess.component_base import PostProcessorComponentBase, PostProcessorException
 
 logger = logbook.Logger(__name__)
 
-class SimpleBeetsTagger(PostProcessorBase):
+
+class SimpleBeetsTagger(PostProcessorComponentBase):
     modifies = []
     kind = 'MetadataProcessor'
 
     def __init__(self):
-        super(SimpleBeetsTagger).__init__()
+        super(SimpleBeetsTagger, self).__init__()
 
     @staticmethod
     def process(list_of_items, expected_artist=None, expected_album=None):
@@ -26,3 +27,4 @@ class SimpleBeetsTagger(PostProcessorBase):
 
         logger.info("Successfully tagged album {album_id}, releasegroup {rgid}".format(album_id=album_info.album_id,
                                                                                        rgid=album_info.releasegroup_id))
+        return True, album_info.album_id

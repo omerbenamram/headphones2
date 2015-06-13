@@ -4,7 +4,7 @@ import logbook
 
 from pathlib import Path
 from beets.library import Item
-from postprocessorbase import POST_PROCESSORS, PostProcessorException
+from component_base import POST_PROCESSORS, PostProcessorException
 
 logger = logbook.Logger()
 

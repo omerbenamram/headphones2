@@ -4,7 +4,7 @@ import abc
 POST_PROCESSORS = {}
 
 
-class PostProcessorBase(object):
+class PostProcessorComponentBase(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
@@ -16,7 +16,7 @@ class PostProcessorBase(object):
         raise NotImplementedError
 
     @staticmethod
-    def process(item_list):
+    def process(item_list, **kwargs):
         raise NotImplementedError
 
 

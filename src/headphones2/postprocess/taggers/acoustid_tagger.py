@@ -9,7 +9,7 @@ from pathlib import Path
 import acoustid
 import logbook
 
-from headphones2.postprocess.postprocessorbase import PostProcessorBase
+from headphones2.postprocess.component_base import PostProcessorComponentBase
 
 logger = logbook.Logger(__name__)
 
@@ -20,7 +20,7 @@ COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
 MAX_RECORDINGS = 5
 MAX_RELEASES = 5
 
-class AcoustIDAlbumTagger(PostProcessorBase):
+class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
     modifies = ['acoustid_fingerprint', 'acoustid_id']
     kind = 'MetadataProcessor'
@@ -94,4 +94,8 @@ class AcoustIDAlbumTagger(PostProcessorBase):
             logger.debug('Writing metadata modifications to file {}'.format(item.path))
             item.write()
 
-        return AcoustIDAlbumTagger._match_releases(results.values())
+        identified_release = AcoustIDAlbumTagger._match_releases(results.values())
+        if identified_release is not None:
+            return True, identified_release
+
+        return False

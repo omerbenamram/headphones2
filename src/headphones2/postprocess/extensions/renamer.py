@@ -1,13 +1,14 @@
 import shutil
-from headphones2.postprocess.postprocessorbase import PostProcessorBase
+from headphones2.postprocess.component_base import PostProcessorComponentBase
 
 
-class Renamer(PostProcessorBase):
+class Renamer(PostProcessorComponentBase):
 
     kind = 'extension'
 
     def __init__(self):
-        super(PostProcessorBase, self).__init__()
+        super(PostProcessorComponentBase, self).__init__()
 
-    def process(item_list):
+    @staticmethod
+    def process(item_list, name_string=None, destination_folder=None, release_id=None):
         pass

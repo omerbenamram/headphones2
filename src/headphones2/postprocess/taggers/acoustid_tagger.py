@@ -4,8 +4,8 @@ from __future__ import (division, absolute_import, print_function,
 from collections import namedtuple
 from collections import Counter
 from itertools import chain
-from pathlib import Path
 
+from pathlib import Path
 import acoustid
 import logbook
 
@@ -20,8 +20,8 @@ COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
 MAX_RECORDINGS = 5
 MAX_RELEASES = 5
 
-class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
+class AcoustIDAlbumTagger(PostProcessorComponentBase):
     modifies = ['acoustid_fingerprint', 'acoustid_id']
     kind = 'MetadataProcessor'
 

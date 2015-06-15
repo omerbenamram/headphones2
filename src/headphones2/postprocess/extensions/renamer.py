@@ -1,20 +1,23 @@
+# -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+import py
 import os
 import shutil
 
 import logbook
 
-from pathlib import Path
-
 from headphones2.postprocess.component_base import PostProcessorComponentBase
 
 logger = logbook.Logger(__name__)
-
+Path = py.path.local
 
 class Renamer(PostProcessorComponentBase):
-    kind = 'extension'
+    modifies_file = True
+    group = 'extension'
 
     def __init__(self):
-        super(PostProcessorComponentBase, self).__init__()
+        super(Renamer, self).__init__()
 
     @staticmethod
     def _components_from_item(item):
@@ -24,7 +27,7 @@ class Renamer(PostProcessorComponentBase):
         :return: dictionary of track components
         :rtype dict
         """
-        return {
+        components = {
             "$Album": item.album,
             "$Track_name": item.title,
             "$Track_num": item.track,
@@ -35,9 +38,11 @@ class Renamer(PostProcessorComponentBase):
             "$Genre": item.genre
         }
 
+        return {unicode(k): unicode(v) for k, v in components.iteritems()}
+
     @staticmethod
     def process(item_list, name_string="$Artist/$Album [$Year]/ $Track_num - $Track_name",
-                destination_folder=str(Path(os.path.expanduser("~")).joinpath("Music")),
+                destination_folder=unicode(Path(os.path.expanduser("~")).join("Music")),
                 release_id=None, should_move=False):
 
         # decide if we want to keep original files
@@ -50,17 +55,17 @@ class Renamer(PostProcessorComponentBase):
             new_name = name_string
 
             for param, value in components.iteritems():
-                new_name = new_name.replace(param, str(value))
+                new_name = new_name.replace(param, value)
 
-            new_name += original_path.suffix
-            new_path = Path(new_name)
-            logger.info("Renaming {orig} --> {new}".format(orig=original_path.name, new=new_path.name))
+            new_name += original_path.ext
+            destination_path = Path(destination_folder).join(new_name)
 
-            destination_path = Path(destination_folder).joinpath(new_path)
-            if not destination_path.exists():
-                os.makedirs(str(destination_path))
+            logger.info("Renaming {orig} --> {new}".format(orig=original_path.basename, new=new_name))
+
+            if not destination_path.join(os.path.pardir).exists():
+                os.makedirs(unicode(destination_path.dirpath()))
 
             logger.info("Moving {orig} --> {new}".format(orig=original_path, new=destination_path))
-            operation(item.path, str(destination_path))
+            operation(item.path, unicode(destination_path))
 
         return True

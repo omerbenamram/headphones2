@@ -1,5 +1,5 @@
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 from collections import namedtuple
 from collections import Counter
@@ -22,8 +22,9 @@ MAX_RELEASES = 5
 
 
 class AcoustIDAlbumTagger(PostProcessorComponentBase):
-    modifies = ['acoustid_fingerprint', 'acoustid_id']
-    kind = 'MetadataProcessor'
+
+    modifies_file = False
+    group = 'MetadataProcessor'
 
     def __init__(self):
         super(AcoustIDAlbumTagger, self).__init__()
@@ -33,8 +34,8 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
     @staticmethod
     def _match_releases(result_list):
         """determines which releases the items have in common."""
-        result_ids = chain.from_iterable([result.release_id for result in result_list])
-        return Counter(result_ids).most_common(MAX_RELEASES)
+        result_ids = chain.from_iterable([result.release_id for result in result_list if result])
+        return Counter(result_ids).most_common(1)
 
     @staticmethod
     def _acoustid_tag_file(filepath):
@@ -89,6 +90,8 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
         results = {item: AcoustIDAlbumTagger._acoustid_tag_file(item.path) for item in item_list}
 
         for item, result in results.iteritems():
+            if not result:
+                continue
             item.acoustid_fingerprint = result.fingerprint
             item.acoustid_id = result.acoustid
             logger.debug('Writing metadata modifications to file {}'.format(item.path))
@@ -96,6 +99,6 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
         identified_release = AcoustIDAlbumTagger._match_releases(results.values())
         if identified_release is not None:
-            return True, identified_release
+            return True, identified_release[0][0]
 
         return False

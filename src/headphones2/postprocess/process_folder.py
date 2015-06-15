@@ -1,12 +1,17 @@
+from __future__ import unicode_literals
+
 import os
 
 import logbook
 
 from pathlib import Path
 from beets.library import Item
-from component_base import POST_PROCESSORS, PostProcessorException
+from headphones2.postprocess.component_base import POST_PROCESSORS
+from headphones2.postprocess.taggers.acoustid_tagger import AcoustIDAlbumTagger
+from headphones2.postprocess.taggers.simple_tagger import SimpleBeetsTagger
 
 logger = logbook.Logger()
+
 
 def lookahead(iterable):
     it = iter(iterable)
@@ -39,18 +44,18 @@ class FolderIterator(object):
 def post_process_folder(folder):
     logger.info("Started post processing for {}".format(folder))
     logger.debug("Collecting media items from folders")
-    items = [Item.from_path(str(f)) for f in FolderIterator(folder)]
-    taggers = POST_PROCESSORS['tagger']
-    for processor, is_last in lookahead(taggers):
-        try:
-            logger.debug("Calling post processor {}".format(processor))
-            processor.process(items)
-        except PostProcessorException:
-            if is_last:
-                raise "Could not tag media in folder {}".format(folder)
-            continue
+    items = [Item.from_path(str(f)) for f in FolderIterator(folder, extensions=['.mp3', '.flac'])]
+
+    aid_tagger = AcoustIDAlbumTagger()
+    beets_tagger = SimpleBeetsTagger()
+
+    succeded, recommendation = aid_tagger.process(items)
+    if succeded:
+        beets_tagger.process(items, expected_release_id=recommendation)
 
     for processor in POST_PROCESSORS['extension']:
         processor.process(items)
 
     logger.info("Post processor compelted for {}".format(folder))
+
+

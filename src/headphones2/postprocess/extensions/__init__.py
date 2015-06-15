@@ -1,1 +1,3 @@
-__author__ = 'Omer'
+from .renamer import Renamer
+
+Renamer()

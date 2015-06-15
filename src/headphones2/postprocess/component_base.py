@@ -9,10 +9,17 @@ class PostProcessorComponentBase(object):
 
     def __init__(self):
         # registers the post-processor
-        POST_PROCESSORS[self.kind].append(self)
+        if self.group in POST_PROCESSORS:
+            POST_PROCESSORS[self.group].append(self)
+        else:
+            POST_PROCESSORS[self.group] = [self]
 
     @abc.abstractproperty
-    def kind(self):
+    def modifies_file(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def group(self):
         raise NotImplementedError
 
     @staticmethod

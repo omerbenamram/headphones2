@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+import six
+
 import logbook
 import musicbrainzngs
 
@@ -6,6 +10,12 @@ musicbrainzngs.set_hostname("musicbrainz.org" + ":" + str(80))
 musicbrainzngs.set_rate_limit()
 logger = logbook.Logger(__name__)
 
+
+def get_release_group_by_release_id(release_id):
+    results = musicbrainzngs.get_release_by_id(release_id, includes='release-groups')
+    if results:
+        return results['release']['release-group']['id']
+    return None
 
 def get_artwork_for_album(rgid):
     """

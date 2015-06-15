@@ -7,16 +7,16 @@ logger = logbook.Logger(__name__)
 
 
 class SimpleBeetsTagger(PostProcessorComponentBase):
-    modifies = []
-    kind = 'MetadataProcessor'
+    modifies_file = False
+    group = 'MetadataProcessor'
 
     def __init__(self):
         super(SimpleBeetsTagger, self).__init__()
 
     @staticmethod
-    def process(list_of_items, expected_artist=None, expected_album=None):
+    def process(list_of_items, expected_artist=None, expected_album=None, expected_release_id=None):
         artist_name, album_name, album_recommendation_list, recommendation = \
-            tag_album(list_of_items, search_artist=expected_artist, search_album=expected_album)
+            tag_album(list_of_items, search_artist=expected_artist, search_album=expected_album, search_id=expected_release_id)
 
         if recommendation is Recommendation.none:
             logger.debug('{} Failed to match album'.format(__name__))

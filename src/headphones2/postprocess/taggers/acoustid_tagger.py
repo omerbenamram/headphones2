@@ -26,9 +26,6 @@ MAX_RELEASES = 5
 
 class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
-    modifies_file = False
-    group = 'MetadataProcessor'
-
     def __init__(self):
         super(AcoustIDAlbumTagger, self).__init__()
 

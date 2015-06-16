@@ -15,8 +15,6 @@ logger = logbook.Logger(__name__)
 Path = py.path.local
 
 class Renamer(PostProcessorComponentBase):
-    modifies_file = True
-    group = 'extension'
 
     def __init__(self):
         super(Renamer, self).__init__()

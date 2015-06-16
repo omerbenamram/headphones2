@@ -7,8 +7,6 @@ logger = logbook.Logger(__name__)
 
 
 class SimpleBeetsTagger(PostProcessorComponentBase):
-    modifies_file = False
-    group = 'MetadataProcessor'
 
     def __init__(self):
         super(SimpleBeetsTagger, self).__init__()

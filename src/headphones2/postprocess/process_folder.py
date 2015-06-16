@@ -6,7 +6,8 @@ import logbook
 
 from pathlib import Path
 from beets.library import Item
-from headphones2.postprocess.component_base import POST_PROCESSORS
+from headphones2.postprocess.component_base import PostProcessorException
+from headphones2.postprocess.extensions.renamer import Renamer
 from headphones2.postprocess.taggers.acoustid_tagger import AcoustIDAlbumTagger
 from headphones2.postprocess.taggers.simple_tagger import SimpleBeetsTagger
 
@@ -40,21 +41,30 @@ class FolderIterator(object):
                 if p.suffix and p.suffix in self.extensions:
                     yield Path(root).joinpath(p)
 
+def _tag_album_and_fix_metadata(list_of_items, expected_artist=None, expected_album=None):
+    aid_tagger = AcoustIDAlbumTagger()
+    beets_tagger = SimpleBeetsTagger()
+    try:
+        beets_tagger.process(list_of_items, expected_artist=expected_artist, expected_album=expected_album)
+    except PostProcessorException:  # simple tagging flow failed
+        logger.debug('Calling AcoustID Tagger')
+        is_success, recommendation = aid_tagger.process(list_of_items)
+        if is_success:
+            beets_tagger.process(list_of_items, expected_artist=expected_artist, expected_album=expected_album, expected_release_id=recommendation)
+            return True
+        raise  # both our taggers failed :(
 
-def post_process_folder(folder):
+    return True
+
+
+def post_process_folder(folder, expected_artist=None, expected_album=None, should_move=False):
     logger.info("Started post processing for {}".format(folder))
     logger.debug("Collecting media items from folders")
     items = [Item.from_path(str(f)) for f in FolderIterator(folder, extensions=['.mp3', '.flac'])]
 
-    aid_tagger = AcoustIDAlbumTagger()
-    beets_tagger = SimpleBeetsTagger()
+    _tag_album_and_fix_metadata(items, expected_artist=expected_artist, expected_album=expected_album)
 
-    succeded, recommendation = aid_tagger.process(items)
-    if succeded:
-        beets_tagger.process(items, expected_release_id=recommendation)
-
-    for processor in POST_PROCESSORS['extension']:
-        processor.process(items)
+    Renamer().process(items, should_move=should_move)
 
     logger.info("Post processor compelted for {}".format(folder))
 

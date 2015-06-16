@@ -5,11 +5,14 @@ from collections import namedtuple
 from collections import Counter
 from itertools import chain
 
-from pathlib import Path
 import acoustid
 import logbook
+import musicbrainzngs
+import py
 
 from headphones2.postprocess.component_base import PostProcessorComponentBase
+
+Path = py.path.local
 
 logger = logbook.Logger(__name__)
 
@@ -33,9 +36,22 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
     @staticmethod
     def _match_releases(result_list):
-        """determines which releases the items have in common."""
+        """
+        determines which releases the items have in common.
+        also uses number of tracks to make sure its the same release
+        """
         result_ids = chain.from_iterable([result.release_id for result in result_list if result])
-        return Counter(result_ids).most_common(1)
+        top_matches = Counter(result_ids).most_common(MAX_RELEASES)
+        num_of_tracks = len(result_list)
+
+        for release_id, _ in top_matches:
+            r = musicbrainzngs.get_release_by_id(release_id, includes='recordings')
+            mediums = r['release']['medium-list']
+            tracks = sum([mediums[i]['track-count'] for i, j in enumerate(mediums)])
+            if tracks == num_of_tracks:
+                return release_id
+
+        return None
 
     @staticmethod
     def _acoustid_tag_file(filepath):
@@ -99,6 +115,6 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
         identified_release = AcoustIDAlbumTagger._match_releases(results.values())
         if identified_release is not None:
-            return True, identified_release[0][0]
+            return True, identified_release
 
         return False

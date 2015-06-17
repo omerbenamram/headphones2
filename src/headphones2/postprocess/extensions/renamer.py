@@ -32,13 +32,13 @@ class Renamer(PostProcessorComponentBase):
             "$Track_name": item.title,
             "$Track_num": item.track,
             "$Artist": item.artist,
-            "$SortArtist": split_on_feat(item.artist)[0],
+            "$SortArtist": split_on_feat(item.artist)[0],  # Gorillaz ft the doors --> ('Gorillaz', 'The Doors')
             "$DiscNumber": item.disc,
             "$Year": item.year,
             "$Genre": item.genre
         }
 
-        return {unicode(k): unicode(v) for k, v in components.iteritems()}
+        return {k: unicode(v) for k, v in components.iteritems()}
 
     @staticmethod
     def process(item_list, name_string="$SortArtist/$Album [$Year]/ $Track_num - $Track_name",

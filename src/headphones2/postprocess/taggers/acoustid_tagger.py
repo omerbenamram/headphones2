@@ -10,7 +10,7 @@ import logbook
 import musicbrainzngs
 import py
 
-from headphones2.postprocess.component_base import PostProcessorComponentBase
+from headphones2.postprocess.component_base import PostProcessor
 
 Path = py.path.local
 
@@ -23,29 +23,27 @@ COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
 MAX_RECORDINGS = 5
 MAX_RELEASES = 5
 
+Result = namedtuple('Result', ['fingerprint', 'acoustid', 'recording_id', 'release_id'])
 
-class AcoustIDAlbumTagger(PostProcessorComponentBase):
+class AcoustIDAlbumTagger(PostProcessor):
 
     def __init__(self):
         super(AcoustIDAlbumTagger, self).__init__()
 
-    Result = namedtuple('Result', ['fingerprint', 'acoustid', 'recording_id', 'release_id'])
-
-    @staticmethod
-    def _match_releases(result_list):
+    def _match_releases(self, result_list):
         """
         determines which releases the items have in common.
         also uses number of tracks to make sure its the same release
         """
         result_ids = chain.from_iterable([result.release_id for result in result_list if result])
         top_matches = Counter(result_ids).most_common(MAX_RELEASES)
-        num_of_tracks = len(result_list)
+        actual_number_of_tracks = len(result_list)
 
         for release_id, _ in top_matches:
             r = musicbrainzngs.get_release_by_id(release_id, includes='recordings')
             mediums = r['release']['medium-list']
             tracks = sum([mediums[i]['track-count'] for i, j in enumerate(mediums)])
-            if tracks == num_of_tracks:
+            if tracks == actual_number_of_tracks:
                 return release_id
 
         return None
@@ -96,11 +94,10 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
 
         logger.debug('matched recordings {0} on releases {1}', recording_ids, release_ids)
 
-        return AcoustIDAlbumTagger.Result(fingerprint, acoustid_result['id'], recording_ids, release_ids)
+        return Result(fingerprint, acoustid_result['id'], recording_ids, release_ids)
 
-    @staticmethod
-    def process(item_list):
-        results = {item: AcoustIDAlbumTagger._acoustid_tag_file(item.path) for item in item_list}
+    def process(self, item_list):
+        results = {item: self._acoustid_tag_file(item.path) for item in item_list}
 
         for item, result in results.iteritems():
             if not result:
@@ -110,7 +107,7 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
             logger.debug('Writing metadata modifications to file {}'.format(item.path))
             item.write()
 
-        identified_release = AcoustIDAlbumTagger._match_releases(results.values())
+        identified_release = self._match_releases(results.values())
         if identified_release is not None:
             return True, identified_release
 

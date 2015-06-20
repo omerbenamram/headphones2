@@ -4,12 +4,12 @@ from __future__ import (absolute_import, division,
 import logbook
 
 from beets.autotag import tag_album, Recommendation, apply_metadata
-from headphones2.postprocess.component_base import PostProcessorComponentBase, PostProcessorException
+from headphones2.postprocess.component_base import PostProcessor, PostProcessorException
 
 logger = logbook.Logger(__name__)
 
 
-class SimpleBeetsTagger(PostProcessorComponentBase):
+class SimpleBeetsTagger(PostProcessor):
 
     def __init__(self):
         super(SimpleBeetsTagger, self).__init__()

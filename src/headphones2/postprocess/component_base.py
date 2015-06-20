@@ -1,7 +1,7 @@
 import abc
 
 
-class PostProcessorComponentBase(object):
+class PostProcessor(object):
     __metaclass__ = abc.ABCMeta
 
     def process(item_list, **kwargs):

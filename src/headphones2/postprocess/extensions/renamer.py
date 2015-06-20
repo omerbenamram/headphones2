@@ -6,8 +6,6 @@ from pies.overrides import *
 from string import Template
 import py
 import os
-import shutil
-
 import logbook
 
 from beetsplug.ftintitle import split_on_feat
@@ -21,6 +19,7 @@ class Renamer(PostProcessor):
 
     def __init__(self):
         super(Renamer, self).__init__()
+        self.destination_paths = {}
 
     def _components_from_item(self, item):
         """
@@ -42,11 +41,22 @@ class Renamer(PostProcessor):
         return {k: unicode(v) for k, v in components.iteritems()}
 
     def process(self, item_list, name_template="$SortArtist/$Album [$Year]/ $Track_num - $Track_name",
-                destination_folder=str(Path(os.path.expanduser("~")).join("Music")),
-                release_id=None, should_move=False, flatten_folder=False):
+                destination_folder=str(Path(os.path.expanduser("~")).join("Music")), flatten_folder=False):
+        """
+        renamer main logic function
 
-        # decide if we want to keep original files
-        operation = shutil.move if should_move else shutil.copy
+        :param item_list: list of items to process
+        :type item_list: list[beets.library.Item]
+        :param name_template: a formatted string containing any of: $Album,$Track_name,$Track_num",$Artist,$SortArtist,$
+                                                                    $DiscNumber,$Year,$Genre
+                                                                    / is used to specify wanted folder hierarchy
+
+        :param destination_folder: base path for desitanation folder, defaults to $home/user/Music
+        :param flatten_folder: True to coerce renamer to a single destination folder.
+               uses most common sortartist to decide on folder
+        :return: True if successful
+        """
+
         components_dict = {item: self._components_from_item(item) for item in item_list}
 
         # Restrict output to one SortArtist, useful in many albums with lots of fts
@@ -66,13 +76,26 @@ class Renamer(PostProcessor):
             new_name += original_path.ext
             destination_path = Path(destination_folder).join(new_name)
 
-            logger.info("Renaming {orig} --> {new}".format(orig=original_path.basename, new=new_name))
-
-            if not destination_path.join(os.path.pardir).exists():
-                os.makedirs(str(destination_path.dirpath()))
-
-            logger.info("{action} {orig} --> {new}".format(action=("Moving" if should_move else "Copying"),
-                                                           orig=original_path, new=destination_path))
-            operation(item.path, str(destination_path))
+            logger.info("{orig} --> {new}".format(orig=original_path.basename, new=new_name))
+            self.destination_paths[str(original_path)] = str(destination_path)
 
         return True
+
+    def write(self, item_list, should_move=False):
+        """
+        :param item_list:
+        :type item_list: list[beets.library.Item]
+        :param should_move:
+        :return:
+        """
+        # beets use "should copy"..
+        copy = not should_move
+
+        for item in item_list:
+            dest_path = self.destination_paths[item.path]
+            if not os.path.exists(os.path.dirname(dest_path)):
+                os.makedirs(os.path.dirname(dest_path))
+
+            item.move_file(dest_path, copy=copy)
+            logger.info("{action} {orig} --> {new}".format(action=("Moving" if should_move else "Copying"),
+                                                           orig=item.path, new=dest_path))

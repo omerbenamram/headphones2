@@ -49,6 +49,8 @@ def post_process_folder(folder, expected_artist=None, expected_album=None, shoul
 
     _tag_album_and_fix_metadata(items, expected_artist=expected_artist, expected_album=expected_album)
 
-    Renamer().process(items, should_move=should_move, flatten_folder=flatten_result_folder)
+    r = Renamer()
+    r.process(items, flatten_folder=flatten_result_folder)
+    r.write(items, should_move=should_move)
 
     logger.info("Post processor compelted for {}".format(folder))

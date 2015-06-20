@@ -60,30 +60,30 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
         try:
             duration, fingerprint = acoustid.fingerprint_file(str(path))
         except acoustid.FingerprintGenerationError as exc:
-            logger.error(u'fingerprinting of {0} failed: {1}', filepath, exc)
+            logger.error('fingerprinting of {0} failed: {1}', filepath, exc)
             return None
 
         try:
             res = acoustid.lookup(API_KEY, fingerprint, duration, meta='recordings releases')
         except acoustid.AcoustidError as exc:
-            logger.debug(u'fingerprint matching {0} failed: {1}', filepath, exc)
+            logger.debug('fingerprint matching {0} failed: {1}', filepath, exc)
             return None
 
-        logger.debug(u'fingerprinted {0}', filepath)
+        logger.debug('fingerprinted {0}', filepath)
 
         # Ensure the response is usable and parse it.
         if res['status'] != 'ok' or not res.get('results'):
-            logger.debug(u'no match found')
+            logger.debug('no match found')
             return None
 
         acoustid_result = res['results'][0]  # Best match.
         if acoustid_result['score'] < SCORE_THRESH:
-            logger.debug(u'no results above threshold')
+            logger.debug('no results above threshold')
             return None
 
         # Get recording and releases from the result.
         if not acoustid_result.get('recordings'):
-            logger.debug(u'no recordings found')
+            logger.debug('no recordings found')
             return None
 
         recording_ids = []
@@ -94,7 +94,7 @@ class AcoustIDAlbumTagger(PostProcessorComponentBase):
             if 'releases' in recording:
                 release_ids += [rel['id'] for rel in recording['releases']]
 
-        logger.debug(u'matched recordings {0} on releases {1}', recording_ids, release_ids)
+        logger.debug('matched recordings {0} on releases {1}', recording_ids, release_ids)
 
         return AcoustIDAlbumTagger.Result(fingerprint, acoustid_result['id'], recording_ids, release_ids)
 

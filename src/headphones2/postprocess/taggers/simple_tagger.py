@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import logbook
 
 from beets.autotag import tag_album, Recommendation, apply_metadata

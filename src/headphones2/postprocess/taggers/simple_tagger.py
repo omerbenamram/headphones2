@@ -9,13 +9,13 @@ from headphones2.postprocess.component_base import PostProcessor, PostProcessorE
 logger = logbook.Logger(__name__)
 
 
-class SimpleBeetsTagger(PostProcessor):
+class BeetsTagger(PostProcessor):
 
     def __init__(self):
-        super(SimpleBeetsTagger, self).__init__()
+        super(BeetsTagger, self).__init__()
 
-    @staticmethod
-    def process(list_of_items, expected_artist=None, expected_album=None, expected_release_id=None):
+    def process(self, list_of_items, expected_artist=None, expected_album=None, expected_release_id=None):
+
         artist_name, album_name, album_recommendation_list, recommendation = \
             tag_album(list_of_items, search_artist=expected_artist, search_album=expected_album, search_id=expected_release_id)
 

@@ -7,7 +7,7 @@ import py
 
 from beets.library import Item
 from headphones2.config import MEDIA_FORMATS
-from headphones2.postprocess import AcoustIDAlbumTagger, SimpleBeetsTagger, PostProcessorException, Renamer
+from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, PostProcessorException, Renamer
 
 logger = logbook.Logger()
 Path = py.path.local
@@ -15,7 +15,7 @@ Path = py.path.local
 
 def _tag_album_and_fix_metadata(list_of_items, expected_artist=None, expected_album=None):
     aid_tagger = AcoustIDAlbumTagger()
-    beets_tagger = SimpleBeetsTagger()
+    beets_tagger = BeetsTagger()
     try:
         beets_tagger.process(list_of_items, expected_artist=expected_artist, expected_album=expected_album)
     except PostProcessorException:  # simple tagging flow failed
@@ -30,7 +30,7 @@ def _tag_album_and_fix_metadata(list_of_items, expected_artist=None, expected_al
     return True
 
 
-def post_process_folder(folder, expected_artist=None, expected_album=None, should_move=False):
+def post_process_folder(folder, expected_artist=None, expected_album=None, should_move=False, flatten_result_folder=False):
     logger.info("Started post processing for {}".format(folder))
     logger.debug("Collecting media items from folders")
 
@@ -49,6 +49,6 @@ def post_process_folder(folder, expected_artist=None, expected_album=None, shoul
 
     _tag_album_and_fix_metadata(items, expected_artist=expected_artist, expected_album=expected_album)
 
-    Renamer().process(items, should_move=should_move)
+    Renamer().process(items, should_move=should_move, flatten_folder=flatten_result_folder)
 
     logger.info("Post processor compelted for {}".format(folder))

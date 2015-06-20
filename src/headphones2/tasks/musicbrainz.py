@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from pies.overrides import *
+
 from headphones2.external.musicbrainz import get_artwork_for_album
 from . import huey
 

@@ -1,3 +1,7 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+from pies.overrides import *
+
 from contextlib import closing
 from ..orm import connect
 from ..importer import add_artist_to_db

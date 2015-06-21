@@ -16,19 +16,18 @@ Path = py.path.local
 
 logger = logbook.Logger(__name__)
 
-API_KEY = '1vOwZtEn'
-SCORE_THRESH = 0.5
-TRACK_ID_WEIGHT = 10.0
-COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
-MAX_RECORDINGS = 5
-MAX_RELEASES = 5
+AcoustIDTaggerResult = namedtuple('Result', ['fingerprint', 'acoustid', 'recording_id', 'release_id'])
 
-Result = namedtuple('Result', ['fingerprint', 'acoustid', 'recording_id', 'release_id'])
 
 class AcoustIDAlbumTagger(PostProcessor):
 
-    def __init__(self):
+    SCORE_THRESH = 0.5
+    COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
+    MAX_RELEASES = 5
+
+    def __init__(self, api_key='1vOwZtEn'):
         super(AcoustIDAlbumTagger, self).__init__()
+        self.api_key = api_key
 
     def _match_releases(self, result_list):
         """
@@ -36,7 +35,7 @@ class AcoustIDAlbumTagger(PostProcessor):
         also uses number of tracks to make sure its the same release
         """
         result_ids = chain.from_iterable([result.release_id for result in result_list if result])
-        top_matches = Counter(result_ids).most_common(MAX_RELEASES)
+        top_matches = Counter(result_ids).most_common(self.MAX_RELEASES)
         actual_number_of_tracks = len(result_list)
 
         for release_id, _ in top_matches:
@@ -48,11 +47,12 @@ class AcoustIDAlbumTagger(PostProcessor):
 
         return None
 
-    @staticmethod
-    def _acoustid_tag_file(filepath):
+    def _acoustid_tag_file(self, filepath):
         """
         Gets metadata for a file from Acoustid.
         returns a Result object with Fingerprint, acoustid, recording_ids and release_ids
+
+        Suppresses all exceptions - will return None if failed
         """
         path = Path(filepath)
         try:
@@ -62,7 +62,7 @@ class AcoustIDAlbumTagger(PostProcessor):
             return None
 
         try:
-            res = acoustid.lookup(API_KEY, fingerprint, duration, meta='recordings releases')
+            res = acoustid.lookup(self.api_key, fingerprint, duration, meta='recordings releases')
         except acoustid.AcoustidError as exc:
             logger.debug('fingerprint matching {0} failed: {1}', filepath, exc)
             return None
@@ -75,7 +75,7 @@ class AcoustIDAlbumTagger(PostProcessor):
             return None
 
         acoustid_result = res['results'][0]  # Best match.
-        if acoustid_result['score'] < SCORE_THRESH:
+        if acoustid_result['score'] < self.SCORE_THRESH:
             logger.debug('no results above threshold')
             return None
 
@@ -94,9 +94,9 @@ class AcoustIDAlbumTagger(PostProcessor):
 
         logger.debug('matched recordings {0} on releases {1}', recording_ids, release_ids)
 
-        return Result(fingerprint, acoustid_result['id'], recording_ids, release_ids)
+        return AcoustIDTaggerResult(fingerprint, acoustid_result['id'], recording_ids, release_ids)
 
-    def process(self, item_list):
+    def process(self, item_list, **kwargs):
         results = {item: self._acoustid_tag_file(item.path) for item in item_list}
 
         for item, result in results.iteritems():
@@ -104,11 +104,16 @@ class AcoustIDAlbumTagger(PostProcessor):
                 continue
             item.acoustid_fingerprint = result.fingerprint
             item.acoustid_id = result.acoustid
-            logger.debug('Writing metadata modifications to file {}'.format(item.path))
-            item.write()
 
         identified_release = self._match_releases(results.values())
         if identified_release is not None:
             return True, identified_release
 
-        return False
+        return False, None
+
+    def write(self, item_list, **kwargs):
+        for item in item_list:
+            item.write()
+            logger.debug('Writing AcoustID metadata to file {}'.format(item.path))
+
+        return

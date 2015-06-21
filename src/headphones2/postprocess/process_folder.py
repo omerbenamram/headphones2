@@ -8,6 +8,7 @@ import py
 from beets.library import Item
 from headphones2.config import MEDIA_FORMATS
 from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, PostProcessorException, Renamer
+from headphones2.postprocess.taggers.simple_tagger import BeetsTaggerException
 
 logger = logbook.Logger()
 Path = py.path.local
@@ -18,7 +19,8 @@ def _tag_album_and_fix_metadata(list_of_items, expected_artist=None, expected_al
     beets_tagger = BeetsTagger()
     try:
         beets_tagger.process(list_of_items, expected_artist=expected_artist, expected_album=expected_album)
-    except PostProcessorException:  # simple tagging flow failed
+        return True
+    except BeetsTaggerException:  # beets tagging flow failed
         logger.exception('Calling AcoustID Tagger')
         is_success, recommendation = aid_tagger.process(list_of_items)
         if is_success:
@@ -26,8 +28,6 @@ def _tag_album_and_fix_metadata(list_of_items, expected_artist=None, expected_al
                                  expected_release_id=recommendation)
             return True
         raise PostProcessorException("Exhasted tagging options, failing")
-
-    return True
 
 
 def post_process_folder(folder, expected_artist=None, expected_album=None, should_move=False, flatten_result_folder=False):

@@ -41,7 +41,7 @@ class AcoustIDAlbumTagger(PostProcessor):
         for release_id, _ in top_matches:
             r = musicbrainzngs.get_release_by_id(release_id, includes='recordings')
             mediums = r['release']['medium-list']
-            tracks = sum([mediums[i]['track-count'] for i, j in enumerate(mediums)])
+            tracks = sum([medium['track-count'] for medium in mediums])
             if tracks == actual_number_of_tracks:
                 return release_id
 

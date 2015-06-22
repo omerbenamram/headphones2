@@ -98,6 +98,12 @@ class AcoustIDAlbumTagger(PostProcessor):
         return AcoustIDTaggerResult(fingerprint, acoustid_result['id'], recording_ids, release_ids)
 
     def process(self, item_list, **kwargs):
+        """
+        matches a release using acoustid
+        :param item_list:
+        :param kwargs:
+        :return: release_id or None
+        """
         results = {item: self._acoustid_tag_file(item.path) for item in item_list}
 
         for item, result in results.iteritems():

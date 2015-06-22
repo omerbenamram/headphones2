@@ -33,6 +33,7 @@ class AcoustIDAlbumTagger(PostProcessor):
         """
         determines which releases the items have in common.
         also uses number of tracks to make sure its the same release
+        :returns release_id or None
         """
         result_ids = chain.from_iterable([result.release_id for result in result_list if result])
         top_matches = Counter(result_ids).most_common(self.MAX_RELEASES)
@@ -107,9 +108,9 @@ class AcoustIDAlbumTagger(PostProcessor):
 
         identified_release = self._match_releases(results.values())
         if identified_release is not None:
-            return True, identified_release
+            return identified_release
 
-        return False, None
+        return None
 
     def write(self, item_list, **kwargs):
         for item in item_list:

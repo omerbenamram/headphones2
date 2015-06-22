@@ -81,7 +81,7 @@ class Renamer(PostProcessor):
 
         return True
 
-    def write(self, item_list, should_move=False):
+    def write(self, item_list, should_move=False, **kwargs):
         """
         :param item_list:
         :type item_list: list[beets.library.Item]

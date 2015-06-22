@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+from collections import namedtuple
 
 import logbook
 
@@ -8,6 +9,7 @@ from headphones2.postprocess.component_base import PostProcessor, PostProcessorE
 
 logger = logbook.Logger(__name__)
 
+BeetsTaggerResult = namedtuple("Result", ["album_id", "album_info_object", "track_mapping_object", "extra_items", "extra_tracks"])
 
 class BeetsTagger(PostProcessor):
     def __init__(self):
@@ -25,13 +27,13 @@ class BeetsTagger(PostProcessor):
 
         distance, album_info, track_mapping, extra_items, extra_tracks = album_recommendation_list[0]
         logger.debug('Successfully matched album {} !'.format(album_info.album_id))
-        apply_metadata(album_info, track_mapping)
 
         logger.info("Successfully tagged album {album_id}, releasegroup {rgid}".format(album_id=album_info.album_id,
                                                                                        rgid=album_info.releasegroup_id))
-        return True, album_info.album_id
 
-    def write(self, item_list, album_info=None, track_mapping=None):
+        return BeetsTaggerResult(album_info.album_id, album_info, track_mapping, extra_items, extra_tracks)
+
+    def write(self, item_list, album_info=None, track_mapping=None, **kwargs):
         apply_metadata(album_info, track_mapping)
         return
 

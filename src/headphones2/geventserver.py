@@ -1,10 +1,11 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
 from gevent import monkey
 from gevent.wsgi import WSGIServer
 
-from app import app
-from headphones2.tasks.engine import spin_consumers
+from .app import app
+from .tasks.engine import spin_consumers
 
 
 def main():

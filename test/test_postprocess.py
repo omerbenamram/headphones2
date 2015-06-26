@@ -7,7 +7,8 @@ import pytest
 from beets.library import Item
 from beets.dbcore import types
 from headphones2.postprocess.process import pre_process_folder, post_process_album_task
-from conftest import vcr
+
+from .conftest import vcr
 
 Path = py.path.local
 
@@ -29,7 +30,7 @@ def no_metadata_task(task):
     for item in task:
         for field, type in Item._fields.iteritems():
             if field != 'path':
-                if isinstance(type, types.STRING):
+                if type == types.STRING:
                     setattr(item, field, '')
                 elif isinstance(type, types.PaddedInt):
                     setattr(item, field, 0)

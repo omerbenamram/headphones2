@@ -1,10 +1,11 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+from pies.overrides import *
+
 from collections import Counter
 from string import Template
 import os
 
-from pies.overrides import *
 import py
 import logbook
 

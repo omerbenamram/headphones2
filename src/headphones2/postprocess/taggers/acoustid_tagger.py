@@ -20,7 +20,6 @@ AcoustIDTaggerResult = namedtuple('Result', ['fingerprint', 'acoustid', 'recordi
 
 
 class AcoustIDAlbumTagger(PostProcessor):
-
     SCORE_THRESH = 0.5
     COMMON_REL_THRESH = 0.6  # How many tracks must have an album in common?
     MAX_RELEASES = 5
@@ -97,14 +96,14 @@ class AcoustIDAlbumTagger(PostProcessor):
 
         return AcoustIDTaggerResult(fingerprint, acoustid_result['id'], recording_ids, release_ids)
 
-    def process(self, item_list, **kwargs):
+    def process(self, task, **kwargs):
         """
         matches a release using acoustid
         :param item_list:
         :param kwargs:
         :return: release_id or None
         """
-        results = {item: self._acoustid_tag_file(item.path) for item in item_list}
+        results = {item: self._acoustid_tag_file(item.path) for item in task}
 
         for item, result in results.iteritems():
             if not result:
@@ -116,11 +115,4 @@ class AcoustIDAlbumTagger(PostProcessor):
         if identified_release is not None:
             return identified_release
 
-        return None
-
-    def write(self, item_list, **kwargs):
-        for item in item_list:
-            item.write()
-            logger.debug('Writing AcoustID metadata to file {}'.format(item.path))
-
-        return
+        return False

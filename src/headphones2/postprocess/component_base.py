@@ -17,13 +17,5 @@ class PostProcessor(object):
         """
         raise NotImplementedError()
 
-    def write(self, item_list, **kwargs):
-        """
-        Performs all I/O related calls
-        :return:
-        """
-        raise NotImplementedError()
-
-
 class PostProcessorException(Exception):
     pass

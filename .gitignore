@@ -4,4 +4,3 @@ src/headphones2.egg-info/
 cache/
 test/fixtures/cassettes/
 *.db
-acountid-api-key

@@ -36,7 +36,7 @@ class BeetsTagger(PostProcessor):
             logger.warning('{} Failed to match album'.format(__name__))
 
             if not fallback_taggers:
-                raise BeetsTaggerException('{} Failed to match album'.format(__name__))
+                raise BeetsTaggerException("Exhausted all tagging options, failing")
 
             for tagger in fallback_taggers:
                 logger.debug("Calling {}".format(tagger.__class__.__name__))

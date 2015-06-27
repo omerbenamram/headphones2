@@ -5,7 +5,7 @@ import os
 import uuid
 
 import logbook
-
+from builtins import str
 from beets.autotag import apply_metadata
 
 logger = logbook.Logger(__name__)
@@ -46,7 +46,7 @@ class AlbumTask(object):
             items=len(self))
 
     def set_path_for_item(self, item, new_path):
-        assert isinstance(new_path, str) or isinstance(new_path, unicode), "Path must be a string!"
+        assert isinstance(new_path, str), "Path must be a string!"
         self._path_mapping[item.path] = new_path
 
     def write_metadata_changes(self):

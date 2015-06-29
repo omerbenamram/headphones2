@@ -18,10 +18,6 @@ SAMPLE_DIR = Path(__file__).dirpath().join('fixtures').join('samples').join('alb
 @pytest.fixture
 def task(tmpdir):
     task = list(pre_process_folder(str(SAMPLE_DIR)))[0]
-    for item in task:
-        orig_path = Path(item.path)
-        filename = orig_path.purebasename + orig_path.ext
-        item.move_file(str(tmpdir.join(filename)), copy=True)
     return task
 
 

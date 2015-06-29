@@ -6,6 +6,7 @@ from pies.overrides import *
 
 import logbook
 import py
+import tempfile
 
 from beets.library import Item
 from headphones2.config import MEDIA_FORMATS
@@ -14,13 +15,16 @@ from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, Renamer, A
 logger = logbook.Logger(__name__)
 Path = py.path.local
 
-
 def pre_process_folder(folder):
     p = Path(folder)
     assert p.isdir(), "Got non directory input, breaking"
 
     paths = _collect_files_from_folder(p)
     items = [Item.from_path(str(f)) for f in paths]
+    tempdir = tempfile.mkdtemp(prefix='temp_')
+    for item in items:
+        filename = os.path.basename(item.path)
+        item.move_file(os.path.join(tempdir, filename), copy=True)
     yield AlbumTask(items)
 
 

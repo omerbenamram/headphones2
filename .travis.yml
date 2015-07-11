@@ -9,8 +9,6 @@ python:
   - "2.7"
   - "3.4"
 install:
-'sqlalchemy', 'flask', 'mako', 'beets', 'logbook', 'requests', 'sqlalchemy-utils', 'pytest', 'huey',
-              'gevent', 'pies'
  - pip install sqlalchemy
  - pip install flask
  - pip install mako

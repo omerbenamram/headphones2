@@ -2,3 +2,5 @@
 src/headphones2.egg-info/
 *.pyc
 cache/
+test/fixtures/cassettes/
+*.db

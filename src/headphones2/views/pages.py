@@ -1,11 +1,14 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 import datetime
 
 from flask import Blueprint, request, redirect, abort
 import logbook
 
 from .. import config
+from headphones2 import helpers
 from ..importer import add_artist_to_db
-from ..orm.serialize import artist_to_dict
+from ..orm.serialize import artist_to_dict, track_to_dict
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
 from .templates import serve_template
 from ..orm import *
@@ -106,7 +109,7 @@ def add_artist():
     if not session.query(Artist).filter_by(musicbrainz_id=artist_id).first():
         add_artist_to_db(artist_id, session)
 
-    return redirect('/artistPage&ArtistID=' + artist_id)
+    return redirect('/artistPage?ArtistID=' + artist_id)
 
 
 @pages.route('/artistPage')
@@ -194,3 +197,47 @@ def artist_page():
                           artist=formatted_artist,
                           albums=formatted_albums,
                           extras={})
+
+
+@pages.route('/albumPage')
+def album_page():
+    album_id = request.args['AlbumID']
+    session = connect()
+    album = session.query(Album).filter_by(musicbrainz_id=album_id).first()
+    release = album.releases[0]
+
+    formatted_album = album_to_dict(album)
+
+    if not album:
+        return redirect("/home")
+
+    formatted_tracks = []
+
+    tracks = release.tracks
+    for track in tracks:
+        formatted_track = track_to_dict(track)
+        if track.location:
+            grade = 'A'
+        else:
+            grade = 'X'
+
+        formatted_track['bitrate'] = ''
+        formatted_track['format'] = ''
+        formatted_track['Grade'] = grade
+
+        formatted_tracks.append(formatted_track)
+
+    description = ""
+    title = ""
+    totaltracks = release.tracks.count()
+    albumduration = ""
+
+    return serve_template(templatename="album.html",
+                          title=title,
+                          album=formatted_album,
+                          tracks=formatted_tracks,
+                          description=description,
+                          totaltracks=totaltracks,
+                          albumduration=albumduration,
+                          alternate_album_name='',
+                          grade='')

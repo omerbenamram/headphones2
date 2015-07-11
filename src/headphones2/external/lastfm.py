@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 import requests
 
 TIMEOUT = 60.0 # seconds
@@ -10,5 +12,6 @@ def lastfm_api_wrapper(method, **kwargs):
     kwargs["method"] = method
     kwargs.setdefault("api_key", API_KEY)
     kwargs.setdefault("format", "json")
-
-    return requests.get(ENTRY_POINT, timeout=TIMEOUT, params=kwargs).json()
+    resp = requests.get(ENTRY_POINT, timeout=TIMEOUT, params=kwargs)
+    resp.raise_for_status()
+    return resp.json()

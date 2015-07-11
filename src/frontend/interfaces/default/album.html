@@ -1,7 +1,6 @@
 <%inherit file="base.html" />
 <%!
-	from headphones import db, helpers
-	myDB = db.DBConnection()
+	from headphones import helpers
 %>
 
 <%def name="headerIncludes()">
@@ -25,26 +24,6 @@
 			<a class="menu_link_edit" id="album_chooser" href="#"><i class="fa fa-pencil"></i> Choose Alternate Release</a>
 				<div id="dialog" title="Choose an Alternate Release" style="display:none" class="configtable">
 					<div class="links">
-						<%
-							alternate_albums = myDB.select("SELECT * from allalbums WHERE AlbumID=? ORDER BY ReleaseDate ASC", [album['AlbumID']])
-						%>
-						%if not alternate_albums:
-							<p>No alternate releases found. Try refreshing the artist (if the artist is being refreshed, please wait until it's finished)</p>
-							<h2><a id="refresh_artist" onclick="doAjaxCall('refreshArtist?ArtistID=${album['ArtistID']}', $(this)), true" href="#" data-success="'${album['ArtistName']}' is being refreshed">Refresh Artist</a></h2>
-						%else:
-							%for alternate_album in alternate_albums:
-								<%
-									track_count = len(myDB.select("SELECT * from alltracks WHERE ReleaseID=?", [alternate_album['ReleaseID']]))
-									have_track_count = len(myDB.select("SELECT * from alltracks WHERE ReleaseID=? AND Location IS NOT NULL", [alternate_album['ReleaseID']]))
-									if alternate_album['AlbumID'] == alternate_album['ReleaseID']:
-										alternate_album_name = "Headphones Default Release (" + str(alternate_album['ReleaseDate']) + ") [" + str(have_track_count) + "/" + str(track_count) + " tracks]"
-									else:
-										alternate_album_name = alternate_album['AlbumTitle'] + " (" + alternate_album['ReleaseCountry'] + ", " + str(alternate_album['ReleaseDate']) + ", " + alternate_album['ReleaseFormat'] + ") [" + str(have_track_count) + "/" + str(track_count) + " tracks]"
-									
-								%>
-								<a href="#" onclick="doAjaxCall('switchAlbum?AlbumID=${album['AlbumID']}&ReleaseID=${alternate_album['ReleaseID']}', $(this), 'table');" data-success="Switched release to: ${alternate_album_name}">${alternate_album_name}</a><br>
-							%endfor
-						%endif
 					</div>
 				</div>
 			<a class="menu_link_edit" id="edit_search_term" href="#"><i class="fa fa-pencil"></i> Edit Search Term</a>
@@ -53,10 +32,7 @@
 					<input type="hidden" name="AlbumID" value="${album['AlbumID']}">
 					<div class="row">
 						<%
-							if not album['SearchTerm']:
-								search_term = ""
-							else:
-								search_term = album['SearchTerm']
+                            search_term = ""
 						%>
 						<input type="text" value="${search_term}" name="SearchTerm" size="40" />
 					</div>
@@ -98,15 +74,6 @@
                 <a href="http://musicbrainz.org/artist/${album['ArtistID']}" id="artistnamelink">${album['ArtistName']}</a>
             </h2>
 
-			<%
-				totalduration = myDB.action("SELECT SUM(TrackDuration) FROM tracks WHERE AlbumID=?", [album['AlbumID']]).fetchone()[0]
-				totaltracks = len(myDB.select("SELECT TrackTitle from tracks WHERE AlbumID=?", [album['AlbumID']]))
-				try:
-					albumduration = helpers.convert_milliseconds(totalduration)
-				except:
-					albumduration = 'n/a'
-			
-			%>
 			<div class="albuminfo">
 				<div id="albumInfo"></div>
 				<ul>
@@ -128,57 +95,16 @@
 					</tr>
 				</thead>
 				<tbody>
-				%for track in tracks:
-					<%
-						if track['Location']:
-							grade = 'A'
-							location = track['Location']
-						else:
-							grade = 'X'
-							location = ''
-							
-						if track['BitRate']:
-							bitrate = str(track['BitRate']/1000) + ' kbps'
-						else:
-							bitrate = ''
-
-						try:
-							trackduration = helpers.convert_milliseconds(track['TrackDuration'])
-						except:
-							trackduration = 'n/a'
-
-						if not track['Format']:
-							format = ''
-						else:
-							format = track['Format']
-					%>
-					<tr class="grade${grade}">
+                %for track in tracks:
+					<tr class="X">
 						<td id="number">${track['TrackNumber']}</td>
 						<td id="name">${track['TrackTitle']}</td>
-						<td id="duration">${trackduration}</td>
-						<td id="location">${location}</td>
-						<td id="bitrate">${bitrate}</td>
-						<td id="format">${format}</td>
+						<td id="duration">${track['trackduration']}</td>
+						<td id="location">${track['location']}</td>
+						<td id="bitrate">${track['bitrate']}</td>
+						<td id="format">${track['format']}</td>
 					</tr>
-				%endfor
-				<%
-				unmatched = myDB.select('SELECT * from have WHERE ArtistName LIKE ? AND AlbumTitle LIKE ? AND Matched = "Failed" ORDER BY CAST(TrackNumber AS INTEGER)', [album['ArtistName'], album['AlbumTitle']])
-				%>
-				%if unmatched:
-					 %for track in unmatched:
-					 <%
-					 	duration = helpers.convert_seconds(float(track['TrackLength']))
-					 %>
-					<tr class="gradeC">
-						<td id="number">${track['TrackNumber']}</td>
-						<td id="name">${track['TrackTitle']}</td>
-						<td id="duration">${duration}</td>
-						<td id="location">${track['Location']}</td>
-						<td id="bitrate">${int(track['BitRate'])/1000} kbps</td>
-						<td id="format">${track['Format']}</td>
-					</tr>
-					%endfor
-				%endif
+                %endfor
 				</tbody>
 			</table>
 		</div>

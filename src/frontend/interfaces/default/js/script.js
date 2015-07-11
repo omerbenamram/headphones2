@@ -27,9 +27,9 @@ function getThumb(imgElem,id,type) {
 function getArtwork(imgElem,id,name,type) {
 	
 	if ( type == 'artist' ) {
-		var artworkURL = "getArtwork?ArtistID=" + id;
+		var artworkURL = "artwork/artist/" + id + "/small";
 	} else {
-		var artworkURL = "getArtwork?AlbumID=" + id;
+		var artworkURL = "artwork/album/" + id + "/small";
 	}
 	// Get Data from the cache by Artist ID 	
 	$.ajax({
@@ -69,9 +69,9 @@ function getInfo(elem,id,type) {
 
 function getImageLinks(elem,id,type,unveil) {
 	if ( type == 'artist' ) {
-		var infoURL = "getImageLinks?ArtistID=" + id;
+		var infoURL = "/artwork/artist/" + id + "/small";
 	} else {
-		var infoURL = "getImageLinks?AlbumID=" + id;
+		var infoURL = "/artwork/album/" + id + "/small";
 	}
 
 	// Get Data from the cache by ID

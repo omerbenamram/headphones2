@@ -1,0 +1,26 @@
+# Travis CI configuration file
+# http://about.travis-ci.org/docs/
+
+language: python
+
+# Available Python versions:
+# http://about.travis-ci.org/docs/user/ci-environment/#Python-VM-images
+python:
+  - "2.7"
+  - "3.4"
+install:
+ - pip install sqlalchemy
+ - pip install flask
+ - pip install mako
+ - pip install beets
+ - pip install logbook
+ - pip install requests
+ - pip install sqlalchemy-utils
+ - pip install pytest
+ - pip install huey
+ - pip install gevent
+ - pip install pies
+ - pip install pyvcr
+
+script:
+  - py.test

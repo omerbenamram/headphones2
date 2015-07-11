@@ -1,5 +1,10 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import enum
+
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy_utils import ChoiceType
@@ -37,7 +42,7 @@ class Artist(Base):
 
     status = Column(ChoiceType(Status, impl=Integer()))
 
-    albums = relationship('Album', lazy='dynamic')
+    albums = relationship('Album', lazy='dynamic', cascade="delete")
 
     def __repr__(self):
         return '<Artist {name} ({id})>'.format(name=self.name,
@@ -56,7 +61,7 @@ class Album(Base):
     artist_id = Column(Integer, ForeignKey('artists.id'))
     artist = relationship('Artist')
 
-    releases = relationship('Release', lazy='dynamic')
+    releases = relationship('Release', lazy='dynamic', cascade="delete")
 
     def __repr__(self):
         return '<Album {name} ({id})>'.format(name=self.title,
@@ -69,7 +74,7 @@ class Release(Base):
     id = Column(Integer, primary_key=True)
     release_date = Column(DateTime)
     title = Column(String)
-    asin = Column(String)
+    asin = Column(String, default='')
     country = Column(String, default='')
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
@@ -78,7 +83,16 @@ class Release(Base):
     album_id = Column(Integer, ForeignKey('albums.id'))
     album = relationship('Album')
 
-    tracks = relationship('Track', lazy='dynamic')
+    tracks = relationship('Track', lazy='dynamic', cascade="delete")
+
+    @hybrid_property
+    def length(self):
+        return sum(track.length for track in self.tracks)
+
+    @hybrid_property
+    def average_bitrate(self):
+        tracks = [track.bitrate for track in self.tracks]
+        return sum(tracks)/len(tracks)
 
     def __repr__(self):
         return '<Release {album} - Released in {date},' \

@@ -20,7 +20,7 @@ install:
  - pip install huey
  - pip install gevent
  - pip install pies
- - pip install pyvcr
+ - pip install git+https://github.com/kevin1024/vcrpy
 
 script:
   - py.test

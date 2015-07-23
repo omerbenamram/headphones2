@@ -23,6 +23,7 @@ install:
  - pip install beautifulsoup4
 
 before_script:
- - python src/setup.py develop
+ - python ./omerbenamram/headphones2/src/setup.py develop
+ 
 script:
   - py.test

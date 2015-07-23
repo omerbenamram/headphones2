@@ -7,7 +7,6 @@ language: python
 # http://about.travis-ci.org/docs/user/ci-environment/#Python-VM-images
 python:
   - "2.7"
-  - "3.4"
 install:
  - pip install sqlalchemy
  - pip install flask

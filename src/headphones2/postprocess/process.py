@@ -59,7 +59,6 @@ def post_process_album_task(task, expected_artist=None, expected_album=None, sho
     :return:
     """
     logger.info("Started post processing for {}".format(task))
-    logger.debug("Collecting media items from folders")
 
     aid_tagger = AcoustIDAlbumTagger()
     beets_tagger = BeetsTagger()

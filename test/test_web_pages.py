@@ -2,7 +2,7 @@ import pytest
 from flask import Response
 from bs4 import BeautifulSoup
 
-from conftest import vcr
+from .conftest import vcr
 
 from headphones2.app import app as _app
 

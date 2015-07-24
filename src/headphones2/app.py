@@ -6,7 +6,7 @@ from flask import Flask, send_from_directory
 import logbook
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages, api, cache
-from wdb.ext import WdbMiddleware
+#from wdb.ext import WdbMiddleware
 
 STATIC_PATH = os.path.abspath(os.path.join(__file__, '..', '..', 'frontend'))
 
@@ -18,7 +18,7 @@ logger = logbook.Logger('headphones2.app')
 app.register_blueprint(pages)
 app.register_blueprint(api)
 
-app.wsgi_app = WdbMiddleware(app.wsgi_app)
+#app.wsgi_app = WdbMiddleware(app.wsgi_app)
 cache.init_app(app)
 
 
@@ -29,7 +29,7 @@ def serv_static(path):
 
 def main():
     with spin_consumers():
-        app.run(use_debugger=False)
+        app.run(use_debugger=True)
 
 
 if __name__ == "__main__":

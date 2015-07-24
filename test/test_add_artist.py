@@ -7,7 +7,7 @@ import musicbrainzngs
 from headphones2.importer import add_artist_to_db
 from headphones2.orm import *
 from headphones2.orm.connector import create_all_tables
-from conftest import vcr, CASSETTE_LIBRARY_DIR
+from .conftest import vcr, CASSETTE_LIBRARY_DIR
 
 musicbrainzngs.set_rate_limit(False)
 

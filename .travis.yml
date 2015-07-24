@@ -21,7 +21,7 @@ install:
  - pip install pies
  - pip install git+https://github.com/kevin1024/vcrpy
  - pip install beautifulsoup4
- - python ./src/setup.py install
+ - python ./src/setup.py develop
  
 script:
   - py.test

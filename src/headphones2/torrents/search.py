@@ -6,7 +6,7 @@ from .trackers import get_configured_tracker_searchers
 
 logger = logbook.Logger(__name__)
 
-
+# NOT WORKING
 def get_search_term(release):
     album = release.album
     albumid = release.album.musicbrainz_id

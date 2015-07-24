@@ -9,8 +9,9 @@ setup(
     author='Omer',
     author_email='omerbenamram@gmail.com',
     description='',
-    requires=['sqlalchemy', 'flask', 'mako', 'beets', 'logbook', 'requests', 'sqlalchemy-utils', 'pytest', 'huey',
-              'gevent', 'pies'],
+    install_requires=['sqlalchemy', 'flask', 'mako', 'beets', 'logbook', 'requests', 'sqlalchemy-utils', 'pytest',
+                      'huey',
+                      'gevent', 'pies'],
     entry_points={
         'console_scripts': [
             'headphones = headphones2.app:main',

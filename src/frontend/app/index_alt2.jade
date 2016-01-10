@@ -1,0 +1,32 @@
+include mixins
+
+doctype html
+
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        title My Angular 2 App!
+
+        +script('https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js')
+        +script('https://cdnjs.cloudflare.com/ajax/libs/angular.js/2.0.0-beta.0/angular2-polyfills.js')
+        +script('https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.19.13/system.src.js')
+        +script('https://cdnjs.cloudflare.com/ajax/libs/angular.js/2.0.0-beta.0/Rx.min.js')
+        +script('https://cdnjs.cloudflare.com/ajax/libs/angular.js/2.0.0-beta.0/angular2.dev.js')
+
+    //Configure SystemJS
+    script(type='text/javascript').
+        System.config({
+            packages: {
+                app: {
+                    format: 'register',
+                    defaultExtension: 'js'
+                }
+            }
+        });
+        System.import('app/bootstrap')
+                .then(null, console.error.bind(console));
+
+    body
+        app Loading
+
+

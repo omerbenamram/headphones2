@@ -11,7 +11,7 @@ setup(
     description='',
     install_requires=['sqlalchemy', 'flask', 'mako', 'beets', 'logbook', 'requests', 'sqlalchemy-utils', 'pytest',
                       'huey',
-                      'gevent', 'pies'],
+                      'gevent', 'pies', 'nltk'],
     entry_points={
         'console_scripts': [
             'headphones = headphones2.app:main',

@@ -1,6 +1,5 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
-from pies.overrides import *
 
 import contextlib
 import multiprocessing
@@ -15,10 +14,10 @@ USE_REDIS = True
 if USE_REDIS:
     # Requiers a redis-server instance.
     # On windows: redis-server.exe --maxheap 30mb
-    from huey.backends.redis_backend import RedisQueue, RedisDataStore
+    from huey import RedisHuey
 
-    queue = RedisQueue('task-queue')
-    result_store = RedisDataStore('results')
+    huey = RedisHuey('task-queue', 'localhost:6379')
+
 else:
     # Sqlite is limited to one consumer per db.
     NUM_OF_CONSUMER_PROCESSES = 1
@@ -26,8 +25,7 @@ else:
 
     result_store = SqliteDataStore('results', SQLITE_TASK_DB_PATH)
     queue = SqliteQueue('task_queue', SQLITE_TASK_DB_PATH)
-
-huey = Huey(queue, result_store=result_store)
+    huey = Huey(queue, result_store=result_store)
 
 
 def _run_consumer():

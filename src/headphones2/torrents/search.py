@@ -1,52 +1,36 @@
-import re
 import string
+
 import logbook
+
 from headphones2 import helpers
 from .trackers import get_configured_tracker_searchers
 
 logger = logbook.Logger(__name__)
 
-# NOT WORKING
+from nltk.stem.porter import *
+from nltk import word_tokenize
+from nltk.stem.snowball import SnowballStemmer
+
+stemmer = SnowballStemmer("english", ignore_stopwords=True)
+
+
+def preprocess(name):
+    name = name.lower().split('uploaded')[0]
+
+    for w in ['kbps', 'bit'] + list('[](){}@.-'):
+        name = name.replace(w, ' ')
+
+    name = ' '.join([stemmer.stem(t) for t in word_tokenize(name)])
+
+    return name
+
+
 def get_search_term(release):
-    album = release.album
-    albumid = release.album.musicbrainz_id
-    reldate = release.release_date
-    year = reldate.year
-    # MERGE THIS WITH THE TERM CLEANUP FROM searchNZB
-    dic = {'...': '', ' & ': ' ', ' = ': ' ', '?': '', '$': 's', ' + ': ' ', '"': '', ',': ' ', '*': ''}
-    semi_cleanalbum = helpers.replace_all(album['AlbumTitle'], dic)
-    cleanalbum = helpers.latinToAscii(semi_cleanalbum)
-    semi_cleanartist = helpers.replace_all(album['ArtistName'], dic)
-    cleanartist = helpers.latinToAscii(semi_cleanartist)
-    # Use provided term if available, otherwise build our own (this code needs to be cleaned up since a lot
-    # of these torrent providers are just using cleanartist/cleanalbum terms
-    if album['SearchTerm']:
-        term = album['SearchTerm']
+    artist = release.album.artist.name
+    album = release.album.title
+    release_year = release.release_date.year
 
-    else:
-        # FLAC usually doesn't have a year for some reason so I'll leave it out
-        # Various Artist albums might be listed as VA, so I'll leave that out too
-        # Only use the year if the term could return a bunch of different albums, i.e. self-titled albums
-        if album['ArtistName'] in album['AlbumTitle'] or len(album['ArtistName']) < 4 or len(album['AlbumTitle']) < 4:
-            term = cleanartist + ' ' + cleanalbum + ' ' + year
-        elif album['ArtistName'] == 'Various Artists':
-            term = cleanalbum + ' ' + year
-        else:
-            term = cleanartist + ' ' + cleanalbum
-
-    # Save user search term
-    if album['SearchTerm']:
-        usersearchterm = term
-    else:
-        usersearchterm = ''
-    semi_clean_artist_term = re.sub('[\.\-\/]', ' ', semi_cleanartist).encode('utf-8', 'replace')
-    semi_clean_album_term = re.sub('[\.\-\/]', ' ', semi_cleanalbum).encode('utf-8', 'replace')
-    # Replace bad characters in the term and unicode it
-    term = re.sub('[\.\-\/]', ' ', term).encode('utf-8')
-    artistterm = re.sub('[\.\-\/]', ' ', cleanartist).encode('utf-8', 'replace')
-    albumterm = re.sub('[\.\-\/]', ' ', cleanalbum).encode('utf-8', 'replace')
-    return term, artistterm
-
+    return
 
 def verify_result(title, artist, term, lossless, ignored_words=None, required_words=None):
     title = re.sub('[\.\-\/\_]', ' ', title)
@@ -107,7 +91,7 @@ def searchTorrent(release, new=False, lossless_only=False, album_length=None, ch
     resultlist = []
 
     for searcher in get_configured_tracker_searchers():
-        results = searcher.query_tracker(term)  # categories=Category.Music
+        results = searcher.fetch_results(term)  # categories=Category.Music
         match = ''  # TODO: What is this?
 
         for result in results:

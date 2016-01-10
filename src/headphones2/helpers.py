@@ -172,7 +172,7 @@ def piratesize(size):
     split = size.split(" ")
     factor = float(split[0])
     unit = split[1].upper()
-    
+
     if unit == 'MIB':
         size = factor * 1048576
     elif unit == 'MB':
@@ -191,24 +191,6 @@ def piratesize(size):
         size = 0
 
     return size
-
-
-def replace_all(text, dic, normalize=False):
-
-    if not text:
-        return ''
-
-    for i, j in dic.iteritems():
-        if normalize:
-            try:
-                if sys.platform == 'darwin':
-                    j = unicodedata.normalize('NFD', j)
-                else:
-                    j = unicodedata.normalize('NFC', j)
-            except TypeError:
-                j = unicodedata.normalize('NFC', j.decode(headphones2.SYS_ENCODING, 'replace'))
-        text = text.replace(i, j)
-    return text
 
 
 def replace_illegal_chars(string, type="file"):
@@ -238,171 +220,6 @@ def cleanTitle(title):
     title = title.title()
 
     return title
-
-
-def split_path(f):
-    """
-    Split a path into components, starting with the drive letter (if any). Given
-    a path, os.path.join(*split_path(f)) should be path equal to f.
-    """
-
-    components = []
-    drive, path = os.path.splitdrive(f)
-
-    # Strip the folder from the path, iterate until nothing is left
-    while True:
-        path, folder = os.path.split(path)
-
-        if folder:
-            components.append(folder)
-        else:
-            if path:
-                components.append(path)
-
-            break
-
-    # Append the drive (if any)
-    if drive:
-        components.append(drive)
-
-    # Reverse components
-    components.reverse()
-
-    # Done
-    return components
-
-
-def expand_subfolders(f):
-    """
-    Try to expand a given folder and search for subfolders containing media
-    files. This should work for discographies indexed per album in the same
-    root, possibly with folders per CD (if any).
-
-    This algorithm will return nothing if the result is only one folder. In this
-    case, normal post processing will be better.
-    """
-
-    from headphones2 import logger
-
-    # Find all folders with media files in them
-    media_folders = []
-
-    for root, dirs, files in os.walk(f):
-        for file in files:
-            extension = os.path.splitext(file)[1].lower()[1:]
-
-            if extension in headphones2.MEDIA_FORMATS:
-                if root not in media_folders:
-                    media_folders.append(root)
-
-    # Stop here if nothing found
-    if len(media_folders) == 0:
-        return
-
-    # Split into path components
-    media_folders = [split_path(media_folder) for media_folder in media_folders]
-
-    # Correct folder endings such as CD1 etc.
-    for index, media_folder in enumerate(media_folders):
-        if RE_CD.match(media_folder[-1]):
-            media_folders[index] = media_folders[index][:-1]
-
-    # Verify the result by computing path depth relative to root.
-    path_depths = [len(media_folder) for media_folder in media_folders]
-    difference = max(path_depths) - min(path_depths)
-
-    if difference > 0:
-        logger.info("Found %d media folders, but depth difference between lowest and deepest media folder is %d (expected zero). If this is a discography or a collection of albums, make sure albums are per folder.", len(media_folders), difference)
-
-        # While already failed, advice the user what he could try. We assume the
-        # directory may contain separate CD's and maybe some extra's. The
-        # structure may look like X albums at same depth, and (one or more)
-        # extra folders with a higher depth.
-        extra_media_folders = [media_folder[:min(path_depths)] for media_folder in media_folders if len(media_folder) > min(path_depths)]
-        extra_media_folders = list(set([os.path.join(*media_folder) for media_folder in extra_media_folders]))
-
-        logger.info("Please look at the following folder(s), since they cause the depth difference: %s", extra_media_folders)
-        return
-
-    # Convert back to paths and remove duplicates, which may be there after
-    # correcting the paths
-    media_folders = list(set([os.path.join(*media_folder) for media_folder in media_folders]))
-
-    # Don't return a result if the number of subfolders is one. In this case,
-    # this algorithm will not improve processing and will likely interfere
-    # with other attempts such as MusicBrainz release group IDs.
-    if len(media_folders) == 1:
-        logger.debug("Did not expand subfolder, as it resulted in one folder.")
-        return
-
-    logger.debug("Expanded subfolders in folder: %s", media_folders)
-    return media_folders
-
-
-def path_match_patterns(path, patterns):
-    """
-    Check if a path matches one or more patterns. The whole path will be
-    matched be matched against the patterns.
-    """
-
-    for pattern in patterns:
-        if fnmatch.fnmatch(path, pattern):
-            return True
-
-    # No match
-    return False
-
-
-def path_filter_patterns(paths, patterns, root=None):
-    """
-    Scan for ignored paths based on glob patterns. Note that the whole path
-    will be matched, therefore paths should only contain the relative paths.
-
-    The root is optional, and only used for producing meaningful debug info.
-    """
-
-    from headphones2 import logger
-
-    ignored = 0
-
-    for path in paths[:]:
-        if path_match_patterns(path, patterns):
-            logger.debug("Path ignored by pattern: %s",
-                os.path.join(root or "", path))
-
-            ignored += 1
-            paths.remove(path)
-
-    # Return number of ignored paths
-    return ignored
-
-
-def extract_data(s):
-
-    s = s.replace('_', ' ')
-
-    #headphones2 default format
-    pattern = re.compile(r'(?P<name>.*?)\s\-\s(?P<album>.*?)\s[\[\(](?P<year>.*?)[\]\)]', re.VERBOSE)
-    match = pattern.match(s)
-
-    if match:
-        name = match.group("name")
-        album = match.group("album")
-        year = match.group("year")
-        return (name, album, year)
-
-    #Gonna take a guess on this one - might be enough to search on mb
-    pat = re.compile(r"(?P<name>.*?)\s*-\s*(?P<album>[^\[(-]*)")
-
-    match = pat.match(s)
-    if match:
-        name = match.group("name")
-        album = match.group("album")
-        year = None
-        return (name, album, year)
-
-    else:
-        return (None, None, None)
 
 
 def extract_metadata(f):
@@ -519,23 +336,6 @@ def get_downloaded_track_list(albumpath):
     return downloaded_track_list
 
 
-def preserve_torrent_direcory(albumpath):
-    """
-    Copy torrent directory to headphones2-modified to keep files for seeding.
-    """
-    from headphones2 import logger
-    new_folder = os.path.join(albumpath, 'headphones2-modified'.encode(headphones2.SYS_ENCODING, 'replace'))
-    logger.info("Copying files to 'headphones2-modified' subfolder to preserve downloaded files for seeding")
-    try:
-        shutil.copytree(albumpath, new_folder)
-        return new_folder
-    except Exception as e:
-        logger.warn("Cannot copy/move files to temp folder: " + \
-                    new_folder.decode(headphones2.SYS_ENCODING, 'replace') + \
-                    ". Not continuing. Error: " + str(e))
-        return None
-
-
 def cue_split(albumpath):
     """
      Attempts to check and split audio files by a cue for the given directory.
@@ -588,106 +388,6 @@ def extract_logline(s):
         return (timestamp, level, thread, message)
     else:
         return None
-
-
-def extract_song_data(s):
-    from headphones2 import logger
-
-    #headphones2 default format
-    pattern = re.compile(r'(?P<name>.*?)\s\-\s(?P<album>.*?)\s\[(?P<year>.*?)\]', re.VERBOSE)
-    match = pattern.match(s)
-
-    if match:
-        name = match.group("name")
-        album = match.group("album")
-        year = match.group("year")
-        return (name, album, year)
-    else:
-        logger.info("Couldn't parse %s into a valid default format", s)
-
-    #newzbin default format
-    pattern = re.compile(r'(?P<name>.*?)\s\-\s(?P<album>.*?)\s\((?P<year>\d+?\))', re.VERBOSE)
-    match = pattern.match(s)
-    if match:
-        name = match.group("name")
-        album = match.group("album")
-        year = match.group("year")
-        return (name, album, year)
-    else:
-        logger.info("Couldn't parse %s into a valid Newbin format", s)
-        return (name, album, year)
-
-
-def smartMove(src, dest, delete=True):
-
-    from headphones2 import logger
-
-    source_dir = os.path.dirname(src)
-    filename = os.path.basename(src)
-
-    if os.path.isfile(os.path.join(dest, filename)):
-        logger.info('Destination file exists: %s', os.path.join(dest, filename))
-        title = os.path.splitext(filename)[0]
-        ext = os.path.splitext(filename)[1]
-        i = 1
-        while True:
-            newfile = title + '(' + str(i) + ')' + ext
-            if os.path.isfile(os.path.join(dest, newfile)):
-                i += 1
-            else:
-                logger.info('Renaming to %s', newfile)
-                try:
-                    os.rename(src, os.path.join(source_dir, newfile))
-                    filename = newfile
-                except Exception as e:
-                    logger.warn('Error renaming %s: %s', src.decode(headphones2.SYS_ENCODING, 'replace'), e)
-                break
-
-    try:
-        if delete:
-            shutil.move(os.path.join(source_dir, filename), os.path.join(dest, filename))
-        else:
-            shutil.copy(os.path.join(source_dir, filename), os.path.join(dest, filename))
-            return True
-    except Exception as e:
-        logger.warn('Error moving file %s: %s', filename.decode(headphones2.SYS_ENCODING, 'replace'), e)
-
-def walk_directory(basedir, followlinks=True):
-    """
-    Enhanced version of 'os.walk' where symlink directores are traversed, but
-    with care. In case a folder is already processed, don't traverse it again.
-    """
-
-    import logger
-
-    # Add the base path, because symlinks poiting to the basedir should not be
-    # traversed again.
-    traversed = [os.path.abspath(basedir)]
-
-    def _inner(root, directories, files):
-        for directory in directories:
-            path = os.path.join(root, directory)
-
-            if followlinks and os.path.islink(path):
-                real_path = os.path.abspath(os.readlink(path))
-
-                if real_path in traversed:
-                    logger.debug("Skipping '%s' since it is a symlink to "\
-                        "'%s', which is already visited.", path, real_path)
-                else:
-                    traversed.append(real_path)
-
-                    for args in os.walk(real_path):
-                        for result in _inner(*args):
-                            yield result
-
-        # Pass on actual result
-        yield root, directories, files
-
-    # Start traversing
-    for args in os.walk(basedir):
-        for result in _inner(*args):
-            yield result
 
 #########################
 #Sab renaming functions #
@@ -750,6 +450,7 @@ def split_string(mystring, splitvar=','):
     for each_word in mystring.split(splitvar):
         mylist.append(each_word.strip())
     return mylist
+
 
 def create_https_certificates(ssl_cert, ssl_key):
     """

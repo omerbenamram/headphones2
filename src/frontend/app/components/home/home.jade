@@ -1,0 +1,11 @@
+
+table.class#artist_table
+  thead
+    tr
+      th#albumart
+      th#name Artist Name
+      th#status Status
+      th#album Latest Release
+      th#have Have
+  btn((click)="debugMe()") DebugMe
+  li(template="ngFor #artist of artists") {{artist['ArtistName']}}

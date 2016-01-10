@@ -1,27 +1,20 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import (absolute_import, division, print_function, unicode_literals)
+
 import datetime
 
-from flask import Blueprint, request, redirect, abort
 import logbook
+from flask import Blueprint, request, redirect, abort
 
-from .. import config
-from headphones2 import helpers
-from ..importer import add_artist_to_db
-from ..orm.serialize import artist_to_dict, track_to_dict
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
-from .templates import serve_template
+from headphones2.views.templates import serve_template
+from .. import config
+from ..importer import add_artist_to_db
 from ..orm import *
+from ..orm.serialize import artist_to_dict, track_to_dict
 
 logger = logbook.Logger(__name__)
 
 pages = Blueprint('pages', __name__)
-
-
-@pages.route('/')
-@pages.route('/home')
-def home():
-    return serve_template('index.html', title='Home')
 
 
 @pages.route('/upcoming')
@@ -120,22 +113,6 @@ def artist_page():
     if not artist:
         abort(404)
 
-    # Serve the extras up as a dict to make things easier for new templates (append new extras to the end)
-    # extras_list = headphones.POSSIBLE_EXTRAS
-    # if artist['Extras']:
-    # artist_extras = map(int, artist['Extras'].split(','))
-    # else:
-    # artist_extras = []
-    #
-    # extras_dict = OrderedDict()
-    #
-    # i = 1
-    # for extra in extras_list:
-    #     if i in artist_extras:
-    #         extras_dict[extra] = "checked"
-    #     else:
-    #         extras_dict[extra] = ""
-    #     i += 1
     formatted_artist = artist_to_dict(artist)
     formatted_artist['IncludeExtras'] = False
 
@@ -167,15 +144,11 @@ def artist_page():
         except (ZeroDivisionError, TypeError):
             percent = 0
             totaltracks = '?'
+
         formatted_album['Percent'] = percent
         formatted_album['HaveTracks'] = havetracks
         formatted_album['TotalTracks'] = totaltracks
 
-        # avgbitrate = myDB.action("SELECT AVG(BitRate) FROM tracks WHERE AlbumID=?", [album['AlbumID']]).fetchone()[0]
-        # if avgbitrate:
-        #     bitrate = str(int(avgbitrate)/1000) + ' kbps'
-        # else:
-        #     bitrate = ''
         formatted_album['Bitrate'] = ''
 
         album_formats = set([track.format for track in release.tracks])

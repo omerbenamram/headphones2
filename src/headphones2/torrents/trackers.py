@@ -1,4 +1,4 @@
-from torrentsearcher import KickAssTorrentsSearcher, PirateBaySearcher, TorrentLeechSearcher
+from torrentsearcher import KickAssTorrentsSearcher, PirateBaySearcher
 
 
 def get_configured_tracker_searchers():

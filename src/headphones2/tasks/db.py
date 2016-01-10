@@ -1,11 +1,10 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from pies.overrides import *
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 from contextlib import closing
-from ..orm import connect
-from ..importer import add_artist_to_db
+
 from .engine import huey
+from ..importer import add_artist_to_db
+from ..orm import connect
 
 
 @huey.task()

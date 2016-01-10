@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+
 import logbook
 import musicbrainzngs
 
@@ -15,6 +16,7 @@ def get_release_group_by_release_id(release_id):
         return results['release']['release-group']['id']
     return None
 
+
 def get_artwork_for_album(rgid):
     """
     returns a dict with 'large' and 'small' using musicbrainz api
@@ -23,6 +25,7 @@ def get_artwork_for_album(rgid):
     results = {'small': 'http://coverartarchive.org/release-group/{rgid}/front-250.jpg'.format(rgid=rgid),
                'large': 'http://coverartarchive.org/release-group/{rgid}/front-500.jpg'.format(rgid=rgid)}
     return results
+
 
 def get_release_groups_for_artist(artist_id, fetch_extras=False):
     return musicbrainzngs.browse_release_groups(artist=artist_id,

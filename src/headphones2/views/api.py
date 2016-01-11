@@ -19,7 +19,7 @@ logger = logbook.Logger(__name__)
 api = Blueprint('api', __name__)
 
 
-@api.route('/artwork/album/<string:rgid>/<string:size>')
+@api.route('/api/artwork/album/<string:rgid>/<string:size>')
 @cache.cached()
 def get_album_cover_art(rgid, size='small'):
     """
@@ -41,7 +41,7 @@ def get_album_cover_art(rgid, size='small'):
     return resp
 
 
-@api.route('/artwork/artist/<string:mbid>/<string:size>')
+@api.route('/api/artwork/artist/<string:mbid>/<string:size>')
 @cache.cached()
 def get_artist_artwork(mbid, size='small'):
     """
@@ -104,7 +104,7 @@ def get_logs():
     })
 
 
-@api.route('/getAlbumjson')
+@api.route('/api/album')
 def get_album():
     album_id = request.args['AlbumID']
     session = connect()
@@ -117,7 +117,7 @@ def get_album():
     return album_json
 
 
-@api.route('/getArtists.json')
+@api.route('/api/artists')
 def get_artists():
     display_start = int(request.args.get('iDisplayStart', '0'))
     display_length = int(request.args.get('iDisplayLength', '100'))
@@ -187,7 +187,7 @@ def get_artists():
     return json.dumps(result)
 
 
-@api.route('/deleteArtist')
+@api.route('/api/artist')
 def delete_artist():
     artist_id = request.args['ArtistID']
     session = connect()

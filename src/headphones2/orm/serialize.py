@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+
 def album_to_dict(album):
     return {
         'AlbumID': album.musicbrainz_id,
@@ -26,5 +27,5 @@ def track_to_dict(track):
         'TrackNumber': track.number,
         'TrackTitle': track.title,
         'trackduration': track.length,
-        'location' : track.location
+        'location': track.location
     }

@@ -1,9 +1,13 @@
 from __future__ import unicode_literals, absolute_import, print_function, division
 
-from flask.ext.restful import fields, Resource, marshal
+from flask.ext.restful import fields, Resource, marshal, reqparse
 from werkzeug.utils import redirect
 
 from headphones2.orm import Artist, Track, Release, Album, connect
+from headphones2.tasks import add_artist_task
+
+parser = reqparse.RequestParser()
+parser.add_argument('artist_id')
 
 
 class ArtistListDao(object):
@@ -66,6 +70,15 @@ class ArtistList(Resource):
             rows.append(marshal(row, ArtistListDao.artist_list_fields))
 
         return rows
+
+    def post(self):
+        args = parser.parse_args()
+        artist_id = args.get('artist_id')
+        if not artist_id:
+            return 500
+
+        add_artist_task(artist_id=artist_id)
+        return 200
 
 
 class ArtistResource(Resource):

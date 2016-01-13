@@ -7,9 +7,9 @@ from flask import Flask, send_from_directory, send_file
 from flask.ext.restful import Api
 from pathlib import Path
 
-from headphones2 import ArtistList, ArtistResource
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages, app_cache
+from headphones2.views.api import ArtistList, ArtistResource
 
 FRONTEND_PATH = Path(__file__).parent.parent.joinpath("frontend")
 BUILD_PATH = FRONTEND_PATH.joinpath("dist", "dev")
@@ -22,9 +22,9 @@ app.debug = True
 logger = logbook.Logger('headphones2.app')
 
 app.register_blueprint(pages)
-api = Api(app)
+api = Api(app, prefix=str('/api'))
 api.add_resource(ArtistList, str('/artists'), endpoint=str('artists'))
-api.add_resource(ArtistResource, str('/artist/<artist_id>'), endpoint=str('artist'))
+api.add_resource(ArtistResource, str('/artists/<artist_id>'), endpoint=str('artist'))
 app_cache.init_app(app)
 
 

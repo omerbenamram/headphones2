@@ -39,7 +39,7 @@ def spin_consumers():
     # huey_consumer.py headphones2.tasks.huey
 
     consumers = []
-    for _ in xrange(NUM_OF_CONSUMER_PROCESSES):
+    for _ in range(NUM_OF_CONSUMER_PROCESSES):
         proc = multiprocessing.Process(target=_run_consumer)
         proc.start()
 

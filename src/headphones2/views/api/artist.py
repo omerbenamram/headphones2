@@ -10,7 +10,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('artist_id')
 
 
-class ArtistListDao(object):
+class ArtistListObject(object):
     artist_list_fields = {
         'id': fields.String,
         'name': fields.String,
@@ -58,16 +58,16 @@ class ArtistList(Resource):
             else:
                 release_date, latest_album_id = None, None
 
-            row = ArtistListDao(artist.musicbrainz_id,
-                                artist.name,
-                                artist.status.name,
-                                total_tracks,
-                                possessed_tracks_count,
-                                latest_album.title,
-                                release_date,
-                                latest_album_id)
+            row = ArtistListObject(artist.musicbrainz_id,
+                                   artist.name,
+                                   artist.status.name,
+                                   total_tracks,
+                                   possessed_tracks_count,
+                                   latest_album.title,
+                                   release_date,
+                                   latest_album_id)
 
-            rows.append(marshal(row, ArtistListDao.artist_list_fields))
+            rows.append(marshal(row, ArtistListObject.artist_list_fields))
 
         return rows
 

@@ -4,6 +4,7 @@ import {CORE_DIRECTIVES, FORM_DIRECTIVES} from 'angular2/common';
 import {Observable} from 'rxjs/Observable';
 import {Artist} from '../../interfaces/interfaces';
 import {COMMON_DIRECTIVES} from "angular2/common";
+import {ArtworkService} from "../../services/artwork/artwork";
 
 @Component({
   selector: 'home',
@@ -15,32 +16,35 @@ import {COMMON_DIRECTIVES} from "angular2/common";
         <th>Image</th>
         <th>Artist</th>
         <th>Status</th>
-        <th>Total Track</th>
+        <th>Total Tracks</th>
       </tr>
     </thead>
     <tbody>
-       <tr *ngFor="#artist of artists">
-         <td>
-           <img [src]='artist?.imageUrl' width="80" height="80" [hidden]="!artist.imageUrl">
+       <tr *ngFor="#artist of artists | async">
+         <td><img [src]="artist?.imageUrl | async">
          </td>
-         <td>{{artist.ArtistName}}</td>
-         <td>{{artist.Status}}</td>
-         <td>{{artist.TotalTracks}}</td>
+         <td>{{artist.id}}</td>
+         <td>{{artist.name}}</td>
+         <td>{{artist.total_tracks}}</td>
        </tr>
     </tbody>
   </table>
-
   `,
   styleUrls: ['./components/home/home.css'],
-  viewProviders: [ArtistService]
+  viewProviders: [ArtistService, ArtworkService]
 })
-export class HomeCmp implements OnInit {
-  public artists:Array<any>;
+export class HomeCmp {
+  public artists:Observable<Artist[]>;
 
-  constructor(private _artistService:ArtistService) {
+  _artistCallback(artist) {
+    artist['imageUrl'] = this.artworkSvc.getArtworkUrl('artist', 'large', artist.id);
+    return artist;
   }
 
-  ngOnInit() {
-    this.artists = this._artistService.getArtists();
+  constructor(private artistSvc:ArtistService,
+              private artworkSvc:ArtworkService) {
+    this.artists = this.artistSvc.getArtists()
+      .map((artists:Array<{artist: Artist}>) =>
+        artists.map((artist:{artist:Artist}) => this._artistCallback(artist)))
   }
 }

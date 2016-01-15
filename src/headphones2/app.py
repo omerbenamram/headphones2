@@ -9,9 +9,7 @@ from pathlib import Path
 
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages, app_cache
-from headphones2.views.api import ArtistList, ArtistResource
-from headphones2.views.api.album import AlbumResource
-from headphones2.views.api.artwork import Artwork
+from headphones2.views.api import ArtistList, ArtistResource, AlbumResource, Artwork
 
 FRONTEND_PATH = Path(__file__).parent.parent.joinpath("frontend")
 BUILD_PATH = FRONTEND_PATH.joinpath("dist", "dev")

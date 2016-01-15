@@ -1,11 +1,10 @@
 import flask
-import requests
 import logbook
+import requests
 from flask.ext.restful import Resource, reqparse, abort
 
 from headphones2.external.lastfm import lastfm_api_wrapper
 from headphones2.tasks import get_artwork_for_album_task
-from headphones2.views import cache
 
 logger = logbook.Logger()
 
@@ -17,7 +16,6 @@ parser.add_argument('id')
 
 
 class Artwork(Resource):
-    @cache.cache()
     def get(self):
         args = parser.parse_args()
         image_type = args.get('type')

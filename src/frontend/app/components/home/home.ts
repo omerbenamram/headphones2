@@ -5,10 +5,12 @@ import {Observable} from 'rxjs/Observable';
 import {Artist} from '../../interfaces/interfaces';
 import {COMMON_DIRECTIVES} from 'angular2/common';
 import {ArtworkService} from '../../services/artwork/artwork';
+import {NgClass} from "angular2/common";
+import {NgStyle} from "angular2/common";
 
 @Component({
   selector: 'home',
-  directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, COMMON_DIRECTIVES],
+  directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, COMMON_DIRECTIVES, NgClass, NgStyle],
   template: `
   <table id="artist-table" class="table" [hidden]="!artists || artists.length == 0">
     <thead>
@@ -16,6 +18,7 @@ import {ArtworkService} from '../../services/artwork/artwork';
         <th>Image</th>
         <th>Artist</th>
         <th>Status</th>
+        <th>Latest Album</th>
         <th>Total Tracks</th>
       </tr>
     </thead>
@@ -24,8 +27,15 @@ import {ArtworkService} from '../../services/artwork/artwork';
          <td><img [src]="artist?.imageUrl | async">
          </td>
          <td>{{artist.name}}</td>
-         <td>{{artist.status}}</td>
-         <td>{{artist.total_tracks}}</td>
+         <td><span [ngClass]="{'label label-danger': 'artist.status == Wanted'}">{{artist.status}}</span></td>
+         <td>{{artist.latest_album}} ({{artist.latest_album_release_date | date:'shortDate'}})</td>
+         <td>
+           <div class="progress">
+            <div class="progress-bar progress-bar-success"  role="progressbar" [style.width]="10 + '%'">
+              <span class="progress-value">{{artist.possessed_tracks}} / {{artist.total_tracks}}</span>
+            </div>
+           </div>
+         </td>
        </tr>
     </tbody>
   </table>
@@ -38,6 +48,7 @@ export class HomeCmp {
 
   _artistCallback(artist) {
     artist['imageUrl'] = this.artworkSvc.getArtworkUrl('artist', 'large', artist.id);
+    artist['latest_album_release_date'] = Date.parse(artist.latest_album_release_date);
     return artist;
   }
 

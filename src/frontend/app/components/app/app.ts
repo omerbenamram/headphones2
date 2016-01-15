@@ -6,7 +6,11 @@ import {HomeCmp} from '../home/home';
 
 @Component({
   selector: 'app',
-  templateUrl: './components/app/app.html',
+  template:`
+  <div class="container">
+  <router-outlet></router-outlet>
+  </div>
+  `,
   styleUrls: ['./components/app/app.css'],
   encapsulation: ViewEncapsulation.None,
   directives: [ROUTER_DIRECTIVES]

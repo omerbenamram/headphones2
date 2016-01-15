@@ -12,13 +12,12 @@ import 'rxjs/add/operator/do'
 export class ArtistService {
   public ARTISTS_API:string = '/api/artists';
 
-  constructor(@Inject(Http) private http:Http,
-              @Inject(ArtworkService) private artworkSvc:ArtworkService) {
+  constructor(@Inject(Http) private http:Http) {
   }
 
-  getArtists():Observable<any> {
+  getArtists():Observable<Artist[]> {
     return this.http.get('/api/artists')
       .map(res => res.json())
-      .do(x => console.log("Call to artists returned" + x));
+      .do(x => console.log("Call to artists returned" + x.length));
   }
 }

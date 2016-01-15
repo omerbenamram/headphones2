@@ -1,10 +1,10 @@
-import {Component, OnInit} from 'angular2/core';
+import {Component} from 'angular2/core';
 import {ArtistService} from '../../services/artists/artists';
 import {CORE_DIRECTIVES, FORM_DIRECTIVES} from 'angular2/common';
 import {Observable} from 'rxjs/Observable';
 import {Artist} from '../../interfaces/interfaces';
-import {COMMON_DIRECTIVES} from "angular2/common";
-import {ArtworkService} from "../../services/artwork/artwork";
+import {COMMON_DIRECTIVES} from 'angular2/common';
+import {ArtworkService} from '../../services/artwork/artwork';
 
 @Component({
   selector: 'home',
@@ -23,8 +23,8 @@ import {ArtworkService} from "../../services/artwork/artwork";
        <tr *ngFor="#artist of artists | async">
          <td><img [src]="artist?.imageUrl | async">
          </td>
-         <td>{{artist.id}}</td>
          <td>{{artist.name}}</td>
+         <td>{{artist.status}}</td>
          <td>{{artist.total_tracks}}</td>
        </tr>
     </tbody>

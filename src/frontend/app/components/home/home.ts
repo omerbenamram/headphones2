@@ -30,11 +30,8 @@ import {NgStyle} from "angular2/common";
          <td><span [ngClass]="{'label label-danger': 'artist.status == Wanted'}">{{artist.status}}</span></td>
          <td>{{artist.latest_album}} ({{artist.latest_album_release_date | date:'shortDate'}})</td>
          <td>
-           <div class="progress">
-            <div class="progress-bar progress-bar-success"  role="progressbar" [style.width]="10 + '%'">
-              <span class="progress-value">{{artist.possessed_tracks}} / {{artist.total_tracks}}</span>
-            </div>
-           </div>
+           <progress class="progress progress-success" value="10" [max]="artist.total_tracks"></progress>
+           <span class="progress-value">{{artist.possessed_tracks}} / {{artist.total_tracks}}</span>
          </td>
        </tr>
     </tbody>

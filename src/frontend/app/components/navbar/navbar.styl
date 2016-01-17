@@ -1,13 +1,33 @@
 #headphones-navbar
   box-shadow: 0 8px 6px -6px #999
   background lightgray
+  height 56px
 
   #headphones-logo
-    font-size 60px
-    padding 30px
-    line-height 40px
-    padding-right: 10px
+    font-size 40px
 
-  .navbar-link
-    padding 25px
-    line-height 6.5
+  #headphones-brand
+    line-height 35px
+
+  .nav-link
+    padding-top .65rem
+    padding-left 15px
+
+  .nav .divider-vertical {
+    float: left;
+    height: 42px;
+    margin: 0 9px;
+    border-right: 1px solid #B9AEAE;
+    border-left: 1px solid #ECEBEB;
+  }
+
+  .navbar-inverse .divider-vertical {
+    border-right-color: #222222;
+    border-left-color: #111111;
+  }
+
+  @media (max-width: 767px) {
+    .navbar-collapse .nav > .divider-vertical {
+      display: none;
+    }
+  }

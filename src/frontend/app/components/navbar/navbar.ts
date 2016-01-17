@@ -8,10 +8,14 @@ import {ROUTER_DIRECTIVES, Router, Location} from 'angular2/router';
       <nav id="headphones-navbar" class="navbar navbar-fixed-top">
        <div class="container-fluid">
          <div class="navbar-header">
-          <i id="headphones-logo" class="navbar-brand fa fa-3x fa-headphones"></i>
-          <h1 class="navbar-brand">Headphones 2</h1>
-          <a class="navbar-link"  [routerLink]="['/']">Home</a>
-        </div>
+          <i id="headphones-logo" class="nav-item navbar-brand fa fa-headphones"></i>
+          <span id="headphones-brand" class="nav-item navbar-brand" >Headphones 2</span>
+         </div>
+        <ul class="nav navbar-nav">
+          <li class="divider-vertical"></li>
+          <li class="active"><a href="#" class="nav-item nav-link" [routerLink]="['/']">Home</a></li>
+          <li class="active"><a href="#" class="nav-item nav-link">Test</a></li>
+        </ul>
        </div>
       </nav>
   `,

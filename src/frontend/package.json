@@ -1,9 +1,9 @@
 {
-  "name": "angular2-seed",
-  "version": "0.0.0",
-  "description": "Seed for Angular 2 apps",
+  "name": "headphones2",
+  "version": "0.1.0",
+  "description": "A Music downloader - with a modern stack",
   "repository": {
-    "url": "https://github.com/mgechev/angular2-seed"
+    "url": "https://github.com/omerbenamram/headphones2"
   },
   "scripts": {
     "build.dev": "gulp build.dev",

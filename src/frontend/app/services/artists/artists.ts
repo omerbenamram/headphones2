@@ -4,10 +4,9 @@ import {Injectable, Inject} from 'angular2/core';
 
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map'; //Needed for map to work!
-import 'rxjs/add/operator/do'
+import 'rxjs/add/operator/do';
 
-import {Artist} from "../../interfaces/interfaces";
-import {ArtworkService} from "../artwork/artwork";
+import {Artist} from '../../interfaces/interfaces';
 
 @Injectable()
 export class ArtistService {
@@ -19,6 +18,6 @@ export class ArtistService {
   getArtists():Observable<Artist[]> {
     return this.http.get('/api/artists')
       .map(res => res.json())
-      .do(x => console.log("Call to artists returned " + x.length + " artists"));
+      .do(x => console.log('Call to artists returned ' + x.length + ' artists'));
   }
 }

@@ -1,4 +1,5 @@
 import {readFileSync} from 'fs';
+//noinspection TypeScriptCheckImport
 import {argv} from 'yargs';
 import {normalize, join} from 'path';
 
@@ -18,7 +19,7 @@ export const HOT_LOADER_PORT = 5578;
 
 export const BOOTSTRAP_MODULE = ENABLE_HOT_LOADING ? 'hot_loader_bootstrap' : 'bootstrap';
 
-export const APP_TITLE = 'My Angular2 App';
+export const APP_TITLE = 'Headphones2';
 
 export const APP_SRC = 'app';
 export const ASSETS_SRC = `${APP_SRC}/assets`;
@@ -60,6 +61,7 @@ export const APP_ASSETS = [
   {src: `${ASSETS_SRC}/main.css`, inject: true, dest: CSS_DEST}
 ];
 
+//noinspection TypeScriptUnresolvedVariable
 NPM_DEPENDENCIES
   .filter(d => !/\*/.test(d.src)) // Skip globs
   .forEach(d => d.src = require.resolve(d.src));

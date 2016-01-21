@@ -1,9 +1,8 @@
 import {Component, ViewEncapsulation} from 'angular2/core';
-import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
-// import {HTTP_PROVIDERS} from 'angular2/http';
+import {Route, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {HomeCmp} from '../home/home';
-import {Navbar} from "../navbar/navbar";
+import {Navbar} from '../navbar/navbar';
 
 
 @Component({
@@ -19,7 +18,7 @@ import {Navbar} from "../navbar/navbar";
   encapsulation: ViewEncapsulation.None,
 })
 @RouteConfig([
-  {path: '/', component: HomeCmp, as: 'Home'},
+  new Route({path: '/', component: HomeCmp, name: 'Home'})
 ])
 export class AppCmp {
 }

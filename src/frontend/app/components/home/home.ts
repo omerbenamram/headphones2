@@ -43,7 +43,7 @@ import {NgStyle} from "angular2/common";
 export class HomeCmp {
   public artists:Observable<Artist[]>;
 
-  _artistCallback(artist) {
+  _artistCallback(artist: Artist) {
     artist['imageUrl'] = this.artworkSvc.getArtworkUrl('artist', 'large', artist.id);
     artist['latest_album_release_date'] = Date.parse(artist.latest_album_release_date);
     return artist;

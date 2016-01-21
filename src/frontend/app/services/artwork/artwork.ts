@@ -1,7 +1,7 @@
 ///<reference path="../../../node_modules/rxjs/Observable.d.ts"/>
 import {Http, RequestOptions, URLSearchParams} from 'angular2/http';
 import {Injectable, Inject} from 'angular2/core';
-import {Observable} from "rxjs/Observable";
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class ArtworkService {

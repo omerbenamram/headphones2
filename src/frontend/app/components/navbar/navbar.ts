@@ -13,7 +13,7 @@ import {ROUTER_DIRECTIVES, Router, Location} from 'angular2/router';
          </div>
         <ul class="nav navbar-nav">
           <li class="divider-vertical"></li>
-          <li class="active"><a href="#" class="nav-item nav-link" [routerLink]="['/']">Home</a></li>
+          <li class="active"><a href="#" class="nav-item nav-link" [routerLink]="['/Home']">Home</a></li>
           <li class="active"><a href="#" class="nav-item nav-link">Test</a></li>
         </ul>
        </div>

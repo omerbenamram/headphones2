@@ -3,6 +3,7 @@ import {Route, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {HomeCmp} from '../home/home';
 import {Navbar} from '../navbar/navbar';
+import {ManageCmp} from "../manage/manage";
 
 
 @Component({
@@ -18,7 +19,8 @@ import {Navbar} from '../navbar/navbar';
   encapsulation: ViewEncapsulation.None,
 })
 @RouteConfig([
-  new Route({path: '/', component: HomeCmp, name: 'Home'})
+  new Route({path: '/', component: HomeCmp, name: 'Home'}),
+  new Route({path: '/manage/...', component: ManageCmp, name: 'Manage'})
 ])
 export class AppCmp {
 }

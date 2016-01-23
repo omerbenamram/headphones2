@@ -5,8 +5,8 @@ import {Observable} from 'rxjs/Observable';
 import {Artist} from '../../interfaces/interfaces';
 import {COMMON_DIRECTIVES} from 'angular2/common';
 import {ArtworkService} from '../../services/artwork/artwork';
-import {NgClass} from "angular2/common";
-import {NgStyle} from "angular2/common";
+import {NgClass} from 'angular2/common';
+import {NgStyle} from 'angular2/common';
 
 @Component({
   selector: 'home',
@@ -53,6 +53,6 @@ export class HomeCmp {
               private artworkSvc:ArtworkService) {
     this.artists = this.artistSvc.getArtists()
       .map((artists:Array<{artist: Artist}>) =>
-        artists.map((artist:{artist:Artist}) => this._artistCallback(artist)))
+        artists.map((artist:{artist:Artist}) => this._artistCallback(artist)));
   }
 }

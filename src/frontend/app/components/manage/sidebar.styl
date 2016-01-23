@@ -1,0 +1,77 @@
+#sidebar-wrapper
+  z-index: 1000
+  box-shadow: 4px -3px 7px 0px #999
+  position: fixed
+  left: 250px
+  top: 57px
+  width: 0
+  height: 100%
+  margin-left: -250px
+  overflow-y: auto
+  background: #000
+  transition: all 0.5s ease
+
+@media (min-width: 768px)
+  #sidebar-wrapper
+    width: 270px
+
+/* Sidebar Styles */
+
+#sidebar-nav
+  position: absolute
+  top: 0
+  width: 270px
+  margin: 0
+  padding: 0
+  list-style: none
+
+  .sidebar-icon
+    margin-right 10px
+    color darkorange
+
+  hr
+    margin-top 0
+    margin-bottom 0
+    margin-left 0
+    margin-right 0
+    border-bottom-style inset
+    border-bottom-width 1px
+    border-left-style inset
+    border-left-width 1px
+    border-right-style inset
+    border-right-width 1px
+    border-top-color rgba(0, 0, 0, 0.0980392)
+    border-top-style solid
+    border-top-width 1px
+
+  li
+    text-align left
+    line-height: 56px
+    margin-right 50px
+    margin-left 35px
+    text-transform: uppercase
+
+    a
+      text-decoration: none
+      color: #999999
+
+    a:hover
+      text-decoration: none
+      color: #fff
+      background: rgba(255, 255, 255, 0.2)
+
+    a:active, focus
+      text-decoration: none
+
+  .sidebar-brand
+    height: 65px
+    font-size: 18px
+    line-height: 60px
+
+    a
+      color: #999999
+
+    a:hover
+      color: #fff
+      background: none
+

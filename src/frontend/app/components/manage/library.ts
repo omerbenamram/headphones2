@@ -5,8 +5,7 @@ import {COMMON_DIRECTIVES} from "angular2/common";
   selector: 'manage-library',
   directives: [COMMON_DIRECTIVES],
   template:`
-  <ul>
-  </ul>
+  <div>Library Path</div>
   `
 })
 export class ManageLibraryCmp{}

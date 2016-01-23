@@ -13,10 +13,11 @@ import {ManageHomeCmp} from "./manage_home";
   directives: [ROUTER_DIRECTIVES, ManageSidebar, CORE_DIRECTIVES, FORM_DIRECTIVES, COMMON_DIRECTIVES],
   template: `
   <manage-sidebar></manage-sidebar>
-  <div class="container">
+  <div id="contents-container" class="container">
     <router-outlet></router-outlet>
   </div>
   `,
+  styleUrls: ['./components/manage/manage.css']
 })
 @RouteConfig([
   new Route({path: '/', component: ManageHomeCmp, name:'Home'}),

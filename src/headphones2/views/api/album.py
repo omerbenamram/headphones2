@@ -1,3 +1,4 @@
+import simplejson as json
 from flask.ext.restful import Resource, fields
 
 from headphones2.orm import connect, Album

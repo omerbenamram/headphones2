@@ -9,7 +9,7 @@ from pathlib import Path
 
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages, app_cache
-from headphones2.views.api import ArtistList, ArtistResource, AlbumResource, Artwork
+from headphones2.views.api import ArtistList, ArtistResource, AlbumResource, Artwork, ConfigurationResource
 
 FRONTEND_PATH = Path(__file__).parent.parent.joinpath("frontend")
 BUILD_PATH = FRONTEND_PATH.joinpath("dist", "dev")
@@ -27,6 +27,7 @@ api.add_resource(ArtistList, str('/artists'), endpoint=str('artists'))
 api.add_resource(ArtistResource, str('/artists/<artist_id>'), endpoint=str('artist'))
 api.add_resource(AlbumResource, str('/album/<album_id>'), endpoint=str('album'))
 api.add_resource(Artwork, str('/artwork'), endpoint=str('artwork'))
+api.add_resource(ConfigurationResource, str('/configuration'), endpoint=str('configuration'))
 app_cache.init_app(app)
 
 

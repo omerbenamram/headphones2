@@ -6,3 +6,4 @@ test/fixtures/cassettes/
 *.db
 src/frontend/node_modules
 src/frontend/dist
+src/headphones2/configuration.json

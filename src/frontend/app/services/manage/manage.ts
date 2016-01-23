@@ -5,19 +5,20 @@ import {Injectable, Inject} from 'angular2/core';
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map'; //Needed for map to work!
 import 'rxjs/add/operator/do';
+import {OnInit} from "angular2/core";
+import {Configuration} from "../../interfaces/interfaces";
 
-import {Artist} from '../../interfaces/interfaces';
 
 @Injectable()
-export class ArtistService {
-  public ARTISTS_API:string = '/api/artists';
+export class ManageService {
+  public CONFIGURATION_API:string = '/api/configuration';
 
   constructor(@Inject(Http) private http:Http) {
   }
 
-  getArtists():Observable<Artist[]> {
-    return this.http.get(this.ARTISTS_API)
+  getConfiguration():Observable<Configuration> {
+    return this.http.get(this.CONFIGURATION_API)
       .map(res => res.json())
-      .do(x => console.log('Call to artists returned ' + x.length + ' artists'));
+      .do(x => console.log(x));
   }
 }

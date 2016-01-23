@@ -8,3 +8,8 @@ export interface Artist {
   'latest_album_release_date': Date;
   'latest_album_id': string;
 }
+
+export interface Configuration {
+  'MUSIC_LIBRARY_PATH': string;
+  'DEBUG': boolean;
+}

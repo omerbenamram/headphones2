@@ -1,45 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 <head>
+
+  <title>{%= o.webpackConfig.metadata.title %}</title>
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><%= APP_TITLE %></title>
-  <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="assets/css/font-awesome-animation.min.css">
+  <meta name="description" content="{%= o.webpackConfig.metadata.title %}">
+    
+  <!-- base url -->
+  <base href="{%= o.webpackConfig.metadata.baseUrl %}">
 
-  <!-- inject:css -->
-  <!-- endinject -->
+  {% for (var css in o.htmlWebpackPlugin.files.css) { %}
+  <link href="{%= o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
+  {% } %}
+
 </head>
+
 <body>
 
-  <app>Loading...</app>
-  <!-- For Bootstrap v4! -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.1.1/js/tether.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
-  <!-- Live reload server -->
-  <script src="http://localhost:4002/livereload.js?snipver=1"></script>
+  <app>
+    Loading...
+  </app>
 
-  <!-- shims:js -->
-  <!-- endinject -->
+  {% if (o.webpackConfig.metadata.ENV === 'development') { %}
+  <!-- Webpack Dev Server reload -->
+  <script src="http://{%= o.webpackConfig.metadata.host %}:{%= o.webpackConfig.metadata.port %}/webpack-dev-server.js"></script>
+  {% } %}
 
-  <script>System.config(<%= JSON.stringify(SYSTEM_CONFIG) %>)</script>
-
-  <!-- libs:js -->
-  <!-- endinject -->
-
-  <script>
-    System.import('<%= BOOTSTRAP_MODULE %>')
-      .catch(function (e) {
-        console.error(e);
-      });
-  </script>
-
-  <!-- inject:js -->
-  <!-- endinject -->
+  <!-- Webpack HtmlWebpackPlugin manually inject scripts -->
+  {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
+  <script src="{%= o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
+  {% } %}
 
 </body>
 </html>

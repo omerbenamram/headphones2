@@ -3,8 +3,9 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 import os
 
 import logbook
-from flask import Flask, send_from_directory, send_file
+from flask import Flask, send_from_directory, send_file, render_template
 from flask.ext.restful import Api
+from flask_webpack import Webpack
 from pathlib import Path
 
 from headphones2.tasks.engine import spin_consumers
@@ -12,12 +13,21 @@ from headphones2.views import pages, app_cache
 from headphones2.views.api import ArtistList, ArtistResource, AlbumResource, Artwork, ConfigurationResource
 
 FRONTEND_PATH = Path(__file__).parent.parent.joinpath("frontend")
-BUILD_PATH = FRONTEND_PATH.joinpath("dist", "dev")
+BUILD_PATH = FRONTEND_PATH.joinpath("dist")
 COMPONENTS_PATH = FRONTEND_PATH.joinpath("dist", "dev", "components")
 ASSETS_PATH = FRONTEND_PATH.joinpath("dist", "dev", "assets")
 
-app = Flask('headphones2', instance_path=os.path.abspath(os.path.dirname(__file__)), static_folder=str(BUILD_PATH))
+webpack_params = {
+    'DEBUG': True,
+    'WEBPACK_MANIFEST_PATH': '../frontend/dist/manifest.json',
+}
+
+webpack = Webpack()
+
+# app = Flask('headphones2', instance_path=os.path.abspath(os.path.dirname(__file__)), static_folder=str(BUILD_PATH))
+app = Flask('headphones2', static_folder=str(BUILD_PATH), template_folder=str(FRONTEND_PATH.joinpath('app')))
 app.debug = True
+app.config.update(webpack_params)
 
 logger = logbook.Logger('headphones2.app')
 
@@ -29,12 +39,13 @@ api.add_resource(AlbumResource, str('/album/<album_id>'), endpoint=str('album'))
 api.add_resource(Artwork, str('/artwork'), endpoint=str('artwork'))
 api.add_resource(ConfigurationResource, str('/configuration'), endpoint=str('configuration'))
 app_cache.init_app(app)
+webpack.init_app(app)
 
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return send_from_directory(app.static_folder, 'index.html')
+    return render_template('index.jinja2')
 
 
 @app.route('/components/<path:path>')

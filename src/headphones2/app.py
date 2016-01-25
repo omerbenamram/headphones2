@@ -15,7 +15,7 @@ from headphones2.views.api import ArtistList, ArtistResource, AlbumResource, Art
 FRONTEND_PATH = Path(__file__).parent.parent.joinpath("frontend")
 BUILD_PATH = FRONTEND_PATH.joinpath("dist")
 COMPONENTS_PATH = FRONTEND_PATH.joinpath("dist", "dev", "components")
-ASSETS_PATH = FRONTEND_PATH.joinpath("dist", "dev", "assets")
+ASSETS_PATH = FRONTEND_PATH.joinpath("dist")
 
 webpack_params = {
     'DEBUG': True,
@@ -42,10 +42,15 @@ app_cache.init_app(app)
 webpack.init_app(app)
 
 
+# @app.route('/')
+# @app.route('/home')
+# def home():
+#     return render_template('index.jinja2')
+
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('index.jinja2')
+    return send_from_directory(str(FRONTEND_PATH.joinpath('dist')), 'index.html')
 
 
 @app.route('/components/<path:path>')

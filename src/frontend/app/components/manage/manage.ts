@@ -17,7 +17,7 @@ import {ManageHomeCmp} from "./manage_home";
     <router-outlet></router-outlet>
   </div>
   `,
-  styleUrls: ['./components/manage/manage.css']
+  styles: [require('./manage.styl')]
 })
 @RouteConfig([
   new Route({path: '/', component: ManageHomeCmp, name:'Home'}),

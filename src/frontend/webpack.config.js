@@ -9,17 +9,32 @@ var path = require('path');
 var webpack = require('webpack');
 var ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+const autoprefixer = require('autoprefixer');
+var ProvidePlugin = require('webpack/lib/ProvidePlugin');
+
 
 // Webpack Plugins
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 var rootAssetPath = './assets';
 
+var metadata = {
+    title: 'Headphones 2',
+    baseUrl: '/',
+    host: 'localhost',
+    port: 3000,
+    ENV: 'development'
+};
+
 /*
  * Config
  */
 module.exports = {
     // for faster builds use 'eval'
+    metadata: metadata,
     devtool: 'source-map',
     debug: true,
 
@@ -31,9 +46,10 @@ module.exports = {
     // Config for our build files
     output: {
         path: root('dist'),
-        publicPath: 'http://localhost:2992/assets',
-        filename: '[name].[chunkhash].js',
-        chunkFilename: '[id].[chunkhash].js'
+        publicPath: 'assets',
+        filename: '[name].bundle.js',
+        sourceMapFilename: '[name].map',
+        chunkFilename: '[id].chunk.js'
     },
 
     resolve: {
@@ -63,13 +79,17 @@ module.exports = {
             {test: /\.json$/, loader: 'json-loader'},
 
             // Support for CSS as raw text
-            {test: /\.css$/, loader: 'raw-loader'},
+            {test: /\.css$/, loader: 'raw!postcss'},
 
             // support for .html as raw text
             {test: /\.html$/, loader: 'raw-loader'},
+            {
+                test: /\.styl$/,
+                loaders: ['raw-loader', 'style-loader!css-loader!stylus-loader']
+            },
 
-            {test: /\.styl$/, loader: 'style-loader!css-loader!stylus-loader'}
-
+            // Bootstrap 4
+            {test: /bootstrap\/dist\/js\/umd\//, loader: 'imports?jQuery=jquery'}
 
         ],
         noParse: [
@@ -84,10 +104,17 @@ module.exports = {
         new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js', minChunks: Infinity}),
         new CommonsChunkPlugin({name: 'common', filename: 'common.js', minChunks: 2, chunks: ['app', 'vendor']}),
         new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
+        new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
         new ManifestRevisionPlugin(path.join('dist', 'manifest.json'), {
             rootAssetPath: rootAssetPath,
             ignorePaths: ['/styles', '/scripts']
+        }),
+        new ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery'
         })
+
     ],
 
     // Other module loader config

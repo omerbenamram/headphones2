@@ -5,7 +5,7 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
 @Component({
   selector: 'manage-sidebar',
   directives: [CORE_DIRECTIVES, COMMON_DIRECTIVES, ROUTER_DIRECTIVES],
-  styleUrls: ['./components/manage/sidebar.css'],
+  styles: [require('./sidebar.styl')],
   template: `
   <div id="sidebar-wrapper">
       <ul id="sidebar-nav" class="nav nav-sidebar">

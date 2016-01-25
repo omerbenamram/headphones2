@@ -37,7 +37,7 @@ import {NgStyle} from 'angular2/common';
     </tbody>
   </table>
   `,
-  styleUrls: ['./components/home/home.css'],
+  styles: [require('./home.styl')],
   viewProviders: [ArtistService, ArtworkService]
 })
 export class HomeCmp {

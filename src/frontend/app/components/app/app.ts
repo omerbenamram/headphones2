@@ -15,7 +15,7 @@ import {ManageCmp} from "../manage/manage";
     <router-outlet></router-outlet>
   </div>
   `,
-  styleUrls: ['./components/app/app.css'],
+  styles: [require('./app.styl')],
   encapsulation: ViewEncapsulation.None,
 })
 @RouteConfig([

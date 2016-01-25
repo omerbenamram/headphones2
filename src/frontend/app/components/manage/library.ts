@@ -10,7 +10,7 @@ import {OnInit} from "angular2/core";
 @Component({
   selector: 'manage-library',
   directives: [CORE_DIRECTIVES, COMMON_DIRECTIVES, FORM_DIRECTIVES],
-  styleUrls: ['./components/manage/library.css'],
+  styles: [require('./library.styl')],
   template: `
   <div class="input-group">
     <h1>Library Path</h1>

@@ -21,7 +21,7 @@ import {ROUTER_DIRECTIVES, Router, Location} from 'angular2/router';
        </div>
       </nav>
   `,
-  styleUrls: ['./components/navbar/navbar.css'],
+  styleUrls: [require('./navbar.styl')],
 })
 export class Navbar {
   constructor(public location:Location) {

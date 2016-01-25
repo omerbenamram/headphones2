@@ -122,14 +122,6 @@ module.exports = {
         historyApiFallback: true,
         contentBase: 'app/',
         publicPath: '/assets/'
-    },
-    node: {
-        global: 'window',
-        progress: false,
-        crypto: 'empty',
-        module: false,
-        clearImmediate: false,
-        setImmediate: false
     }
 };
 

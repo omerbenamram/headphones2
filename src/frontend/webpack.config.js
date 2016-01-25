@@ -40,7 +40,8 @@ module.exports = {
 
     entry: {
         'vendor': './app/vendor.ts',
-        'app': './app/bootstrap.ts' // our angular app
+        'app': './app/bootstrap.ts', // our angular app
+        'bootstrap-loader': './app'
     },
 
     // Config for our build files
@@ -83,21 +84,28 @@ module.exports = {
 
             // support for .html as raw text
             {test: /\.html$/, loader: 'raw-loader'},
-            {
-                test: /\.styl$/,
-                loaders: ['raw-loader', 'style-loader!css-loader!stylus-loader']
-            },
+
+            // stylus should be served to angular as raw text
+            {test: /\.styl$/, loader: 'raw-loader!stylus-loader'},
 
             // Bootstrap 4
-            {test: /bootstrap\/dist\/js\/umd\//, loader: 'imports?jQuery=jquery'}
+            {test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass']},
+            {test: /bootstrap\/dist\/js\/umd\//, loader: 'imports?jQuery=jquery'},
+            {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
 
         ],
         noParse: [
             /zone\.js\/dist\/.+/,
             /reflect-metadata/,
-            /es(6|7)-.+/
-        ]
+            /es(6|7)-.+/,
+            /angular2\/bundles\/.+/]
     },
+
+    // sassResources: path.resolve(__dirname, "./node_modules/bootstrap/scss"),
+    postcss: [autoprefixer],
 
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),

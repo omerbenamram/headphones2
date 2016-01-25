@@ -16,3 +16,7 @@ import 'angular2/core';
 
 // RxJS
 import 'rxjs';
+
+//Bootstrap4
+import 'jquery';
+import 'bootstrap-loader';

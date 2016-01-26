@@ -5,6 +5,8 @@ import {HomeCmp} from '../home/home';
 import {Navbar} from '../navbar/navbar';
 import {ManageCmp} from "../manage/manage";
 
+require("font-awesome-webpack");
+
 
 @Component({
   selector: 'app',

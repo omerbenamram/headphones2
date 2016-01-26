@@ -20,6 +20,7 @@ ASSETS_PATH = FRONTEND_PATH.joinpath("dist")
 webpack_params = {
     'DEBUG': True,
     'WEBPACK_MANIFEST_PATH': '../frontend/dist/manifest.json',
+    'WEBPACK_ASSETS_URL': 'http://localhost:3000/assets/'
 }
 
 webpack = Webpack()

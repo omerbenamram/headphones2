@@ -19,7 +19,7 @@ var ProvidePlugin = require('webpack/lib/ProvidePlugin');
 // Webpack Plugins
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
-var rootAssetPath = './assets';
+var rootAssetPath = './app/assets';
 
 var metadata = {
     title: 'Headphones 2',
@@ -39,15 +39,15 @@ module.exports = {
     debug: true,
 
     entry: {
+        'static.css': './app/assets/css',
         'vendor': './app/vendor.ts',
-        'app': './app/bootstrap.ts', // our angular app
-        'bootstrap-loader': './app'
+        'app': './app/bootstrap.ts' // our angular app
     },
 
     // Config for our build files
     output: {
         path: root('dist'),
-        publicPath: 'assets',
+        publicPath: 'http://localhost:3000/assets/',
         filename: '[name].bundle.js',
         sourceMapFilename: '[name].map',
         chunkFilename: '[id].chunk.js'
@@ -59,15 +59,23 @@ module.exports = {
     },
 
     module: {
-        preLoaders: [{test: /\.js$/, loader: "source-map-loader", exclude: [/node_modules\/rxjs/]}],
+        preLoaders: [
+            // { test: /\.ts$/, loader: 'tslint-loader', exclude: [ root('node_modules') ] },
+            // TODO(gdi2290): `exclude: [ root('node_modules/rxjs') ]` fixed with rxjs 5 beta.2 release
+            {test: /\.js$/, loader: "source-map-loader", exclude: [root('node_modules/rxjs')]}
+        ],
         loaders: [
-            {test: /\.ts$/, loader: 'ts-loader', exclude: [/\.(spec|e2e)\.ts$/]},
+            // Support Angular 2 async routes via .async.ts
+            {test: /\.async\.ts$/, loaders: ['es6-promise-loader', 'ts-loader'], exclude: [/\.(spec|e2e)\.ts$/]},
+
+            // Support for .ts files.
+            {test: /\.ts$/, loader: 'ts-loader', exclude: [/\.(spec|e2e|async)\.ts$/]},
 
             // Support for *.json files.
             {test: /\.json$/, loader: 'json-loader'},
 
-            // Support for CSS as raw text
-            {test: /\.css$/, loader: 'raw!postcss'},
+            //css
+            {test: /\.css$/, exclude: /\.useable\.css$/, loader: "style-loader!css-loader"},
 
             // support for .html as raw text
             {test: /\.html$/, loader: 'raw-loader'},
@@ -81,7 +89,15 @@ module.exports = {
             {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
             {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
             {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
-            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
+
+            {
+                test: /\.(jpe?g|png|gif|svg([\?]?.*))$/i,
+                loaders: [
+                    'file?context=' + rootAssetPath + '&name=[path][name].[hash].[ext]',
+                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            }
 
         ],
         noParse: [
@@ -102,7 +118,7 @@ module.exports = {
         new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
         new ManifestRevisionPlugin(path.join('dist', 'manifest.json'), {
             rootAssetPath: rootAssetPath,
-            ignorePaths: ['/styles', '/scripts']
+            ignorePaths: ['/css']
         }),
         new ProvidePlugin({
             jQuery: 'jquery',
@@ -119,9 +135,16 @@ module.exports = {
     },
     // our Webpack Development Server config
     devServer: {
-        historyApiFallback: true,
         contentBase: 'app/',
-        publicPath: '/assets/'
+        publicPath: '/assets/',
+        hot: true,
+        // use python backend
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:5000',
+                secure: false
+            }
+        }
     }
 };
 

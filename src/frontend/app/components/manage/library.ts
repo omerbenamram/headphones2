@@ -11,13 +11,7 @@ import {OnInit} from "angular2/core";
   selector: 'manage-library',
   directives: [CORE_DIRECTIVES, COMMON_DIRECTIVES, FORM_DIRECTIVES],
   styles: [require('./library.styl')],
-  template: `
-  <div class="input-group">
-    <h1>Library Path</h1>
-    <input [(ngModel)]='libraryPath' type="text" class="form-control" placeholder="Enter Library Directory eg.(/home/User/music)">
-    <div>{{(cachedConfiguration | async)?.MUSIC_LIBRARY_PATH}}</div>
-  </div>
-  `,
+  template: require('./library.jade'),
   viewProviders: [ManageService]
 })
 export class ManageLibraryCmp implements OnInit {

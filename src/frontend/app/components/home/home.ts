@@ -11,32 +11,7 @@ import {NgStyle} from 'angular2/common';
 @Component({
   selector: 'home',
   directives: [CORE_DIRECTIVES, FORM_DIRECTIVES, COMMON_DIRECTIVES, NgClass, NgStyle],
-  template: `
-  <table id="artist-table" class="table" [hidden]="!artists || artists.length == 0">
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Artist</th>
-        <th>Status</th>
-        <th>Latest Album</th>
-        <th>Total Tracks</th>
-      </tr>
-    </thead>
-    <tbody>
-       <tr *ngFor="#artist of artists | async">
-         <td><img [src]="artist?.imageUrl | async">
-         </td>
-         <td>{{artist.name}}</td>
-         <td><span [ngClass]="{'label label-danger': 'artist.status == Wanted'}">{{artist.status}}</span></td>
-         <td>{{artist.latest_album}} ({{artist.latest_album_release_date | date:'shortDate'}})</td>
-         <td>
-           <progress class="progress progress-success" value="10" [max]="artist.total_tracks"></progress>
-           <span class="progress-value">{{artist.possessed_tracks}} / {{artist.total_tracks}}</span>
-         </td>
-       </tr>
-    </tbody>
-  </table>
-  `,
+  template: require('./home.jade'),
   styles: [require('./home.styl')],
   viewProviders: [ArtistService, ArtworkService]
 })

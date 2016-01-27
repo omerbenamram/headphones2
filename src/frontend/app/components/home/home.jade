@@ -1,0 +1,20 @@
+table#artist-table.table([hidden]='!artists || artists.length == 0')
+  thead
+    tr
+      th Image
+      th Artist
+      th Status
+      th Latest Album
+      th Total Tracks
+  tbody
+    tr(*ngFor='#artist of artists | async')
+      td
+        img([src]='artist?.imageUrl | async')
+      td {{artist.name}}
+      td
+        span([ngClass]="{'label label-danger': 'artist.status == Wanted'}") {{artist.status}}
+      td
+        | {{artist.latest_album}} ({{artist.latest_album_release_date | date:'shortDate'}})
+      td
+        progress.progress.progress-success(value='10', [max]='artist.total_tracks')
+        span.progress-value {{artist.possessed_tracks}} / {{artist.total_tracks}}

@@ -1,0 +1,11 @@
+nav#headphones-navbar.navbar.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      i#headphones-logo.nav-item.navbar-brand.fa.fa-headphones.faa-pulse.animated-hover
+      span#headphones-brand.nav-item.navbar-brand Headphones 2
+    ul.nav.navbar-nav
+      li.divider-vertical
+      li.active
+        a.nav-item.nav-link(href='#', [routerLink]="['/Home']") Home
+      li#options-gear.active.pull-right
+        i.fa.fa-gear.nav-item.faa-spin.animated-hover(href='#', [routerLink]="['/Manage/Home']")

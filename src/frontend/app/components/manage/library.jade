@@ -1,0 +1,4 @@
+.input-group
+  h1 Library Path
+  input.form-control([(ngModel)]='libraryPath', type='text', placeholder='Enter Library Directory eg.(/home/User/music)')
+  div {{(cachedConfiguration | async)?.MUSIC_LIBRARY_PATH}}

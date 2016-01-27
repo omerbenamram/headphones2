@@ -5,8 +5,9 @@ import {HomeCmp} from '../home/home';
 import {Navbar} from '../navbar/navbar';
 import {ManageCmp} from "../manage/manage";
 
+// inject global css
 require("font-awesome-webpack");
-
+require("font-awesome-animation");
 
 @Component({
   selector: 'app',

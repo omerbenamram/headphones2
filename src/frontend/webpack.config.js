@@ -1,10 +1,4 @@
-// @AngularClass
-
-/*
- * Helper: root(), and rootDir() are defined at the bottom
- */
 var sliceArgs = Function.prototype.call.bind(Array.prototype.slice);
-var toString = Function.prototype.call.bind(Object.prototype.toString);
 var path = require('path');
 var webpack = require('webpack');
 var ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
@@ -14,7 +8,6 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const autoprefixer = require('autoprefixer');
 var ProvidePlugin = require('webpack/lib/ProvidePlugin');
-
 
 // Webpack Plugins
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
@@ -39,23 +32,38 @@ module.exports = {
     debug: true,
 
     entry: {
-        'static.css': './app/assets/css',
-        'vendor': './app/vendor.ts',
-        'app': './app/bootstrap.ts' // our angular app
+        'vendor': './app/vendor.ts', // various imports
+        'app': ['webpack/hot/dev-server', './app/bootstrap.ts'] // our angular app
     },
+
 
     // Config for our build files
     output: {
         path: root('dist'),
-        publicPath: 'http://localhost:3000/assets/',
         filename: '[name].bundle.js',
         sourceMapFilename: '[name].map',
         chunkFilename: '[id].chunk.js'
     },
 
+    // our Webpack Development Server config
+    devServer: {
+        contentBase: 'dist/',
+        hot: true,
+        // use python backend
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:5000',
+                secure: false
+            }
+        }
+    },
+
     resolve: {
         // ensure loader extensions match
-        extensions: ['', '.ts', '.js', '.json', '.css', '.html', '.styl']
+        extensions: ['', '.ts', '.js', '.json', '.css', '.html', '.styl'],
+        alias: {
+            'font-awesome-animation' : root('app','assets','css','font-awesome-animation.min.css')
+        }
     },
 
     module: {
@@ -98,7 +106,6 @@ module.exports = {
                     'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
                 ]
             }
-
         ],
         noParse: [
             /zone\.js\/dist\/.+/,
@@ -115,11 +122,13 @@ module.exports = {
         new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js', minChunks: Infinity}),
         new CommonsChunkPlugin({name: 'common', filename: 'common.js', minChunks: 2, chunks: ['app', 'vendor']}),
         new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
+        new ExtractTextPlugin("external_styles.css"),
         new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
         new ManifestRevisionPlugin(path.join('dist', 'manifest.json'), {
             rootAssetPath: rootAssetPath,
             ignorePaths: ['/css']
         }),
+        //jQuery support for bootstrap
         new ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
@@ -132,20 +141,8 @@ module.exports = {
     tslint: {
         emitErrors: false,
         failOnHint: false
-    },
-    // our Webpack Development Server config
-    devServer: {
-        contentBase: 'app/',
-        publicPath: '/assets/',
-        hot: true,
-        // use python backend
-        proxy: {
-            '/api/*': {
-                target: 'http://localhost:5000',
-                secure: false
-            }
-        }
     }
+
 };
 
 // Helper functions
@@ -154,9 +151,4 @@ module.exports = {
 function root(args) {
     args = sliceArgs(arguments, 0);
     return path.join.apply(path, [__dirname].concat(args));
-}
-
-function rootNode(args) {
-    args = sliceArgs(arguments, 0);
-    return root.apply(path, ['node_modules'].concat(args));
 }

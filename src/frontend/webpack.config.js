@@ -85,6 +85,9 @@ module.exports = {
             //css
             {test: /\.css$/, exclude: /\.useable\.css$/, loader: "style-loader!css-loader"},
 
+            //jade
+            {test: /\.jade$/, loader: "raw-loader!jade-html"},
+
             // support for .html as raw text
             {test: /\.html$/, loader: 'raw-loader'},
 

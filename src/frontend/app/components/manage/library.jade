@@ -1,4 +1,11 @@
-.input-group
-  h1 Library Path
-  input.form-control([(ngModel)]='libraryPath', type='text', placeholder='Enter Library Directory eg.(/home/User/music)')
-  div {{(cachedConfiguration | async)?.MUSIC_LIBRARY_PATH}}
+<!--suppress ALL -->
+form#configuration-wrapper
+  .form-group
+    .row.form-header
+      .col-md-4
+        span.fa.fa-folder-o.center-value &nbsp;
+        span.text-left(for="libraryPathInput")  Library Path
+      .form-control-sm.col-md-8.center-value.text-muted.text-xs-right This is where Headphones searches for your music files
+    .form-group.row
+      input.col-md-12.form-control([(ngModel)]='libraryPath', id="libraryPathInput", type='text', placeholder='{{(cachedConfiguration | async)?.MUSIC_LIBRARY_PATH}}')
+

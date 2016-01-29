@@ -5,10 +5,29 @@
   top 100px
   padding-top 0 !important
 
-@media (min-width: 1920px)
-  .container
-    max-width 1400px
-
+//override bootstrap default
 @media (min-width: 1200px)
-  .container
+  #contents-container
     max-width 950px
+
+// Large devices (desktops, less than 75em)
+@media (max-width: 74.9em)
+  #contents-container
+    max-width 950px
+
+// Medium devices (tablets, less than 62em)
+@media (max-width: 61.9em)
+  #contents-container
+    max-width 950px
+
+// Small devices (landscape phones, less than 48em)
+@media (max-width: 47.9em)
+  #contents-container
+    position relative
+    left 0
+
+// Extra small devices (portrait phones, less than 34em)
+@media (max-width: 33.9em)
+  #contents-container
+    position relative
+    left 0

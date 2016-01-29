@@ -59,10 +59,11 @@ module.exports = {
     },
 
     resolve: {
+        modulesDirectories: ['node_modules'],
         // ensure loader extensions match
         extensions: ['', '.ts', '.js', '.json', '.css', '.html', '.styl'],
         alias: {
-            'font-awesome-animation' : root('app','assets','css','font-awesome-animation.min.css')
+            'font-awesome-animation' : root('app','assets','css','font-awesome-animation.min.css'),
         }
     },
 

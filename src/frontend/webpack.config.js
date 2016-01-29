@@ -18,7 +18,7 @@ var metadata = {
     title: 'Headphones 2',
     baseUrl: '/',
     host: 'localhost',
-    port: 3000,
+    port: 8080,
     ENV: 'development'
 };
 

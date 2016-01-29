@@ -10,4 +10,5 @@ form#configuration-wrapper
       .form-control-sm.col-md-8.center-value.text-muted.text-xs-right This is where Headphones searches for your music files
     .form-group.row
       input.col-md-12.form-control([(ngModel)]='libraryPath', id="libraryPathInput", type='text', placeholder='{{(cachedConfiguration | async)?.MUSIC_LIBRARY_PATH}}')
-
+  .row
+    .btn.btn-primary Save Changes

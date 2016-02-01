@@ -20,12 +20,12 @@ logger.handlers.append(logbook.StreamHandler(sys.stdout))
 PathValidator = PathType(dir_okay=True, file_okay=False, readable=True, writable=True)
 
 configuration_fields = {
-    'MUSIC_LIBRARY_PATH': fields.String,
-    'DEBUG': fields.Boolean
+    'libraryPath': fields.String,
+    'debug': fields.Boolean
 }
 
 parser = reqparse.RequestParser()
-parser.add_argument('MUSIC_LIBRARY_PATH')
+parser.add_argument('libraryPath')
 
 try:
     with open(CONFIGURATION_PATH, str('rb')) as fp:
@@ -41,13 +41,13 @@ class ConfigurationResource(Resource):
 
     def put(self):
         args = parser.parse_args()
-        path = args['MUSIC_LIBRARY_PATH']
+        path = args['libraryPath']
         logger.debug(path)
         path_valid = verify_path_input(path)
         if not path_valid:
             abort(412)
 
-        CONFIGURATION['MUSIC_LIBRARY_PATH'] = path
+        CONFIGURATION['libraryPath'] = path
         dump_configuration()
 
 

@@ -3,7 +3,7 @@ import {COMMON_DIRECTIVES} from "angular2/common";
 import {FORM_DIRECTIVES} from "angular2/common";
 import {ManageService} from "../../services/manage/manage";
 import {CORE_DIRECTIVES} from "angular2/common";
-import {Configuration} from "../../interfaces/interfaces";
+import {HeadphonesConfiguration} from "../../interfaces/interfaces";
 import {Observable} from "rxjs/Observable";
 import {OnInit} from "angular2/core";
 
@@ -16,13 +16,14 @@ import {OnInit} from "angular2/core";
 })
 export class ManageLibraryCmp implements OnInit {
 
-  cachedConfiguration:Observable<any>;
+  configuration = <HeadphonesConfiguration>{};
 
   constructor(private configurationSvc:ManageService) {
   }
 
   ngOnInit() {
-    this.cachedConfiguration = this.configurationSvc.getConfiguration();
+    this.configuration = this.configurationSvc.getConfiguration()
+        .subscribe(res => this.configuration = res);
   }
 
 }

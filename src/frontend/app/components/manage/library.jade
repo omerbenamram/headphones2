@@ -9,6 +9,9 @@ form#configuration-wrapper((ngSubmit)='updateConfiguration()', #configurationFor
         span.text-left Library Path
       .col-md-8.center-value.text-muted.text-xs-right This is where Headphones searches for your music files
     .row
-      input.col-md-12.form-control([(ngModel)]='newConfiguration.libraryPath', ngControl='libraryPath', type='text', placeholder='{{(cachedConfiguration | async)?.libraryPath}}')
+      input.col-md-12.form-control([(ngModel)]='configuration.libraryPath'
+                                   ngControl='libraryPath'
+                                   type='text'
+                                   placeholder='{{configuration?.libraryPath}}')
   .row
     .btn.btn-primary((click)='updateConfiguration()', type='submit') Save Changes

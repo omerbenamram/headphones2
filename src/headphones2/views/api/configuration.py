@@ -17,8 +17,6 @@ import logbook
 logger = logbook.Logger(level=logbook.DEBUG)
 logger.handlers.append(logbook.StreamHandler(sys.stdout))
 
-PathValidator = PathType(dir_okay=True, file_okay=False, readable=True, writable=True)
-
 configuration_fields = {
     'libraryPath': fields.String,
     'debug': fields.Boolean

@@ -21,6 +21,10 @@ export class ManageLibraryCmp implements OnInit {
   constructor(private configurationSvc:ManageService) {
   }
 
+  updateConfiguration() {
+    this.configurationSvc.updateConfiguration(this.configuration);
+  }
+
   ngOnInit() {
     this.configuration = this.configurationSvc.getConfiguration()
         .subscribe(res => this.configuration = res);

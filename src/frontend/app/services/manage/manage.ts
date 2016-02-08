@@ -28,12 +28,12 @@ export class ManageService {
 
     updateConfiguration(configuration:HeadphonesConfiguration) {
         var searchParams:URLSearchParams = new URLSearchParams();
-        console.log('Sending new configuration to server');
-        for (let t in configuration) {
-            console.log(t);
-            //searchParams.set(k, v);
+        for (let k in configuration) {
+            let v = configuration[k];
+            console.log(k, '--->', v);
+            searchParams.set(k, v);
         }
-        this.http.put(this.CONFIGURATION_API, new RequestOptions({search: searchParams}))
-            .map(res => res.json())
+        console.log('Sending new configuration to server');
+        this.http.put(this.CONFIGURATION_API, new RequestOptions({search: searchParams}));
     }
 }

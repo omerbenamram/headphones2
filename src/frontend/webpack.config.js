@@ -28,7 +28,7 @@ var metadata = {
 module.exports = {
     // for faster builds use 'eval'
     metadata: metadata,
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     debug: true,
 
     entry: {

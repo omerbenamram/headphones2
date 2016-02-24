@@ -9,6 +9,7 @@ import {OnInit} from "angular2/core";
 import {HeadphonesConfiguration} from "../../interfaces/interfaces";
 import {URLSearchParams} from "angular2/http";
 import {RequestOptions} from "angular2/http";
+import {Headers} from "angular2/http";
 
 
 @Injectable()
@@ -26,14 +27,13 @@ export class ManageService {
             .do(x => console.log(x))
     }
 
-    updateConfiguration(configuration:HeadphonesConfiguration) {
-        var searchParams:URLSearchParams = new URLSearchParams();
-        for (let k in configuration) {
-            let v = configuration[k];
-            console.log(k, '--->', v);
-            searchParams.set(k, v);
-        }
+    updateConfiguration(configuration:HeadphonesConfiguration): Observable<HeadphonesConfiguration> {
+        let body = JSON.stringify(configuration);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
         console.log('Sending new configuration to server');
-        this.http.put(this.CONFIGURATION_API, new RequestOptions({search: searchParams}));
+        return this.http.put(this.CONFIGURATION_API, body, options)
+            .map(res => res.json())
+            .do(x => console.log(x));
     }
 }

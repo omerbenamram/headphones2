@@ -1,5 +1,6 @@
 <!--suppress ALL -->
-form#configuration-wrapper((ngSubmit)='updateConfiguration()', #configurationForm='ngForm')
+form#configuration-wrapper((ngSubmit)='updateConfiguration()'
+                            [ngFormModel]='form')
   .row
     h1(style='padding-bottom:1em;') Library Configuration
   .form-group

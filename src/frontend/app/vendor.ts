@@ -1,20 +1,22 @@
 // Polyfills
 import 'es6-shim';
-// (these modules are what are in 'angular2/bundles/angular2-polyfills' so don't use that here)
 import 'es6-promise';
-import 'zone.js/lib/browser/zone-microtask';
+import 'zone.js';
+import 'reflect-metadata';
+require('es7-reflect-metadata/src/global/browser');
 
-import 'es7-reflect-metadata/src/global/browser';
+// (these modules are what are in 'angular2/bundles/angular2-polyfills' so don't use that here)
+// In production Reflect with es7-reflect-metadata/reflect-metadata is added
 
-// Angular 2
-import 'angular2/platform/browser';
-import 'angular2/platform/common_dom';
-import 'angular2/router';
-import 'angular2/http';
-import 'angular2/core';
+// by webpack.prod.config ProvidePlugin
+Error['stackTraceLimit'] = Infinity;
+require('zone.js/dist/zone-microtask');
+require('zone.js/dist/long-stack-trace-zone');
 
 // RxJS
-import 'rxjs';
+// In development we are including every operator
+require('rxjs/add/operator/map');
+require('rxjs/add/operator/mergeMap');
 
 //Bootstrap4
 import 'jquery';

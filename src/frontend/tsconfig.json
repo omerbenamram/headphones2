@@ -2,37 +2,22 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noEmitHelpers": false,
     "sourceMap": true
   },
-  "files": [
-    "./app/bootstrap.ts",
-    "./app/components/app/app.ts",
-    "./app/components/home/home.ts",
-    "./app/components/manage/library.ts",
-    "./app/components/manage/manage_home.ts",
-    "./app/components/manage/manage.ts",
-    "./app/components/manage/sidebar.ts",
-    "./app/components/navbar/navbar.ts",
-    "./app/interfaces/interfaces.ts",
-    "./app/services/artists/artists_spec.ts",
-    "./app/services/artists/artists.ts",
-    "./app/services/artwork/artwork.ts",
-    "./app/services/manage/manage.ts",
-    "./app/vendor.ts",
-    "typings/main.d.ts"
+  "exclude": [
+    "node_modules",
+    "typings/main.d.ts",
+    "typings/main"
   ],
   "filesGlob": [
     "./app/**/*.ts",
     "!./node_modules/**/*.ts",
-    "typings/main.d.ts"
+    "app/custom_typings.d.ts",
+    "typings/browser.d.ts"
   ],
   "compileOnSave": false,
   "buildOnSave": false,
-  "atom": {
-    "rewriteTsconfig": true
-  }
+  "atom": { "rewriteTsconfig": false }
 }

@@ -33,7 +33,7 @@ module.exports = {
 
     entry: {
         'vendor': './app/vendor.ts', // various imports
-        'app': ['webpack/hot/dev-server', './app/bootstrap.ts'] // our angular app
+        'app': './app/bootstrap.ts' // our angular app
     },
 
 
@@ -45,32 +45,17 @@ module.exports = {
         chunkFilename: '[id].chunk.js'
     },
 
-    // our Webpack Development Server config
-    devServer: {
-        contentBase: 'dist/',
-        hot: true,
-        // use python backend
-        proxy: {
-            '/api/*': {
-                target: 'http://localhost:5000',
-                secure: false
-            }
-        }
-    },
-
     resolve: {
         modulesDirectories: ['node_modules'],
         // ensure loader extensions match
-        extensions: ['', '.ts', '.js', '.json', '.css', '.html', '.styl'],
+        extensions: prepend(['.ts', '.js', '.json', '.css', '.html'], '.async'), // ensure .async.ts etc also works
         alias: {
-            'font-awesome-animation' : root('app','assets','css','font-awesome-animation.min.css'),
+            'font-awesome-animation': root('app', 'assets', 'css', 'font-awesome-animation.min.css'),
         }
     },
 
     module: {
         preLoaders: [
-            // { test: /\.ts$/, loader: 'tslint-loader', exclude: [ root('node_modules') ] },
-            // TODO(gdi2290): `exclude: [ root('node_modules/rxjs') ]` fixed with rxjs 5 beta.2 release
             {test: /\.js$/, loader: "source-map-loader", exclude: [root('node_modules/rxjs')]}
         ],
         loaders: [
@@ -78,22 +63,22 @@ module.exports = {
             {test: /\.async\.ts$/, loaders: ['es6-promise-loader', 'ts-loader'], exclude: [/\.(spec|e2e)\.ts$/]},
 
             // Support for .ts files.
-            {test: /\.ts$/, loader: 'ts-loader', exclude: [/\.(spec|e2e|async)\.ts$/]},
+            {test: /\.ts$/, loader: 'ts', exclude: [/\.(spec|e2e|async)\.ts$/]},
 
             // Support for *.json files.
-            {test: /\.json$/, loader: 'json-loader'},
+            {test: /\.json$/, loader: 'json'},
 
             //css
-            {test: /\.css$/, exclude: /\.useable\.css$/, loader: "style-loader!css-loader"},
+            {test: /\.css$/, exclude: /\.useable\.css$/, loader: "style!css"},
 
             //jade
-            {test: /\.jade$/, loader: "raw-loader!jade-html"},
+            {test: /\.jade$/, loader: "raw!jade-html"},
 
             // support for .html as raw text
-            {test: /\.html$/, loader: 'raw-loader'},
+            {test: /\.html$/, loader: 'raw'},
 
             // stylus should be served to angular as raw text
-            {test: /\.styl$/, loader: 'raw-loader!stylus-loader'},
+            {test: /\.styl$/, loader: 'raw!stylus'},
 
             // Bootstrap 4
             {test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass']},
@@ -123,30 +108,52 @@ module.exports = {
 
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
-        new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js', minChunks: Infinity}),
-        new CommonsChunkPlugin({name: 'common', filename: 'common.js', minChunks: 2, chunks: ['app', 'vendor']}),
+        new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.bundle.js', minChunks: Infinity}),
         new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
         new ExtractTextPlugin("external_styles.css"),
         new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
-        new ManifestRevisionPlugin(path.join('dist', 'manifest.json'), {
-            rootAssetPath: rootAssetPath,
-            ignorePaths: ['/css']
+        new webpack.DefinePlugin({
+            'process.env': {
+                'ENV': JSON.stringify(metadata.ENV),
+                'NODE_ENV': JSON.stringify(metadata.ENV)
+            }
         }),
         //jQuery support for bootstrap
         new ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
-            jquery: 'jquery'
+            jquery: 'jquery',
+            "Tether": 'tether',
+            "window.Tether": "tether"
         })
-
     ],
-
     // Other module loader config
     tslint: {
         emitErrors: false,
-        failOnHint: false
+        failOnHint: false,
+        resourcePath: 'app'
+    },
+    // our Webpack Development Server config
+    devServer: {
+        contentBase: 'dist/',
+        hot: true,
+        // use python backend
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:5000',
+                secure: false
+            }
+        }
+    },
+    // we need this due to problems with es6-shim
+    node: {
+        global: 'window',
+        progress: false,
+        crypto: 'empty',
+        module: false,
+        clearImmediate: false,
+        setImmediate: false
     }
-
 };
 
 // Helper functions
@@ -155,4 +162,16 @@ module.exports = {
 function root(args) {
     args = sliceArgs(arguments, 0);
     return path.join.apply(path, [__dirname].concat(args));
+}
+
+function prepend(extensions, args) {
+    args = args || [];
+    if (!Array.isArray(args)) {
+        args = [args]
+    }
+    return extensions.reduce(function (memo, val) {
+        return memo.concat(val, args.map(function (prefix) {
+            return prefix + val
+        }));
+    }, ['']);
 }

@@ -1,8 +1,7 @@
 // Polyfills
 import 'es6-shim';
 import 'es6-promise';
-import 'zone.js';
-import 'reflect-metadata';
+
 require('es7-reflect-metadata/src/global/browser');
 
 // (these modules are what are in 'angular2/bundles/angular2-polyfills' so don't use that here)
@@ -17,7 +16,3 @@ require('zone.js/dist/long-stack-trace-zone');
 // In development we are including every operator
 require('rxjs/add/operator/map');
 require('rxjs/add/operator/mergeMap');
-
-//Bootstrap4
-import 'jquery';
-import 'bootstrap-loader';

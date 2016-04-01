@@ -4,11 +4,10 @@ import os
 
 import logbook
 from flask import Flask, send_from_directory
-from flask.ext.restful import Api
 
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages
-from headphones2.api import ArtistList, ArtistResource, AlbumResource, Artwork, ConfigurationResource
+from headphones2.api import artist_api, artwork_api
 
 FRONTEND_PATH = os.path.join(__file__, os.pardir, os.pardir, 'frontend')
 BUILD_PATH = os.path.join(FRONTEND_PATH, "dist")
@@ -20,12 +19,8 @@ app.debug = True
 logger = logbook.Logger('headphones2.app')
 
 app.register_blueprint(pages)
-api = Api(app, prefix=str('/api'))
-api.add_resource(ArtistList, str('/artists'), endpoint=str('artists'))
-api.add_resource(ArtistResource, str('/artists/<artist_id>'), endpoint=str('artist'))
-api.add_resource(AlbumResource, str('/album/<album_id>'), endpoint=str('album'))
-api.add_resource(Artwork, str('/artwork'), endpoint=str('artwork'))
-api.add_resource(ConfigurationResource, str('/configuration'), endpoint=str('configuration'))
+app.register_blueprint(artist_api)
+app.register_blueprint(artwork_api)
 
 
 @app.route('/')

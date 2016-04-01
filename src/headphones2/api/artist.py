@@ -1,90 +1,72 @@
 from __future__ import unicode_literals, absolute_import, print_function, division
 
-from flask.ext.restful import fields, Resource, marshal, reqparse
+import flask
+from flask import Blueprint, jsonify
 from werkzeug.utils import redirect
 
 from headphones2.orm import Artist, Track, Release, Album, connect
 from headphones2.tasks import add_artist_task
 
-parser = reqparse.RequestParser()
-parser.add_argument('artist_id')
+artist_api = Blueprint('artist_api', __name__, url_prefix='/api')
 
 
-class ArtistListObject(object):
-    artist_list_fields = {
-        'id': fields.String,
-        'name': fields.String,
-        'status': fields.String,
-        'total_tracks': fields.Integer,
-        'possessed_tracks': fields.Integer,
-        'latest_album': fields.String,
-        'latest_album_release_date': fields.DateTime,
-        'latest_album_id': fields.String
-    }
+@artist_api.route('/artists', methods=['GET'])
+def get_artists():
+    session = connect()
+    artists = session.query(Artist)
 
-    def __init__(self, artist_id, name, status, total_tracks, possessed_tracks,
-                 latest_album, latest_album_release_date, latest_album_id):
-        self.id = artist_id
-        self.name = name
-        self.status = status
-        self.total_tracks = total_tracks
-        self.possessed_tracks = possessed_tracks
-        self.latest_album = latest_album
-        self.latest_album_release_date = latest_album_release_date
-        self.latest_album_id = latest_album_id
+    rows = []
 
+    for artist in artists:
+        total_tracks = session.query(Track) \
+            .join(Release) \
+            .join(Album) \
+            .join(Artist) \
+            .filter(Release.is_selected, Artist.musicbrainz_id == artist.musicbrainz_id).count()
 
-class ArtistList(Resource):
-    def get(self):
-        session = connect()
-        artists = session.query(Artist)
+        possessed_tracks_count = 0
 
-        rows = []
-        for artist in artists:
-            total_tracks = session.query(Track) \
-                .join(Release) \
-                .join(Album) \
-                .join(Artist) \
-                .filter(Release.is_selected, Artist.musicbrainz_id == artist.musicbrainz_id).count()
+        latest_album = artist.albums.join(Release).order_by(Release.release_date.desc()).first()
 
-            possessed_tracks_count = 0
+        if latest_album:
+            latest_album_title = latest_album.title
+            latest_release = latest_album.releases.order_by(Release.release_date.desc()).first()
+            latest_album_release_date = latest_release.release_date
+            latest_album_id = latest_album.musicbrainz_id
+        else:
+            latest_album_title, latest_album_release_date, latest_album_id = None, None, None
 
-            latest_album = artist.albums.join(Release).order_by(Release.release_date.desc()).first()
+        rows.append({
+            'id': artist.musicbrainz_id,
+            'name': artist.name,
+            'status': artist.status.name,
+            'total_tracks': total_tracks,
+            'possessed_tracks': 0,  # TODO: implement
+            'latest_album': latest_album_title,
+            'latest_album_release_date': latest_album_release_date,
+            'latest_album_id': latest_album_id
+        })
 
-            if latest_album:
-                latest_release = latest_album.releases.order_by(Release.release_date.desc()).first()
-                release_date = latest_release.release_date
-                latest_album_id = latest_album.musicbrainz_id
-            else:
-                release_date, latest_album_id = None, None
-
-            row = ArtistListObject(artist.musicbrainz_id,
-                                   artist.name,
-                                   artist.status.name,
-                                   total_tracks,
-                                   possessed_tracks_count,
-                                   latest_album.title,
-                                   release_date,
-                                   latest_album_id)
-
-            rows.append(marshal(row, ArtistListObject.artist_list_fields))
-
-        return rows
-
-    def post(self):
-        args = parser.parse_args()
-        artist_id = args.get('artist_id')
-        if not artist_id:
-            return 500
-
-        add_artist_task(artist_id=artist_id)
-        return 200
+    return jsonify({
+        'data': rows
+    })
 
 
-class ArtistResource(Resource):
-    def delete(self, artist_id):
-        session = connect()
-        artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).first()
-        session.delete(artist)
-        session.commit()
-        return redirect('/home')
+@artist_api.route('/artists', methods=['POST'])
+def add_artist():
+    args = flask.request.args
+    artist_id = args.get('artist_id')
+    if not artist_id:
+        flask.abort(422)  # Missing HTTP Arguments
+
+    add_artist_task(artist_id=artist_id)
+    return 200
+
+
+@artist_api.route('/artists/<string:artist_id>', methods=['DELETE'])
+def delete_artist(artist_id):
+    session = connect()
+    artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).first()
+    session.delete(artist)
+    session.commit()
+    return redirect('/home')

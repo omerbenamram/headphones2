@@ -1,18 +1,21 @@
-// Polyfills
-import 'es6-shim';
-import 'es6-promise';
+// For vendors for example jQuery, Lodash, angular2-jwt just import them here unless you plan on
+// chunking vendors files for async loading. You would need to import the async loaded vendors
+// at the entry point of the async loaded file. Also see custom-typings.d.ts as you also need to
+// run `typings install x` where `x` is your module
 
-require('es7-reflect-metadata/src/global/browser');
-
-// (these modules are what are in 'angular2/bundles/angular2-polyfills' so don't use that here)
-// In production Reflect with es7-reflect-metadata/reflect-metadata is added
-
-// by webpack.prod.config ProvidePlugin
-Error['stackTraceLimit'] = Infinity;
-require('zone.js/dist/zone-microtask');
-require('zone.js/dist/long-stack-trace-zone');
+// Angular 2
+import 'angular2/platform/browser';
+import 'angular2/platform/common_dom';
+import 'angular2/core';
+import 'angular2/common';
+import 'angular2/http';
+import 'angular2/router';
 
 // RxJS
-// In development we are including every operator
-require('rxjs/add/operator/map');
-require('rxjs/add/operator/mergeMap');
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+
+import 'core-js';
+require('zone.js/dist/zone');
+require('zone.js/dist/long-stack-trace-zone');
+

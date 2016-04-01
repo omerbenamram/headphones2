@@ -1,9 +1,10 @@
 var sliceArgs = Function.prototype.call.bind(Array.prototype.slice);
+
 var path = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 
 const autoprefixer = require('autoprefixer');
 var ProvidePlugin = require('webpack/lib/ProvidePlugin');
@@ -17,7 +18,7 @@ var metadata = {
     title: 'Headphones 2',
     baseUrl: '/',
     host: 'localhost',
-    port: 8080,
+    port: 3000,
     ENV: 'development'
 };
 
@@ -30,7 +31,6 @@ module.exports = {
     debug: true,
 
     entry: {
-        'vendor': './app/vendor.ts', // various imports
         'app': './app/bootstrap.ts' // our angular app
     },
 
@@ -56,11 +56,8 @@ module.exports = {
             {test: /\.js$/, loader: "source-map-loader", exclude: [root('node_modules/rxjs')]}
         ],
         loaders: [
-            // Support Angular 2 async routes via .async.ts
-            {test: /\.async\.ts$/, loaders: ['es6-promise-loader', 'ts-loader'], exclude: [/\.(spec|e2e)\.ts$/]},
-
             // Support for .ts files.
-            {test: /\.ts$/, loader: 'ts', exclude: [/\.(spec|e2e|async)\.ts$/]},
+            {test: /\.ts$/, loader: 'awesome-typescript', exclude: [/\.(spec|e2e|async)\.ts$/]},
 
             // Support for *.json files.
             {test: /\.json$/, loader: 'json'},
@@ -104,6 +101,7 @@ module.exports = {
     postcss: [autoprefixer],
 
     plugins: [
+        new ForkCheckerPlugin(),
         new webpack.optimize.OccurenceOrderPlugin(true),
         new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.bundle.js', minChunks: Infinity}),
         new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
@@ -131,6 +129,7 @@ module.exports = {
     },
     // our Webpack Development Server config
     devServer: {
+        port: metadata.port,
         contentBase: 'dist/',
         hot: true,
         // use python backend
@@ -154,20 +153,9 @@ module.exports = {
 
 // Helper functions
 
+
 //in python -> os.path.dirname(__file__)
 function root(args) {
     args = sliceArgs(arguments, 0);
     return path.join.apply(path, [__dirname].concat(args));
-}
-
-function prepend(extensions, args) {
-    args = args || [];
-    if (!Array.isArray(args)) {
-        args = [args]
-    }
-    return extensions.reduce(function (memo, val) {
-        return memo.concat(val, args.map(function (prefix) {
-            return prefix + val
-        }));
-    }, ['']);
 }

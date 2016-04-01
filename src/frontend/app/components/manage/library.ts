@@ -1,9 +1,9 @@
 import {Component, OnInit, Inject} from "angular2/core";
 import {COMMON_DIRECTIVES, FORM_DIRECTIVES, CORE_DIRECTIVES, FormBuilder, Control, ControlGroup} from "angular2/common";
-import {ManageService} from "../../services/manage/manage";
-import {HeadphonesConfiguration} from "../../interfaces/interfaces";
+import {ManageService} from "../../services/manage/manage.ts";
+import {HeadphonesConfiguration} from "../../interfaces/interfaces.ts";
 import {Http} from "angular2/http";
-import {ApiUrls} from "../../constsants/api"
+import {ApiUrls} from "../../constsants/api.ts"
 
 @Component({
     selector: 'manage-library',
@@ -55,5 +55,5 @@ export class ManageLibraryCmp implements OnInit {
 }
 
 interface ValidationResult {
-    [key: string]:boolean;
+    [key:string]:boolean;
 }

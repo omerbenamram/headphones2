@@ -5,7 +5,7 @@ import logbook
 import requests
 
 from flask.blueprints import Blueprint
-from flask import abort
+from flask import abort, jsonify
 
 from headphones2.external.lastfm import lastfm_api_wrapper
 from headphones2.tasks import get_artwork_for_album_task
@@ -22,16 +22,20 @@ def get_artwork():
     if not image_type:
         abort(422)
 
-    mbid, size, should_fetch_image = args.get('id'), args.get('size'), args.get('fetch_image')
+    mbid, size = args.get('id'), args.get('size')
     if image_type == 'artist':
-        return _get_artist_artwork(mbid=mbid, size=size, fetch_image=should_fetch_image)
+        url = _get_artist_artwork(mbid=mbid, size=size)
     elif image_type == 'album':
-        return _get_album_cover_art(rgid=mbid, size=size, fetch_image=should_fetch_image)
+        url = _get_album_cover_art(rgid=mbid, size=size)
     else:
         abort(406)  # Bad Params supplied
 
+    return jsonify({
+        'data' : url
+    })
 
-def _get_album_cover_art(rgid, size='small', fetch_image=False):
+
+def _get_album_cover_art(rgid, size='small'):
     """
     :param rgid: musicbrainz releasegroup_id
     :param size: large (500px) or small (250px)
@@ -41,20 +45,10 @@ def _get_album_cover_art(rgid, size='small', fetch_image=False):
     if not urls:
         abort(404)
 
-    chosen = urls.get(size)
-    if not fetch_image:
-        return chosen
-
-    img = requests.get(chosen)
-    if not img.ok:
-        abort(404)
-
-    resp = flask.make_response(img.content)
-    resp.content_type = "image/jpeg"
-    return resp
+    return urls.get(size)
 
 
-def _get_artist_artwork(mbid, size='small', fetch_image=False):
+def _get_artist_artwork(mbid, size='small'):
     """
     :param mbid: musicbrainz artist_id
     :param size: large (500px) or small (250px)
@@ -72,14 +66,4 @@ def _get_artist_artwork(mbid, size='small', fetch_image=False):
         logger.warning(('No image found for ({id}, {size}'.format(id=mbid, size=size)))
         abort(404)
 
-    if not fetch_image:
-        return size_dict[size]
-
-    img = requests.get(size_dict[size])
-
-    if not img.ok:
-        abort(404)
-
-    resp = flask.make_response(img.content)
-    resp.content_type = "image/jpeg"
-    return resp
+    return size_dict[size]

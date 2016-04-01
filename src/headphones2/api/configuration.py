@@ -7,8 +7,6 @@ import simplejson as json
 import sys
 from flask.ext.restful import Resource, fields, marshal, reqparse, abort
 
-from headphones2.utils.path import Path as PathType
-
 # noinspection PyUnresolvedReferences
 from pies.overrides import *
 from headphones2.config import CONFIGURATION_PATH

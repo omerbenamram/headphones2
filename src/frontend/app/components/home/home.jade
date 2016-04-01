@@ -7,9 +7,9 @@ table#artist-table.table([hidden]='!artists || artists.length == 0')
       th Latest Album
       th Total Tracks
   tbody
-    tr(*ngFor='#artist of artists | async')
+    tr(*ngFor='#artist of artists')
       td
-        img([src]='artist?.imageUrl | async')
+        img([src]='artist?.imageUrl')
       td {{artist.name}}
       td
         span([ngClass]="{'label label-danger': 'artist.status == Wanted'}") {{artist.status}}

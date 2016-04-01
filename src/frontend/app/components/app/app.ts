@@ -1,9 +1,9 @@
 import {Component, ViewEncapsulation} from 'angular2/core';
 import {Route, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
-import {HomeCmp} from '../home/home';
-import {Navbar} from '../navbar/navbar';
-import {ManageCmp} from "../manage/manage";
+import {HomeCmp} from '../home/home.ts';
+import {Navbar} from '../navbar/navbar.ts';
+import {ManageCmp} from "../manage/manage.ts";
 
 // inject global css
 require("font-awesome-webpack");

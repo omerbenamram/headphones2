@@ -1,17 +1,35 @@
 /*
  * Providers provided by Angular
  */
-import "zone.js";
-import "reflect-metadata";
-
+require('reflect-metadata');
 import "jquery";
 import "bootstrap-loader";
+import "zone.js";
+import "rxjs";
+// Angular 2
+import 'angular2/platform/browser';
+import 'angular2/platform/common_dom';
+import 'angular2/core';
+import 'angular2/common';
+import 'angular2/http';
+import 'angular2/router';
+
+// RxJS
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+
+import 'core-js';
+require('zone.js/dist/zone');
+require('zone.js/dist/long-stack-trace-zone');
+
 
 import {provide, enableProdMode} from "angular2/core";
 import {bootstrap, ELEMENT_PROBE_PROVIDERS} from "angular2/platform/browser";
 import {ROUTER_PROVIDERS, LocationStrategy, HashLocationStrategy} from "angular2/router";
 import {HTTP_PROVIDERS} from "angular2/http";
-import {AppCmp} from "./components/app/App";
+
+import {AppCmp} from './components/app/app.ts'
+
 
 const ENV_PROVIDERS = [];
 

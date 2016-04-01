@@ -6,7 +6,6 @@ import logbook
 from flask import Blueprint, request, redirect, abort
 
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
-from headphones2.views.templates import serve_template
 from .. import config
 from ..importer import add_artist_to_db
 from ..orm import *
@@ -33,33 +32,33 @@ def upcoming():
     for album in wanted_albums:
         wanted_data.append(album_to_dict(album))
 
-    return serve_template(templatename="upcoming.html", title="Upcoming", upcoming=upcoming_data, wanted=wanted_data)
+    raise NotImplemented
 
 
 @pages.route('/manage')
 def manage():
     session = connect()
     empty_artists = session.query(Artist).filter(~Artist.albums.any())
-    return serve_template(templatename="manage.html", title="Manage", emptyArtists=empty_artists)
+    raise NotImplemented
 
 
 @pages.route('/history')
 def history():
     session = connect()
     history = []  # session.query(Snached).filter(~Snached.status.ilike('Seed%')).order_by(Snached.date_added.desc())
-    return serve_template(templatename="history.html", title="History", history=history)
+    raise NotImplemented
 
 
 @pages.route('/logs')
 def logs():
-    return serve_template(templatename="logs.html", title="Log")
+    raise NotImplemented
 
 
 @pages.route('/manageArtists')
 def manage_artists():
     session = connect()
     artists = session.query(Artist).order_by(Artist.name)
-    return serve_template(templatename="manageartists.html", title="Manage Artists", artists=artists)
+    raise NotImplemented
 
 
 @pages.route('/search')
@@ -91,8 +90,7 @@ def search():
                 'title': result['title'],
             })
 
-    return serve_template(templatename="searchresults.html", title='Search Results "{name}"'.format(name=name),
-                          searchresults=formatted_results, name=name, type=type)
+    raise NotImplemented
 
 
 @pages.route('/addArtist')
@@ -165,11 +163,7 @@ def artist_page():
 
         formatted_albums.append(formatted_album)
 
-    return serve_template(templatename="artist.html",
-                          title=artist.name,
-                          artist=formatted_artist,
-                          albums=formatted_albums,
-                          extras={})
+    raise NotImplemented
 
 
 @pages.route('/albumPage')
@@ -205,12 +199,4 @@ def album_page():
     totaltracks = release.tracks.count()
     albumduration = ""
 
-    return serve_template(templatename="album.html",
-                          title=title,
-                          album=formatted_album,
-                          tracks=formatted_tracks,
-                          description=description,
-                          totaltracks=totaltracks,
-                          albumduration=albumduration,
-                          alternate_album_name='',
-                          grade='')
+    raise NotImplemented

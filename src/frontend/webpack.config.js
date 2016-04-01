@@ -1,7 +1,6 @@
 var sliceArgs = Function.prototype.call.bind(Array.prototype.slice);
 var path = require('path');
 var webpack = require('webpack');
-var ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -26,9 +25,8 @@ var metadata = {
  * Config
  */
 module.exports = {
-    // for faster builds use 'eval'
     metadata: metadata,
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     debug: true,
 
     entry: {
@@ -48,7 +46,6 @@ module.exports = {
     resolve: {
         modulesDirectories: ['node_modules'],
         // ensure loader extensions match
-        extensions: prepend(['.ts', '.js', '.json', '.css', '.html'], '.async'), // ensure .async.ts etc also works
         alias: {
             'font-awesome-animation': root('app', 'assets', 'css', 'font-awesome-animation.min.css'),
         }
@@ -110,7 +107,6 @@ module.exports = {
         new webpack.optimize.OccurenceOrderPlugin(true),
         new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.bundle.js', minChunks: Infinity}),
         new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
-        new ExtractTextPlugin("external_styles.css"),
         new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
         new webpack.DefinePlugin({
             'process.env': {

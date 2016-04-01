@@ -15,6 +15,7 @@ from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, Renamer, A
 logger = logbook.Logger(__name__)
 Path = py.path.local
 
+
 def pre_process_folder(folder):
     p = Path(folder)
     assert p.isdir(), "Got non directory input, breaking"
@@ -47,7 +48,8 @@ def _collect_files_from_folder(folder, wanted_formats=MEDIA_FORMATS):
 
 
 def post_process_album_task(task, expected_artist=None, expected_album=None, should_move=False,
-                            flatten_result_folder=False, destination_folder=str(Path(os.path.expanduser("~")).join("Music"))):
+                            flatten_result_folder=False,
+                            destination_folder=str(Path(os.path.expanduser("~")).join("Music"))):
     """
 
     :param task: the task object to process

@@ -9,3 +9,4 @@ test/fixtures/cassettes/
 src/frontend/node_modules
 src/frontend/dist
 src/headphones2/configuration.json
+scripts/

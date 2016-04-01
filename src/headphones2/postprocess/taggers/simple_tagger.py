@@ -30,7 +30,7 @@ class BeetsTagger(PostProcessor):
         """
         artist_name, album_name, album_recommendation_list, recommendation = \
             tag_album(task.items, search_artist=expected_artist, search_album=expected_album,
-                      search_id=expected_release_id)
+                      search_ids=[expected_release_id])
 
         if recommendation is Recommendation.none:
             logger.warning('{} Failed to match album'.format(__name__))
@@ -46,7 +46,7 @@ class BeetsTagger(PostProcessor):
 
                 artist_name, album_name, album_recommendation_list, recommendation = \
                     tag_album(task.items, search_artist=expected_artist, search_album=expected_album,
-                              search_id=fallback_recommendation)
+                              search_ids=[fallback_recommendation])
 
         if recommendation is Recommendation.none:
             raise BeetsTaggerException("Exhausted all tagging options, failing")

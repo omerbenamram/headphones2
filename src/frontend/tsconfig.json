@@ -22,6 +22,5 @@
     "forkChecker": true
   },
   "compileOnSave": false,
-  "buildOnSave": false,
-  "atom": { "rewriteTsconfig": false }
+  "buildOnSave": false
 }

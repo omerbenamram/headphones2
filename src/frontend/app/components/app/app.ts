@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation} from 'angular2/core';
 import {Route, RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
-import {HomeCmp} from '../home/home.ts';
+import {HomeCmp} from '../home/artist_table/home.ts';
 import {Navbar} from '../navbar/navbar.ts';
 import {ManageCmp} from "../manage/manage.ts";
 

@@ -14,7 +14,7 @@ table#artist-table.table([hidden]='!artists || artists.length == 0')
       td
         span([ngClass]="{'label label-danger': 'artist.status == Wanted'}") {{artist.status}}
       td
-        | {{artist.latest_album}} ({{artist.latest_album_release_date | date:'shortDate'}})
+        | {{artist.latest_album}} ({{artist.latest_album_release_date | parseDate | date:'shortDate'}})
       td
         progress.progress.progress-success(value='10', [max]='artist.total_tracks')
         span.progress-value {{artist.possessed_tracks}} / {{artist.total_tracks}}

@@ -27,7 +27,7 @@ def search_musicbrainz():
     search_type, q = args.get('type'), args.get('q')
     logger.debug('Search called with: {search_type}, {q}'.format(search_type=search_type, q=q))
     if not all([search_type, q]):
-        abort(HTTPStatus.PRECONDITION_REQUIRED.value)  # Missing HTTP Parameters
+        abort(HTTPStatus.BAD_REQUEST.value)  # Missing HTTP Parameters
 
     if search_type == 'artist':
         try:
@@ -64,4 +64,4 @@ def search_musicbrainz():
             'type': 'release'
         })
 
-    abort(HTTPStatus.PRECONDITION_FAILED.value)
+    abort(HTTPStatus.BAD_REQUEST.value)

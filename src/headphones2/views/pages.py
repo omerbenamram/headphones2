@@ -61,48 +61,6 @@ def manage_artists():
     raise NotImplemented
 
 
-@pages.route('/search')
-def search():
-    name = request.args['name']
-    type = request.args['type']
-
-    if type == 'artist':
-        results = find_artist_by_name(name, limit=10)
-
-        formatted_results = []
-
-        for result in results:
-            formatted_results.append({
-                'score': result['ext:score'],
-                'id': result['id'],
-                'uniquename': result['name'],
-            })
-    else:
-        assert False
-        results = find_releases(name, limit=10)
-
-        formatted_results = []
-
-        for result in results:
-            formatted_results.append({
-                'score': result['ext:score'],
-                'id': result['id'],
-                'title': result['title'],
-            })
-
-    raise NotImplemented
-
-
-@pages.route('/addArtist')
-def add_artist():
-    artist_id = request.args['artistid']
-    session = connect()
-    if not session.query(Artist).filter_by(musicbrainz_id=artist_id).first():
-        add_artist_to_db(artist_id, session)
-
-    return redirect('/artistPage?ArtistID=' + artist_id)
-
-
 @pages.route('/artistPage')
 def artist_page():
     artist_id = request.args['ArtistID']

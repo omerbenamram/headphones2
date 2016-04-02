@@ -1,7 +1,9 @@
 from __future__ import unicode_literals, absolute_import, print_function, division
+
+from musicbrainzngs import MusicBrainzError
 from pies.overrides import *
 
-from headphones2.external.musicbrainz import find_artist_by_name
+from headphones2.external.musicbrainz import find_artist_by_name, find_releases
 import logbook
 
 if PY2:
@@ -20,7 +22,7 @@ logger.handlers.append(logbook.StderrHandler())
 
 
 @search_api.route('/search')
-def search_musicbrainz_for_artist():
+def search_musicbrainz():
     args = flask.request.args
     search_type, q = args.get('type'), args.get('q')
     logger.debug('Search called with: {search_type}, {q}'.format(search_type=search_type, q=q))
@@ -28,7 +30,10 @@ def search_musicbrainz_for_artist():
         abort(HTTPStatus.PRECONDITION_REQUIRED.value)  # Missing HTTP Parameters
 
     if search_type == 'artist':
-        results = find_artist_by_name(q, limit=10)
+        try:
+            results = find_artist_by_name(q, limit=10)
+        except MusicBrainzError:
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
         return jsonify({
             'data':
@@ -38,7 +43,25 @@ def search_musicbrainz_for_artist():
                         'id': result['id'],
                         'uniqueName': result['name']
                     }
-                    for result in results]
+                    for result in results],
+            'type': 'artist'
+        })
+    elif search_type == 'release':
+        try:
+            results = find_releases(q, limit=10)
+        except MusicBrainzError:
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+        return jsonify({
+            'data':
+                [
+                    {
+                        'score': result['ext:score'],
+                        'id': result['id'],
+                        'title': result['title'],
+                    }
+                    for result in results],
+            'type': 'release'
         })
 
     abort(HTTPStatus.PRECONDITION_FAILED.value)

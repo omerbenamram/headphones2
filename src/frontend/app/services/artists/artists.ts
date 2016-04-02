@@ -5,14 +5,14 @@ import {Artist} from '../../interfaces/interfaces.ts';
 
 @Injectable()
 export class ArtistService {
-    public ARTISTS_API:string = '/api/artists';
+  public ARTISTS_API:string = '/api/artists';
 
-    constructor(private http:Http) {
-    }
+  constructor(private http:Http) {
+  }
 
-    getArtists():Observable<Artist[]> {
-        return this.http.get(this.ARTISTS_API)
-            .map(res => res.json().data)
-            .do(x => console.log(x));
-    }
+  getArtists():Observable<Artist[]> {
+    return this.http.get(this.ARTISTS_API)
+      .map(res => res.json().data)
+      .do(x => console.log(x));
+  }
 }

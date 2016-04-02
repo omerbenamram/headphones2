@@ -40,6 +40,7 @@ if ('production' === process.env.ENV) {
 }
 
 document.addEventListener('DOMContentLoaded', function main() {
+    //noinspection TypeScriptValidateTypes
     bootstrap(AppCmp, [
         ...ENV_PROVIDERS,
         ...HTTP_PROVIDERS,
@@ -61,6 +62,7 @@ if (module.hot) {
     // bootstrap must not be called after DOMContentLoaded,
     // otherwise it cannot be rerenderd after module replacement
 
+    //noinspection TypeScriptValidateTypes
     bootstrap(AppCmp, [
         ...ENV_PROVIDERS,
         ...HTTP_PROVIDERS,

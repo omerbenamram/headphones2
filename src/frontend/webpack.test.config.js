@@ -1,13 +1,6 @@
 var helpers = require('./helpers.js');
 var webpack = require('webpack');
 
-
-// Webpack Plugins
-var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
-
 const autoprefixer = require('autoprefixer');
 var ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
@@ -52,11 +45,17 @@ module.exports = {
 
   module: {
     preLoaders: [
+      {test: /\.ts$/, loader: 'tslint-loader', exclude: [helpers.root('node_modules')]},
       {test: /\.js$/, loader: "source-map-loader", exclude: [helpers.root('node_modules/rxjs')]}
     ],
     loaders: [
       // Support for .ts files.
-      {test: /\.ts$/, loader: 'awesome-typescript', exclude: [/\.(spec|e2e|async)\.ts$/]},
+      {
+        test: /\.ts$/,
+        loader: 'awesome-typescript',
+        query: {"compilerOptions": {"removeComments": true}},
+        exclude: [/\.e2e\.ts$/]
+      },
 
       // Support for *.json files.
       {test: /\.json$/, loader: 'json'},
@@ -99,11 +98,6 @@ module.exports = {
   postcss: [autoprefixer],
 
   plugins: [
-    new ForkCheckerPlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(true),
-    new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.bundle.js', minChunks: Infinity}),
-    new CopyWebpackPlugin([{from: 'app/assets', to: 'assets'}]),
-    new HtmlWebpackPlugin({template: 'app/index.html', inject: true}),
     new webpack.DefinePlugin({
       'process.env': {
         'ENV': JSON.stringify(metadata.ENV),

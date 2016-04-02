@@ -10,3 +10,4 @@ src/frontend/node_modules
 src/frontend/dist
 src/headphones2/configuration.json
 scripts/
+src/frontend/coverage/

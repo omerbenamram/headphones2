@@ -21,6 +21,7 @@ require("font-awesome-animation");
   styles: [require('./app.styl')],
   encapsulation: ViewEncapsulation.None,
 })
+//noinspection TypeScriptValidateTypes
 @RouteConfig([
   new Route({path: '/', component: HomeCmp, name: 'Home'}),
   new Route({path: '/manage/...', component: ManageCmp, name: 'Manage'})

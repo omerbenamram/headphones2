@@ -31,7 +31,7 @@ def get_artwork():
         abort(406)  # Bad Params supplied
 
     return jsonify({
-        'data' : url
+        'data': url
     })
 
 

@@ -1,3 +1,8 @@
 div.search-result((click)="onClick($event)", tabindex ="-1")
-   span.col-md-6 {{result.uniqueName}}
-   span.col-sm-1.pull-right {{result.score}}
+   span.col-md-6#result-name {{result.uniqueName}}
+   .pull-right.col-sm-2
+       span.col-sm-1 {{result.score}}
+       span.col-sm-1
+           button.btn.btn-primary.btn-xs
+             i.fa.fa-plus
+             span Add

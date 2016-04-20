@@ -1,10 +1,10 @@
 from __future__ import unicode_literals, absolute_import, print_function, division
 
+import logbook
 from musicbrainzngs import MusicBrainzError
 from pies.overrides import *
 
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
-import logbook
 
 if PY2:
     from headphones2.compat.http import HTTPStatus as HTTPStatus

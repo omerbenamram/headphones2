@@ -1,8 +1,9 @@
-import {Component, Output, EventEmitter, OnInit, ViewChildren, QueryList, AfterViewInit} from 'angular2/core'
+import {Component, Output, EventEmitter, OnInit, ViewChildren, QueryList, AfterViewInit} from "angular2/core";
 import {Control, FORM_DIRECTIVES} from "angular2/common";
 import {Http, Response} from "angular2/http";
 import {SearchResult} from "../../../interfaces/search.ts";
 import {SearchResultCmp} from "./searchResult.ts";
+import {KeyEventsPlugin} from "angular2/src/platform/dom/events/key_events";
 
 @Component({
   selector: 'hp-search',
@@ -33,7 +34,8 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   onInputArrowDown($event) {
-    if ($event.keyCode == 39) {
+    let keyCombination = KeyEventsPlugin.parseEventName($event);
+    if (keyCombination == 'arrowDown') {
       this.selectedActionIndex = 0;
       this.searchResultsCmps[this.selectedActionIndex].focus();
       $event.preventDefault();

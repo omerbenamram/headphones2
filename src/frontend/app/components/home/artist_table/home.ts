@@ -1,8 +1,7 @@
-import {Component, OnInit} from 'angular2/core';
-import {ArtistService} from '../../../services/artists/artists.ts';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgStyle, NgClass} from 'angular2/common';
-import {COMMON_DIRECTIVES} from 'angular2/common';
-import {ArtworkService} from '../../../services/artwork/artwork.ts';
+import {Component, OnInit} from "angular2/core";
+import {ArtistService} from "../../../services/artists/artists.ts";
+import {CORE_DIRECTIVES, FORM_DIRECTIVES, NgStyle, NgClass, COMMON_DIRECTIVES} from "angular2/common";
+import {ArtworkService} from "../../../services/artwork/artwork.ts";
 import {Artist} from "../../../interfaces/interfaces.ts";
 import {ParseDatePipe} from "../../../pipes/parse_date.ts";
 

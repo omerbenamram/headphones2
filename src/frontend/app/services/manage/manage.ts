@@ -1,15 +1,7 @@
-///<reference path="../../../node_modules/rxjs/Observable.d.ts"/>
-import {Http} from 'angular2/http';
-import {Injectable, Inject} from 'angular2/core';
-
+import {Http, RequestOptions, Headers} from "angular2/http";
+import {Injectable, Inject} from "angular2/core";
 import {Observable} from "rxjs/Observable";
-import 'rxjs/add/operator/map'; //Needed for map to work!
-import 'rxjs/add/operator/do';
-import {OnInit} from "angular2/core";
-import {HeadphonesConfiguration} from "../../interfaces/interfaces.ts";
-import {URLSearchParams} from "angular2/http";
-import {RequestOptions} from "angular2/http";
-import {Headers} from "angular2/http";
+import {HeadphonesConfiguration} from "../../interfaces/interfaces.ts"
 
 
 @Injectable()

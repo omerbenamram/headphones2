@@ -13,7 +13,7 @@ import {Component, provide} from 'angular2/core';
 
 describe("Hello World!", () => {
   beforeEach(() => {
-    console.log("TESTS!!")
+    console.log("Testing!!!")
   });
 
   it('Should work', () => {

@@ -34,7 +34,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
   }
 
   onInputArrowDown($event) {
-    let keyCombination = KeyEventsPlugin.parseEventName($event);
+    let keyCombination = KeyEventsPlugin.getEventFullKey($event);
     if (keyCombination == 'arrowDown') {
       this.selectedActionIndex = 0;
       this.searchResultsCmps[this.selectedActionIndex].focus();

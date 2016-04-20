@@ -1,5 +1,5 @@
-import {Component} from 'angular2/core';
-import {ROUTER_DIRECTIVES, Router, Location} from 'angular2/router';
+import {Component} from "angular2/core";
+import {ROUTER_DIRECTIVES, Location} from "angular2/router";
 import {SearchComponent} from "./search/search.ts";
 
 @Component({

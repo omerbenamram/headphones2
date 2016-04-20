@@ -3,7 +3,6 @@ import {COMMON_DIRECTIVES, FORM_DIRECTIVES, CORE_DIRECTIVES, FormBuilder, Contro
 import {ManageService} from "../../services/manage/manage.ts";
 import {HeadphonesConfiguration} from "../../interfaces/interfaces.ts";
 import {Http} from "angular2/http";
-import {ApiUrls} from "../../constsants/api.ts"
 
 @Component({
   selector: 'manage-library',
@@ -39,13 +38,6 @@ export class ManageLibraryCmp implements OnInit {
         error => console.log(error)
       )
   }
-
-  // libraryPathValid(control:Control):Promise<ValidationResult> {
-  //   return new Promise((resolve, reject) => {
-  //     this._http.put(ApiUrls.ConfigurationAPI);
-  //   })
-  // }
-
 
   ngOnInit() {
     this.configurationSvc.getConfiguration()

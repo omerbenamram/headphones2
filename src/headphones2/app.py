@@ -1,13 +1,11 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
-import os
-
 import logbook
+import os
 from flask import Flask, send_from_directory
 
-from headphones2.tasks.engine import spin_consumers
-from headphones2.views import pages
 from headphones2.api import artist_api, artwork_api, search_api
+from headphones2.tasks.engine import spin_consumers
 
 FRONTEND_PATH = os.path.join(__file__, os.pardir, os.pardir, 'frontend')
 BUILD_PATH = os.path.join(FRONTEND_PATH, "dist")
@@ -23,7 +21,6 @@ def create_app():
     app = Flask('headphones2', static_folder=str(BUILD_PATH))
     app.debug = True
 
-    app.register_blueprint(pages)
     app.register_blueprint(artist_api)
     app.register_blueprint(artwork_api)
     app.register_blueprint(search_api)

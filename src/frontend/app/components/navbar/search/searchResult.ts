@@ -3,7 +3,7 @@ import {SearchResult} from "../../../interfaces/search.ts";
 @Component({
   selector: 'hp-search-result',
   template: require('./searchResult.jade'),
-  styles: [require('./search.styl')]
+  styles: [require('./search.styl'), require('./searchResult.styl')]
 })
 export class SearchResultCmp {
   @Input('result')
@@ -20,10 +20,9 @@ export class SearchResultCmp {
     this._el.nativeElement.focus();
   }
 
-  onClick($event) {
+  onClick($event:MouseEvent) {
     this.focus();
-    console.log(document.activeElement);
-    this.onSelected.emit(this.result);
+    $event.stopImmediatePropagation();
     $event.preventDefault();
   }
 

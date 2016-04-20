@@ -3,7 +3,6 @@ import {Control, FORM_DIRECTIVES} from "angular2/common";
 import {Http, Response} from "angular2/http";
 import {SearchResult} from "../../../interfaces/search.ts";
 import {SearchResultCmp} from "./searchResult.ts";
-import {KeyEventsPlugin} from "angular2/src/platform/dom/events/key_events";
 
 @Component({
   selector: 'hp-search',
@@ -40,27 +39,17 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMouseEnter($event){
+  onMouseEnter($event) {
     if (this.showSearchResults == false && this.searchResults != []) {
       this.showSearchResults = true;
     }
   }
 
-  onInputArrowDown($event) {
-    let keyCombination = KeyEventsPlugin.getEventFullKey($event);
-    if (keyCombination == 'arrowDown') {
-      this.selectedActionIndex = 0;
-      this.searchResultsCmps[this.selectedActionIndex].focus();
-      $event.preventDefault();
-    }
-  }
-
-  onActionChanged($event) {
-
-  }
-
-  onActionSelected($event) {
-
+  onInputArrowDown($event:KeyboardEvent) {
+    this.selectedActionIndex = 0;
+    this.searchResultsCmps[this.selectedActionIndex].focus();
+    $event.stopImmediatePropagation();
+    $event.preventDefault();
   }
 
   ngAfterViewInit() {

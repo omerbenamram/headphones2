@@ -20,6 +20,7 @@ export class SearchResultCmp {
     this._el.nativeElement.getElementsByClassName('search-result')[0].focus()
   }
 
+  // TODO: this should update index correctly
   onClick($event:MouseEvent) {
     this.focus();
     $event.stopImmediatePropagation();

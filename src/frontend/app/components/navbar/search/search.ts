@@ -22,6 +22,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   selectedActionIndex:number;
 
+  showSearchResults:boolean = false;
   searchResults:SearchResult[];
   isSearching:boolean = false;
 
@@ -31,6 +32,18 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   constructor(private _http:Http) {
 
+  }
+
+  onMouseLeave($event) {
+    if (this.showSearchResults == true) {
+      this.showSearchResults = false;
+    }
+  }
+
+  onMouseEnter($event){
+    if (this.showSearchResults == false && this.searchResults != []) {
+      this.showSearchResults = true;
+    }
   }
 
   onInputArrowDown($event) {
@@ -73,6 +86,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
         this.searchResults = latestResultsArray;
         console.log(this.searchResults);
         this.isSearching = false;
+        this.showSearchResults = true;
       });
   }
 }

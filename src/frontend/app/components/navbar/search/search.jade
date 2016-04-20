@@ -1,4 +1,5 @@
-form#hp-search.form-inline.pull-right
+form#hp-search.form-inline.pull-right((mouseleave)="onMouseLeave($event)",
+                                      (mouseenter)="onMouseEnter($event)")
     .form-group
         .input-group
           .input-group-btn
@@ -13,7 +14,7 @@ form#hp-search.form-inline.pull-right
                                [ngFormControl]="input",
                                (keydown)="onInputArrowDown($event)")
           span#hp-spinner.fa.fa-spinner.fa-spin([hidden]="!isSearching")
-        div#hp-search-results-dropdown(*ngIf="searchResults")
+        div#hp-search-results-dropdown(*ngIf="searchResults && showSearchResults")
           hp-search-result(*ngFor="#result of searchResults",
                            [result]="result",
                            (keydown)="onActionChanged($event)",

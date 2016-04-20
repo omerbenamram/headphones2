@@ -1,9 +1,9 @@
-import {OnInit, Component, Input, ElementRef, Output, EventEmitter} from "angular2/core";
+import {Component, Input, ElementRef, Output, EventEmitter} from "angular2/core";
 import {SearchResult} from "../../../interfaces/search.ts";
 @Component({
   selector: 'hp-search-result',
   template: require('./searchResult.jade'),
-  styles: [require('./searchResult.styl')]
+  styles: [require('./search.styl')]
 })
 export class SearchResultCmp {
   @Input('result')

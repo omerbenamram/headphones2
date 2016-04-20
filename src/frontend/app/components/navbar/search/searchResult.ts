@@ -1,7 +1,7 @@
 import {Component, Input, ElementRef, Output, EventEmitter} from "angular2/core";
 import {SearchResult} from "../../../interfaces/search.ts";
 @Component({
-  selector: 'hp-search-result',
+  selector: '[hp-search-result]',
   template: require('./searchResult.jade'),
   styles: [require('./search.styl'), require('./searchResult.styl')]
 })
@@ -17,7 +17,7 @@ export class SearchResultCmp {
   }
 
   focus() {
-    this._el.nativeElement.focus();
+    this._el.nativeElement.getElementsByClassName('search-result')[0].focus()
   }
 
   onClick($event:MouseEvent) {

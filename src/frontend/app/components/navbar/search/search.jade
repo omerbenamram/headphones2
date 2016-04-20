@@ -15,6 +15,9 @@ form#hp-search.form-inline.pull-right((mouseleave)="onMouseLeave($event)",
                                (keydown.arrowdown)="onInputArrowDown($event)")
           span#hp-spinner.fa.fa-spinner.fa-spin([hidden]="!isSearching")
         div#hp-search-results-dropdown(*ngIf="searchResults", [hidden]="!showSearchResults")
-          hp-search-result(*ngFor="#result of searchResults",
-                           [result]="result",
-                            tabindex ="-1")
+          div(hp-search-result,
+              (keydown.arrowdown)="onResultArrowDown($event)",
+              (keydown.arrowup)="onResultArrowUp($event)",
+              *ngFor="#result of searchResults",
+              [result]="result",
+              tabindex ="-1")

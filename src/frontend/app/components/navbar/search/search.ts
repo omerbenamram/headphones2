@@ -47,10 +47,30 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
   onInputArrowDown($event:KeyboardEvent) {
     this.selectedActionIndex = 0;
+    this.refoucsResults($event)
+  }
+
+  refoucsResults($event):void {
     this.searchResultsCmps[this.selectedActionIndex].focus();
     $event.stopImmediatePropagation();
     $event.preventDefault();
   }
+
+  onResultArrowDown($event:KeyboardEvent) {
+    let lastIndex = this.searchResultsCmps.length - 1;
+    if (this.selectedActionIndex < lastIndex) {
+      this.selectedActionIndex += 1;
+      this.refoucsResults($event);
+    }
+  }
+
+  onResultArrowUp($event:KeyboardEvent) {
+    if (this.selectedActionIndex > 0) {
+      this.selectedActionIndex -= 1;
+      this.refoucsResults($event);
+    }
+  }
+
 
   ngAfterViewInit() {
     this.searchResultsCmpsQuery.changes.subscribe(() => {

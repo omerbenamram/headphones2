@@ -8,6 +8,7 @@ from flask.blueprints import Blueprint
 from headphones2.cache import cache
 from headphones2.external.lastfm import lastfm_api_wrapper
 from headphones2.tasks import get_artwork_for_album_task
+from headphones2.utils.general import make_cache_key
 
 logger = logbook.Logger()
 
@@ -15,6 +16,7 @@ artwork_api = Blueprint('artwork_api', __name__, url_prefix='/api')
 
 
 @artwork_api.route('/artwork', methods=['GET'])
+@cache.cached(timeout=6000, key_prefix=make_cache_key)
 def get_artwork():
     args = flask.request.args
     image_type = args.get('type')
@@ -34,7 +36,6 @@ def get_artwork():
     })
 
 
-@cache.cached(timeout=6000)
 def _get_album_cover_art(rgid, size='small'):
     """
     :param rgid: musicbrainz releasegroup_id
@@ -48,7 +49,6 @@ def _get_album_cover_art(rgid, size='small'):
     return urls.get(size)
 
 
-@cache.cached(timeout=6000)
 def _get_artist_artwork(mbid, size='small'):
     """
     :param mbid: musicbrainz artist_id

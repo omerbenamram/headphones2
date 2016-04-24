@@ -1,9 +1,11 @@
 import {Component, Input, ElementRef, Output, EventEmitter} from "angular2/core";
 import {SearchResult} from "../../../interfaces/search.ts";
+import {ArtworkService} from "../../../services/artwork/artwork.ts";
 @Component({
   selector: '[hp-search-result]',
   template: require('./searchResult.jade'),
-  styles: [require('./search.styl'), require('./searchResult.styl')]
+  styles: [require('./search.styl'), require('./searchResult.styl')],
+  viewProviders: [ArtworkService]
 })
 export class SearchResultCmp {
   @Input('result')
@@ -11,9 +13,15 @@ export class SearchResultCmp {
 
   @Output('on-selected')
   onSelected = new EventEmitter<SearchResult>();
+  imgUrl:string;
 
-  constructor(private _el:ElementRef) {
+  constructor(private _el:ElementRef, private _artworkSvc:ArtworkService) {
+  }
 
+  ngOnInit() {
+    this._artworkSvc.getArtworkUrl('artist', 'small', this.result.id).subscribe((result) => {
+      this.imgUrl = result;
+    });
   }
 
   focus() {

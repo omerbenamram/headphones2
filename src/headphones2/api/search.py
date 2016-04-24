@@ -4,7 +4,9 @@ import logbook
 from musicbrainzngs import MusicBrainzError
 from pies.overrides import *
 
+from headphones2.cache import cache
 from headphones2.external.musicbrainz import find_artist_by_name, find_releases
+from headphones2.utils.general import make_cache_key
 
 if PY2:
     from headphones2.compat.http import HTTPStatus as HTTPStatus
@@ -22,6 +24,7 @@ logger.handlers.append(logbook.StderrHandler())
 
 
 @search_api.route('/search')
+@cache.cached(timeout=6000, key_prefix=make_cache_key)
 def search_musicbrainz():
     args = flask.request.args
     search_type, q = args.get('type'), args.get('q')

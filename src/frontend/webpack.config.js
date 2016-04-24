@@ -129,7 +129,6 @@ module.exports = {
   devServer: {
     port: metadata.port,
     contentBase: 'dist/',
-    hot: true,
     // use python backend
     proxy: {
       '/api/*': {

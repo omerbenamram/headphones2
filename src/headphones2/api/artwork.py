@@ -2,11 +2,10 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 
 import flask
 import logbook
-import requests
-
-from flask.blueprints import Blueprint
 from flask import abort, jsonify
+from flask.blueprints import Blueprint
 
+from headphones2.cache import cache
 from headphones2.external.lastfm import lastfm_api_wrapper
 from headphones2.tasks import get_artwork_for_album_task
 
@@ -35,6 +34,7 @@ def get_artwork():
     })
 
 
+@cache.cached(timeout=6000)
 def _get_album_cover_art(rgid, size='small'):
     """
     :param rgid: musicbrainz releasegroup_id
@@ -48,6 +48,7 @@ def _get_album_cover_art(rgid, size='small'):
     return urls.get(size)
 
 
+@cache.cached(timeout=6000)
 def _get_artist_artwork(mbid, size='small'):
     """
     :param mbid: musicbrainz artist_id

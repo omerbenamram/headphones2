@@ -16,8 +16,8 @@ export class ManageService {
 
     getConfiguration():Observable<HeadphonesConfiguration> {
         return this.http.get(this.CONFIGURATION_API)
-            .map(res => res.json())
-            .do(x => console.log(x))
+            .map(res => res.json().data.data)
+            .do(res => console.log(res))
     }
 
     updateConfiguration(configuration:HeadphonesConfiguration):Observable<HeadphonesConfiguration> {

@@ -4,7 +4,7 @@ import logbook
 import os
 from flask import Flask, send_from_directory
 
-from headphones2.api import artist_api, artwork_api, search_api
+from headphones2.api import artist_api, artwork_api, search_api, configuration_api
 from headphones2.cache import cache
 from headphones2.tasks.engine import spin_consumers
 from headphones2.views import pages
@@ -27,6 +27,7 @@ def create_app():
     app.register_blueprint(artist_api)
     app.register_blueprint(artwork_api)
     app.register_blueprint(search_api)
+    app.register_blueprint(configuration_api)
     cache.init_app(app, config={"CACHE_TYPE": "redis"})
     return app
 

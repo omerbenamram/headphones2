@@ -1,6 +1,10 @@
 var helpers = require('./helpers.js');
 var webpack = require('webpack');
 
+/**
+ * Webpack Plugins
+ */
+
 
 // Webpack Plugins
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
@@ -10,28 +14,36 @@ var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 
 const autoprefixer = require('autoprefixer');
 var ProvidePlugin = require('webpack/lib/ProvidePlugin');
+const DefinePlugin = require('webpack/lib/DefinePlugin');
+
 
 var rootAssetPath = helpers.root('src', 'assets');
 
-var metadata = {
+const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
+const HMR = helpers.hasProcessFlag('hot');
+
+var METADATA = {
   title: 'Headphones 2',
   baseUrl: '/',
   host: 'localhost',
   port: 3000,
-  ENV: 'development'
+  ENV: ENV,
+  HMR: HMR
 };
 
 /*
  * Config
  */
 module.exports = {
-  metadata: metadata,
+  metadata: METADATA,
   devtool: 'cheap-module-eval-source-map',
   debug: true,
 
   entry: {
-    'vendor': './src/vendor.ts',
-    'main': './src/main.browser.ts'
+    // 'polyfills': './src/polyfills.ts',
+    // 'vendor': './src/vendor.ts',
+    //'main': './src/main.browser.ts'
+    'main': './src/bootstrap.ts'
   },
 
 
@@ -67,6 +79,7 @@ module.exports = {
 
       //jade
       {test: /\.jade$/, loader: "raw!jade-html"},
+      {test: /\.pug$/, loader: "raw!jade-html"},
 
       // support for .html as raw text
       {test: /\.html$/, loader: 'raw'},
@@ -92,7 +105,7 @@ module.exports = {
     ],
     noParse: [
       /zone\.js\/dist\/.+/,
-      /reflect-metadata/,
+      /reflect-METADATA/,
       /es(6|7)-.+/,
       /angular2\/bundles\/.+/]
   },
@@ -101,14 +114,15 @@ module.exports = {
 
   plugins: [
     new ForkCheckerPlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(true),
-    new CommonsChunkPlugin({name: 'vendor', filename: 'vendor.bundle.js', minChunks: Infinity}),
     new CopyWebpackPlugin([{from: 'src/assets', to: 'assets'}]),
     new HtmlWebpackPlugin({template: 'src/index.html', inject: true}),
-    new webpack.DefinePlugin({
+    new DefinePlugin({
+      'ENV': JSON.stringify(METADATA.ENV),
+      'HMR': METADATA.HMR,
       'process.env': {
-        'ENV': JSON.stringify(metadata.ENV),
-        'NODE_ENV': JSON.stringify(metadata.ENV)
+        'ENV': JSON.stringify(METADATA.ENV),
+        'NODE_ENV': JSON.stringify(METADATA.ENV),
+        'HMR': METADATA.HMR,
       }
     }),
     //jQuery support for bootstrap
@@ -128,7 +142,7 @@ module.exports = {
   },
   // our Webpack Development Server config
   devServer: {
-    port: metadata.port,
+    port: METADATA.port,
     contentBase: 'dist/',
     // use python backend
     proxy: {

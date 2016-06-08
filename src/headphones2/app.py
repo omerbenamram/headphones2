@@ -8,6 +8,7 @@ from headphones2.api import artist_api, artwork_api, search_api, configuration_a
 from headphones2.cache import cache
 from headphones2.tasks.engine import spin_consumers
 
+# TODO: migrate to pathlib
 FRONTEND_PATH = os.path.join(__file__, os.pardir, os.pardir, 'frontend')
 BUILD_PATH = os.path.join(FRONTEND_PATH, "dist")
 ASSETS_PATH = os.path.join(FRONTEND_PATH, "dist", "assets")

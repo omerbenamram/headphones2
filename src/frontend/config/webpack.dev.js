@@ -40,10 +40,9 @@ module.exports = {
   debug: true,
 
   entry: {
-    // 'polyfills': './src/polyfills.ts',
-    // 'vendor': './src/vendor.ts',
-    //'main': './src/main.browser.ts'
-    'main': './src/bootstrap.ts'
+    'polyfills': './src/polyfills.ts',
+    'vendor': './src/vendor.ts',
+    'main': './src/main.browser.ts',
   },
 
 
@@ -86,7 +85,7 @@ module.exports = {
 
       // stylus should be served to angular as raw text
       {test: /\.styl$/, loader: 'raw!stylus'},
-
+      
       // Bootstrap 4
       {test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass']},
       {test: /bootstrap\/dist\/js\/umd\//, loader: 'imports?jQuery=jquery'},
@@ -94,6 +93,7 @@ module.exports = {
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
       {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
       {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
+
 
       {
         test: /\.(jpe?g|png|gif|svg([\?]?.*))$/i,
@@ -122,7 +122,7 @@ module.exports = {
       'process.env': {
         'ENV': JSON.stringify(METADATA.ENV),
         'NODE_ENV': JSON.stringify(METADATA.ENV),
-        'HMR': METADATA.HMR,
+        'HMR': METADATA.HMR
       }
     }),
     //jQuery support for bootstrap

@@ -4,6 +4,8 @@ import {Http, Response} from "@angular/http";
 import {SearchResult} from "../interfaces/search.ts";
 import {SearchResultCmp} from "./searchResult.component.ts";
 
+import 'rxjs/operator/debounceTime'
+
 @Component({
   selector: 'hp-search',
   directives: [FORM_DIRECTIVES, SearchResultCmp],

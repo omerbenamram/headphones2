@@ -1,0 +1,15 @@
+md-sidenav-layout
+    md-sidenav.app-sidenav(#sidenav, mode="side")
+        | Headphone 2
+
+    md-toolbar(color="primary")
+        button(md-icon-button, (click)="sidenav.toggle()")
+            md-icon menu
+
+        | Headphones 2!
+
+        span.app-toolbar-filler
+
+    .container
+        router-outlet
+

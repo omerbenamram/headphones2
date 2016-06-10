@@ -19,6 +19,8 @@ if USE_REDIS:
     huey = RedisHuey('task-queue')
 else:
     raise NotImplemented
+
+
 # else:
 #     # Sqlite is limited to one consumer per db.
 #     NUM_OF_CONSUMER_PROCESSES = 1

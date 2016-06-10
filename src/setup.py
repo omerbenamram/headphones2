@@ -10,6 +10,7 @@ setup(
     author_email='omerbenamram@gmail.com',
     description='',
     install_requires=['SQLAlchemy',
+                      'beets',
                       'flask',
                       'flask-cache',
                       'redis',

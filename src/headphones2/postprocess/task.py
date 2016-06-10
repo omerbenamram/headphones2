@@ -5,7 +5,6 @@ import os
 import uuid
 
 import logbook
-from builtins import str
 from beets.autotag import apply_metadata
 
 logger = logbook.Logger(__name__)

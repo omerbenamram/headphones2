@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division,
 
 import py
 import pytest
+import six
 
 from beets.library import Item
 from beets.dbcore import types
@@ -24,11 +25,11 @@ def task(tmpdir):
 @pytest.fixture
 def no_metadata_task(task):
     for item in task:
-        for field, type in Item._fields.iteritems():
+        for field, item_type in six.iteritems(Item._fields):
             if field != 'path':
-                if type == types.STRING:
+                if item_type == types.STRING:
                     setattr(item, field, '')
-                elif isinstance(type, types.PaddedInt):
+                elif isinstance(item_type, types.PaddedInt):
                     setattr(item, field, 0)
         item.write()
     return task

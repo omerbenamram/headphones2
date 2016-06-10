@@ -2,14 +2,12 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 import os
 
-from pies.overrides import *
-
 import logbook
 import py
 import tempfile
 
 from beets.library import Item
-from headphones2.config import MEDIA_FORMATS
+from headphones2.configuration.consts import MEDIA_FORMATS
 from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, Renamer, AlbumTask
 
 logger = logbook.Logger(__name__)

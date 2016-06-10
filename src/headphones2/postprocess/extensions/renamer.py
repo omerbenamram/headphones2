@@ -8,6 +8,7 @@ import os
 import py
 import logbook
 
+import six
 from beetsplug.ftintitle import split_on_feat
 from headphones2.postprocess.component_base import PostProcessor
 
@@ -36,7 +37,7 @@ class Renamer(PostProcessor):
             "Year": item.year,
             "Genre": item.genre
         }
-        return {k: unicode(v) for k, v in components.iteritems()}
+        return {k: six.u(str(v)) for k, v in six.iteritems(components)}
 
     def process(self, task, name_template="$SortArtist/$Album [$Year]/ $Track_num - $Track_name",
                 destination_folder=str(Path(os.path.expanduser("~")).join("Music")), flatten_folder=False):
@@ -63,7 +64,7 @@ class Renamer(PostProcessor):
             most_common_sort_artist = Counter(all_sort_artists).most_common()[0][0]
             # override all other SortArtists
             for k in components_dict.values():
-                k['SortArtist'] = most_common_sort_artist
+                k[six.u('SortArtist')] = most_common_sort_artist
 
         for item in task:
             original_path = Path(item.path)

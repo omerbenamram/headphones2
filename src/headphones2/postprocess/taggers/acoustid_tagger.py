@@ -9,6 +9,7 @@ import acoustid
 import logbook
 import musicbrainzngs
 import py
+import six
 
 from headphones2.postprocess.component_base import PostProcessor
 
@@ -105,7 +106,7 @@ class AcoustIDAlbumTagger(PostProcessor):
         """
         results = {item: self._acoustid_tag_file(item.path) for item in task}
 
-        for item, result in results.iteritems():
+        for item, result in six.iteritems(results):
             if not result:
                 continue
             item.acoustid_fingerprint = result.fingerprint

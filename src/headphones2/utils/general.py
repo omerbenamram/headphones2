@@ -1,6 +1,9 @@
+from __future__ import unicode_literals, absolute_import, division
+import os
 import re
 import sys
 from flask import request
+from headphones2.configuration import MEDIA_FORMATS
 
 PY2 = sys.version_info[0] == 2
 WIN = sys.platform.startswith('win')
@@ -20,6 +23,15 @@ def filename_to_ui(value):
         value = value.encode('utf-8', 'surrogateescape') \
             .decode('utf-8', 'replace')
     return value
+
+
+def is_media_file(path):
+    """
+    A simple check if a file extension is a known media format
+    :param path: path
+    :return:
+    """
+    return os.path.splitext(path)[1][1:] in MEDIA_FORMATS
 
 
 def make_cache_key(*args, **kwargs):

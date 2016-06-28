@@ -9,14 +9,14 @@ from headphones2.postprocess.component_base import PostProcessor, PostProcessorE
 logger = logbook.Logger(__name__)
 
 
-class BeetsTagger(PostProcessor):
+class BeetsAlbumTagger(PostProcessor):
     def __init__(self):
-        super(BeetsTagger, self).__init__()
+        super(BeetsAlbumTagger, self).__init__()
 
-    def process(self, task, expected_artist=None, expected_album=None, expected_release_id=None,
+    def process(self, album_task, expected_artist=None, expected_album=None, expected_release_id=None,
                 fallback_taggers=()):
         """
-        :param task: the task object to tag
+        :param album_task: the task object to tag
         :param expected_artist: the artist name (not id) to help matching
         :type expected_artist: str
         :param expected_album: the album name (not id) to help matching
@@ -30,7 +30,7 @@ class BeetsTagger(PostProcessor):
         """
         logger.debug("Called with expected id {}".format(expected_release_id))
         artist_name, album_name, album_recommendation_list, recommendation = \
-            tag_album(task.items, search_artist=expected_artist, search_album=expected_album,
+            tag_album(album_task.items, search_artist=expected_artist, search_album=expected_album,
                       search_ids=[expected_release_id] if expected_release_id else [])
 
         if recommendation is Recommendation.none:
@@ -41,14 +41,15 @@ class BeetsTagger(PostProcessor):
 
             for tagger in fallback_taggers:
                 logger.debug("Calling {}".format(tagger.__class__.__name__))
-                fallback_recommendation = tagger.process(task)
+                fallback_recommendation = tagger.process(album_task)
                 if not fallback_recommendation:
                     continue
 
                 artist_name, album_name, album_recommendation_list, recommendation = \
-                    tag_album(task.items, search_artist=expected_artist, search_album=expected_album,
+                    tag_album(album_task.items, search_artist=expected_artist, search_album=expected_album,
                               search_ids=[fallback_recommendation])
 
+        # if we fail after fallback, raise
         if recommendation is Recommendation.none:
             raise BeetsTaggerException("Exhausted all tagging options, failing")
 
@@ -58,8 +59,8 @@ class BeetsTagger(PostProcessor):
         logger.info("Successfully tagged album {album_id}, releasegroup {rgid}".format(album_id=album_info.album_id,
                                                                                        rgid=album_info.releasegroup_id))
 
-        task._album_info_object = album_info
-        task._track_mapping_object = track_mapping
+        album_task._album_info_object = album_info
+        album_task._track_mapping_object = track_mapping
 
         return True
 

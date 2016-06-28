@@ -1,9 +1,18 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import datetime
+import os
+
 import logbook
 
 from headphones2.orm import *
 from headphones2.external.musicbrainz import musicbrainzngs, get_release_groups_for_artist, \
     get_releases_for_release_group
+
+from py._path.local import LocalPath as Path
+
+from beets.importer import albums_in_dir
 
 logger = logbook.Logger(__name__)
 
@@ -75,3 +84,10 @@ def add_artist_to_db(artist_id, session):
             chosen_release.is_selected = True
 
     session.commit()
+
+
+def scan_library(root_path):
+    assert os.path.isdir(root_path), '{} must be a directory!'.format(root_path)
+
+    for dirs, paths in albums_in_dir(root_path):
+        yield dirs, paths

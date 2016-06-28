@@ -4,16 +4,11 @@ from __future__ import (absolute_import, division,
 import logbook
 import sys
 from flask import Blueprint, request, abort, jsonify
-from pies.overrides import *
 
 from headphones2.configuration.scema import ConfigurationSchema
 from headphones2.configuration.utils import dump_configuration, load_configuration_from_disk
 
-if PY2:
-    from headphones2.compat.http import HTTPStatus as HTTPStatus
-
-if PY3:
-    from http import HTTPStatus
+from headphones2.compat import HTTPStatus
 
 logger = logbook.Logger(level=logbook.DEBUG)
 logger.handlers.append(logbook.StreamHandler(sys.stdout))
@@ -38,4 +33,4 @@ def update_configuration():
 
     dump_configuration(configuration=new_configuration)
 
-    return ('', HTTPStatus.OK.value)
+    return '', HTTPStatus.OK.value

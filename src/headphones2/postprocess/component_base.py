@@ -17,5 +17,6 @@ class PostProcessor(object):
         """
         raise NotImplementedError()
 
+
 class PostProcessorException(Exception):
     pass

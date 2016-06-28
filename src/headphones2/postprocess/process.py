@@ -8,7 +8,7 @@ import tempfile
 
 from beets.library import Item
 from headphones2.configuration.consts import MEDIA_FORMATS
-from headphones2.postprocess import AcoustIDAlbumTagger, BeetsTagger, Renamer, AlbumTask
+from headphones2.postprocess import AcoustIDAlbumTagger, BeetsAlbumTagger, Renamer, AlbumTask
 
 logger = logbook.Logger(__name__)
 Path = py.path.local
@@ -61,7 +61,7 @@ def post_process_album_task(task, expected_artist=None, expected_album=None, sho
     logger.info("Started post processing for {}".format(task))
 
     aid_tagger = AcoustIDAlbumTagger()
-    beets_tagger = BeetsTagger()
+    beets_tagger = BeetsAlbumTagger()
     renamer = Renamer()
 
     beets_tagger.process(task, expected_artist=expected_artist, expected_album=expected_album,

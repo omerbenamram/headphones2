@@ -16,6 +16,7 @@ Path = py.path.local
 SAMPLE_DIR = Path(__file__).dirpath().join('fixtures').join('samples').join('album')
 
 
+# TODO: preprocess copies files to tmp dir. I need to fix the fixtures for new processing model
 @pytest.fixture
 def task(tmpdir):
     task = list(pre_process_folder(str(SAMPLE_DIR)))[0]
@@ -24,6 +25,9 @@ def task(tmpdir):
 
 @pytest.fixture
 def no_metadata_task(task):
+    """
+    this fixture iterates through all the items in a task and strips them of metadata
+    """
     for item in task:
         for field, item_type in six.iteritems(Item._fields):
             if field != 'path':

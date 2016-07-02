@@ -2,10 +2,13 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 
 import logbook
 import os
+
+import sys
 from flask import Flask, send_from_directory
 
 from headphones2.api import artist_api, artwork_api, search_api, configuration_api
 from headphones2.cache import cache
+from headphones2.configuration import DEFAULT_LOG_PATH
 from headphones2.tasks.engine import spin_consumers
 
 # TODO: migrate to pathlib
@@ -52,7 +55,9 @@ def serve_component(path):
 
 
 def main():
-    with spin_consumers():
+    with spin_consumers(), \
+         logbook.RotatingFileHandler(DEFAULT_LOG_PATH).applicationbound(), \
+         logbook.StreamHandler(sys.stdout).applicationbound():
         app.run()
 
 

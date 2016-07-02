@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import pytest
 from flask import url_for
 
@@ -12,7 +15,7 @@ SAMPLE_GOOD_CONFIGURATION = {
 @pytest.mark.parametrize("input_params, status_code", [
     (SAMPLE_GOOD_CONFIGURATION, HTTPStatus.OK.value),
 ])
-def test_search_returns_correct_http_codes(client, input_params, status_code):
+def test_update_configuration_returns_correct_http_codes(client, input_params, status_code):
     url = url_for('configuration_api.update_configuration', **input_params)
     res = client.get(url)
     assert res.status_code == status_code

@@ -41,7 +41,7 @@ app = create_app()
 
 @app.route('/')
 def home():
-    return send_from_directory(os.path.join(FRONTEND_PATH, 'dist', 'index.html'))
+    return send_from_directory(os.path.join(FRONTEND_PATH, 'dist'), 'index.html')
 
 
 @app.route('/assets/<path:path>')

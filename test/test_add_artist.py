@@ -1,49 +1,35 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import datetime
 import os
 
-import pytest
+import logbook
 import musicbrainzngs
-
-from headphones2.importer import add_artist_to_db
+import pytest
 from headphones2.orm import *
-from headphones2.orm.connector import create_all_tables
-from .conftest import vcr, CASSETTE_LIBRARY_DIR
+from headphones2.tasks import add_artist_to_db
 
-musicbrainzngs.set_rate_limit(False)
+from .fixtures import *
+from .conftest import vcr
 
-AYREON_MBID = '7bbfd77c-1102-4831-9ba8-246fb67460b3'  # Ayreon.
+logger = logbook.Logger(__name__)
 
-
-@pytest.yield_fixture()
-def session(tmpdir):
-    db_file = os.path.join(tmpdir.strpath, 'temp.db')
-    if os.path.exists(db_file):
-        os.remove(db_file)
-
-    create_all_tables(db_file)
-    session = connect(db_file)
-    yield session
-    session.close()
+# if cassettes exist, turn off rate limiting
+current_dir = os.path.dirname(os.path.realpath(__file__))
+if os.path.exists(os.path.join(current_dir, 'fixtures', 'cassettes')):
+    logger.info('Cassettes directory existsing, turning off rate-limiting')
+    musicbrainzngs.set_rate_limit(False)
+else:
+    logger.warn("Couldn't find cassettes, going to hit real musicbrainz API")
 
 
-@pytest.yield_fixture()
-def session_with_artist(tmpdir):
-    db_file = os.path.join(tmpdir.strpath, 'temp.db')
-    if os.path.exists(db_file):
-        os.remove(db_file)
-
-    create_all_tables(db_file)
-    session = connect(db_file)
-    with vcr.use_cassette('test_add_artist_to_db'):
-        add_artist_to_db(AYREON_MBID, session)  # Tested separately
-    session.commit()
-    yield session
-    session.close()
-
-
-@vcr.use_cassette()
-def test_add_artist_to_db(session):
-    artist_id = AYREON_MBID
+@pytest.mark.parametrize("artist_id", [
+    AYREON_MBID
+])
+@vcr.use_cassette(record_mode='new_episodes')
+def test_add_artist_to_db(session, artist_id):
+    artist_id = artist_id
 
     add_artist_to_db(artist_id, session)
 
@@ -59,11 +45,23 @@ def test_add_artist_to_db(session):
 
     releases = session.query(Release).filter_by(album=toe_album)
 
-    assert releases.count() == 5
+    assert releases.count() == 7
     release = releases.filter_by(asin='B00F2HW220').first()
     assert release.tracks.count() == 42
     assert release.release_date == datetime.datetime(2013, 10, 25)
     assert releases.filter_by(is_selected=True).count() == 1
+
+
+# Air has some different resulting dicts structure
+def test_add_artist_type_2_to_db(session):
+    artist_id = AIR_MBID
+
+    add_artist_to_db(artist_id, session)
+
+    artist = session.query(Artist).filter_by(musicbrainz_id=artist_id).first()
+
+    assert artist
+    assert artist.name == 'Air'
 
 
 @vcr.use_cassette()

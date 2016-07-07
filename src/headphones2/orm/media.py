@@ -92,7 +92,7 @@ class Release(Base):
     @hybrid_property
     def average_bitrate(self):
         tracks = [track.bitrate for track in self.tracks]
-        return sum(tracks)/len(tracks)
+        return sum(tracks) / len(tracks)
 
     def __repr__(self):
         return '<Release {album} - Released in {date},' \
@@ -111,13 +111,9 @@ class Track(Base):
     number = Column(Integer)
     media_number = Column(Integer)
 
-    musicbrainz_id = Column(String, unique=True)
+    # Tracks can have same musicbrainz_id (however they are unique per release)
+    musicbrainz_id = Column(String, unique=False)
     length = Column(Integer)
-    bitrate = Column(Integer)
-
-    location = Column(String)
-    matched = Column(String)
-    format = Column(String)
 
     release_id = Column(Integer, ForeignKey('releases.id'))
     release = relationship('Release')
@@ -127,3 +123,22 @@ class Track(Base):
                                                                       number=self.number,
                                                                       name=self.title,
                                                                       id=self.musicbrainz_id)
+
+
+class MediaFile(Base):
+    __tablename__ = 'mediafiles'
+    id = Column(Integer, primary_key=True)
+    path = Column(String)
+
+    bitrate = Column(Integer, nullable=True)
+    # TODO: this should be an inferred attribute
+    format = Column(String)
+
+    matched = Column(String, nullable=True)
+
+    track_id = Column(Integer, ForeignKey('tracks.id'))
+    track = relationship('Track')
+
+    def __repr__(self):
+        return "<MediaFile {track_name} at {path}>".format(track_name=self.track.title,
+                                                           path=self.path)

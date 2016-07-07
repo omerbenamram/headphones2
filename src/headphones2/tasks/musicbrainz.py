@@ -7,4 +7,5 @@ from . import huey
 
 @huey.task(retries=3, retry_delay=5)
 def get_artwork_for_album_task(rgid):
+
     return get_artwork_for_album(rgid)

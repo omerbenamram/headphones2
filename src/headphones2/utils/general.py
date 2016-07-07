@@ -1,4 +1,6 @@
 from __future__ import unicode_literals, absolute_import, division
+
+import datetime
 import os
 import re
 import sys
@@ -38,3 +40,10 @@ def make_cache_key(*args, **kwargs):
     path = request.path
     args = str(hash(frozenset(request.args.items())))
     return path + args
+
+
+def datetime_from_string(date_str):
+    date = date_str.split('-')
+    date += [1] * (3 - len(date))
+
+    return datetime.datetime(*map(int, date))

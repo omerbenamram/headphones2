@@ -1,93 +1,37 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import datetime
 import os
 
 import logbook
-
-from headphones2.orm import *
-from headphones2.external.musicbrainz import musicbrainzngs, get_release_groups_for_artist, \
-    get_releases_for_release_group
-
-from py._path.local import LocalPath as Path
-
 from beets.importer import albums_in_dir
+from headphones2.taggers.pipeline import match_album_from_list_of_paths
+from headphones2.tasks import add_artist_task
+from headphones2.utils.structs import FolderResult
 
 logger = logbook.Logger(__name__)
 
 
-def datetime_from_string(date_str):
-    date = date_str.split('-')
-    date += [1] * (3 - len(date))
-
-    return datetime.datetime(*map(int, date))
+# TODO: implement
+def add_track_mapping_to_db(items_to_trackinfo_mapping):
+    pass
 
 
-def add_artist_to_db(artist_id, session):
-    """
-    Adds an artist to the db
-    :param artist_id: musicbrainzid
-    :type artist_id: str
-    :param session: valid SQLAlchemy Session
-    :return: None
-    """
-    logger.info('adding artist {} to db'.format(artist_id))
-    artist_info = musicbrainzngs.get_artist_by_id(artist_id)['artist']
-
-    artist = Artist(name=artist_info['name'],
-                    musicbrainz_id=artist_id,
-                    status=Status.Wanted)
-    session.add(artist)
-
-    release_groups = get_release_groups_for_artist(artist.musicbrainz_id)
-
-    for group_info in release_groups:
-        logger.debug('found {type} {name}'.format(type=group_info['type'], name=group_info['title']))
-        album = Album(title=group_info['title'],
-                      musicbrainz_id=group_info['id'],
-                      type=group_info['type'],
-                      artist=artist,
-                      status=Status.Wanted
-                      )
-        session.add(album)
-
-        releases = get_releases_for_release_group(album.musicbrainz_id)
-        for release_info in releases:
-            release = Release(
-                musicbrainz_id=release_info['id'],
-                release_date=datetime_from_string(release_info['date']),
-                title=release_info['title'],
-                asin=release_info.get('asin'),
-                country=release_info.get('country'),
-                album=album)
-
-            session.add(release)
-
-            for media_info in release_info['medium-list']:
-                media_number = media_info['position']
-                for track_info in media_info['track-list']:
-                    track = Track(
-                        musicbrainz_id=track_info['id'],
-                        length=track_info.get('length'),
-                        media_number=media_number,
-                        number=track_info['number'],
-                        title=track_info['recording']['title'],
-                        release=release
-                    )
-                    session.add(track)
-
-        # Chose oldest release (it's usually the original release)
-        chosen_release = session.query(Release).join(Album).filter(Album.musicbrainz_id == group_info['id']).order_by(
-            Release.release_date.asc()).first()
-        if chosen_release:
-            chosen_release.is_selected = True
-
-    session.commit()
-
-
-def scan_library(root_path):
+# this currently wont handle changes. it should
+def import_library(root_path):
+    logbook.info('Starting to import library at path {}'.format(root_path))
     assert os.path.isdir(root_path), '{} must be a directory!'.format(root_path)
 
-    for dirs, paths in albums_in_dir(root_path):
-        yield dirs, paths
+    results = [FolderResult(folder, match_album_from_list_of_paths(list_of_files)) for folder, list_of_files in
+               list(albums_in_dir(root_path))]
+
+    artists_to_add_to_db = {album_items_info_tuple.album_tracks_info_tuple.album_info.artist_id for
+                            album_items_info_tuple in results}
+
+    for artist_id in artists_to_add_to_db:
+        add_artist_task(artist_id=artist_id)
+
+        # for folder, album_items_info_tuple in results:
+        #     logger.debug('Working on folder {}'.format(folder))
+        #     for album_info, items_to_trackinfo_mapping in album_items_info_tuple:
+        #         add_track_mapping_to_db(items_to_trackinfo_mapping)

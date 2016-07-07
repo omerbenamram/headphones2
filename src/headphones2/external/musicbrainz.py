@@ -32,11 +32,7 @@ class MusicbrainzLock(Lock):
         logger.debug('MusicbrainzLock acquired')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # we ALWAYS Sleep after completion of job
         super(MusicbrainzLock, self).__exit__(exc_type, exc_val, exc_tb)
-        logger.debug('Sleeping for {} seconds to avoid rate-limit'.format(MUSICBRAINZ_SLEEP_TIME))
-        time.sleep(MUSICBRAINZ_SLEEP_TIME)
-        logger.debug('Finished Sleep')
         logger.debug('MusicbrainzLock released')
 
 

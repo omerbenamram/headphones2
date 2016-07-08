@@ -1,8 +1,10 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import os
+import time
+
 from contextlib import closing
-from datetime import datetime, time
+from datetime import datetime
 
 import logbook
 import musicbrainzngs
@@ -155,7 +157,7 @@ def add_track_mapping_to_db(album_info, items_to_trackinfo_mapping, session):
     artist_id = first_trackinfo.artist_id
 
     assert session.query(Artist).filter_by(musicbrainz_id=artist_id).first() \
-        , 'Artist {] does not yet exist in DB! Cannot add tracks'.format(artist_id)
+        , 'Artist {} does not yet exist in DB! Cannot add tracks'.format(artist_id)
 
     for item, trackinfo in six.iteritems(items_to_trackinfo_mapping):
         assert trackinfo.track_id
@@ -167,7 +169,14 @@ def add_track_mapping_to_db(album_info, items_to_trackinfo_mapping, session):
         release = session.query(Release).filter_by(musicbrainz_id=album_info.album_id).first()
         assert release, "Release {} does not exist in DB!".format(album_info.album_id)
 
-        mf = MediaFile(path=item.path,
+        # path has to be unicode
+        path = item.path
+        if hasattr(path, 'decode'):  # Python 2
+            path = path.decode('utf-8')
+        else:
+            pass
+
+        mf = MediaFile(path=path,
                        format=os.path.splitext(item.path)[1],
                        track=track,
                        release=release)

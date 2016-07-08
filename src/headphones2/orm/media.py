@@ -6,7 +6,7 @@ import enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Unicode
 from sqlalchemy_utils import ChoiceType
 
 Base = declarative_base()
@@ -37,7 +37,7 @@ class Artist(Base):
     __tablename__ = 'artists'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(Unicode)
     musicbrainz_id = Column(String, unique=True, nullable=False)
 
     status = Column(ChoiceType(Status, impl=Integer()))
@@ -53,7 +53,7 @@ class Album(Base):
     __tablename__ = 'albums'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String)
+    title = Column(Unicode)
     musicbrainz_id = Column(String, unique=True, nullable=False)
     type = Column(String)
     status = Column(ChoiceType(Status, impl=Integer()))
@@ -73,7 +73,7 @@ class Release(Base):
 
     id = Column(Integer, primary_key=True)
     release_date = Column(DateTime)
-    title = Column(String)
+    title = Column(Unicode)
     asin = Column(String, default='')
     country = Column(String, default='')
     musicbrainz_id = Column(String, unique=True, nullable=False)
@@ -107,7 +107,7 @@ class Track(Base):
     __tablename__ = 'tracks'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String)
+    title = Column(Unicode)
     number = Column(Integer)
     media_number = Column(Integer)
 
@@ -128,7 +128,7 @@ class Track(Base):
 class MediaFile(Base):
     __tablename__ = 'mediafiles'
     id = Column(Integer, primary_key=True)
-    path = Column(String)
+    path = Column(Unicode)
 
     bitrate = Column(Integer, nullable=True)
     # TODO: this should be an inferred attribute

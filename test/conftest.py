@@ -10,7 +10,7 @@ from headphones2.app import create_app
 
 __all__ = ['app', 'CASSETTE_LIBRARY_DIR', 'vcr', 'turn_off_musicbrainz_rate_limiting_if_cassette_exists']
 
-CASSETTE_LIBRARY_DIR = os.path.join(__file__, '..', 'fixtures', 'cassettes')
+CASSETTE_LIBRARY_DIR = os.path.abspath(os.path.join(__file__, '..', 'fixtures', 'cassettes'))
 vcr = _vcr.VCR(cassette_library_dir=CASSETTE_LIBRARY_DIR)
 logger = logbook.Logger(__name__)
 

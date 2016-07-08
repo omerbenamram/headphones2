@@ -5,6 +5,8 @@ import datetime
 import os
 import re
 import sys
+
+import six
 from flask import request
 from headphones2.configuration import MEDIA_FORMATS
 
@@ -13,6 +15,18 @@ WIN = sys.platform.startswith('win')
 DEFAULT_COLUMNS = 80
 
 _ansi_re = re.compile('\033\[((?:\d|;)*)([a-zA-Z])')
+
+
+def ensure_unicode(o):
+    if not isinstance(o, six.string_types):
+        raise ValueError("Unknown Type, this function only handles bytestrings/unicode")
+
+    if not isinstance(o, six.text_type):
+        if hasattr(o, 'decode'):
+            try:
+                return o.decode('utf-8')
+            except UnicodeDecodeError:
+                raise Exception("Could not ensure unicode for object")
 
 
 def get_filesystem_encoding():

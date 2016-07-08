@@ -17,6 +17,7 @@ from headphones2.external.musicbrainz import get_release_groups_for_artist, get_
     musicbrainz_lock
 from headphones2.orm import Artist, Status, Album, Release, Track, MediaFile
 from headphones2.taggers.pipeline import match_album_from_list_of_paths
+from headphones2.utils.general import ensure_unicode
 from headphones2.utils.structs import FolderResult
 from redis.lock import Lock
 
@@ -82,8 +83,8 @@ def add_artist_to_db(artist_id, session):
     release_groups = get_release_groups_for_artist(artist.musicbrainz_id)
 
     for group_info in release_groups:
-        logger.debug('found {type} {name}'.format(type=group_info['type'], name=group_info['title']))
-        album = Album(title=group_info['title'],
+        logger.debug('found {type} {name}'.format(type=group_info['type'], name=ensure_unicode(group_info['title'])))
+        album = Album(title=ensure_unicode(group_info['title']),
                       musicbrainz_id=group_info['id'],
                       type=group_info['type'],
                       artist=artist,
@@ -122,7 +123,7 @@ def add_album_and_tracks_to_db(album, release_info, session):
     release = Release(
         musicbrainz_id=release_info.album_id,
         release_date=release_date,
-        title=release_info.album,
+        title=ensure_unicode(release_info.album),
         asin=release_info.asin,
         country=release_info.country,
         album=album)
@@ -136,7 +137,7 @@ def add_album_and_tracks_to_db(album, release_info, session):
             length=track_info.length,
             media_number=track_info.medium_index,
             number=track_info.index,
-            title=track_info.title,
+            title=ensure_unicode(track_info.title),
             release=release
         )
         session.add(track)
@@ -170,14 +171,10 @@ def add_track_mapping_to_db(album_info, items_to_trackinfo_mapping, session):
         assert release, "Release {} does not exist in DB!".format(album_info.album_id)
 
         # path has to be unicode
-        path = item.path
-        if hasattr(path, 'decode'):  # Python 2
-            path = path.decode('utf-8')
-        else:
-            pass
+        path = ensure_unicode(item.path)
 
         mf = MediaFile(path=path,
-                       format=os.path.splitext(item.path)[1],
+                       format=os.path.splitext(path)[1],
                        track=track,
                        release=release)
 

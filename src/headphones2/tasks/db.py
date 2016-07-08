@@ -1,40 +1,68 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
+import os
 from contextlib import closing
-from datetime import datetime
+from datetime import datetime, time
 
 import logbook
 import musicbrainzngs
+import six
 from beets.autotag import AlbumInfo
 from beets.autotag import TrackInfo
+from beets.importer import albums_in_dir
 from headphones2.exceptions import HeadphonesException
 from headphones2.external.musicbrainz import get_release_groups_for_artist, get_releases_for_release_group, \
     musicbrainz_lock
-from headphones2.orm import Artist, Status, Album, Release, Track
+from headphones2.orm import Artist, Status, Album, Release, Track, MediaFile
+from headphones2.taggers.pipeline import match_album_from_list_of_paths
+from headphones2.utils.structs import FolderResult
+from redis.lock import Lock
 
-from .engine import huey
+from .engine import huey, local_redis
 from ..orm import connect
 
 logger = logbook.Logger(__name__)
+
+write_lock = Lock(local_redis, name='sqlite_write')
 
 
 @huey.task()
 def add_artist_task(artist_id):
     with closing(connect()) as session:
-        add_artist_to_db(artist_id, session)
+        already_working = local_redis.setnx(artist_id, 'in_progress')
+        if already_working == 1:
+            add_artist_to_db(artist_id, session)
+            local_redis.delete(artist_id)
+            return True
+        else:
+            logger.debug('Task for adding artist {} already in progress'.format(artist_id))
+            return False
 
 
 @huey.task()
-def add_release_task(release_id):
+def add_album_from_folder_to_db(album_and_track_info_tuple, artist_id):
     with closing(connect()) as session:
-        # TODO: implement
-        raise NotImplementedError
+        artist = session.query(Artist).filter(Artist.musicbrainz_id == artist_id).first()
+
+        if not artist:
+            # maybe still in progress
+            while not artist:
+                in_progress = local_redis.get(artist_id)
+                if in_progress:
+                    logger.debug('Still Waiting for artist {} to be added to DB'.format(artist_id))
+                    time.sleep(5)
+                else:
+                    break
+
+        add_track_mapping_to_db(album_and_track_info_tuple.album_info,
+                                album_and_track_info_tuple.items_to_track_info_mapping,
+                                session)
 
 
 def add_artist_to_db(artist_id, session):
     # type: (six.stringtypes, Any) -> None
     """
-    Adds an artist to the db
+    Adds an artist to the db, including all album and tracks information
     :param artist_id: musicbrainzid
     :type artist_id: str
     :param session: valid SQLAlchemy Session
@@ -59,6 +87,7 @@ def add_artist_to_db(artist_id, session):
                       artist=artist,
                       status=Status.Wanted
                       )
+
         session.add(album)
 
         releases = get_releases_for_release_group(album.musicbrainz_id)
@@ -71,7 +100,8 @@ def add_artist_to_db(artist_id, session):
         if chosen_release:
             chosen_release.is_selected = True
 
-    session.commit()
+    with write_lock:
+        session.commit()
 
 
 def add_album_and_tracks_to_db(album, release_info, session):
@@ -110,3 +140,45 @@ def add_album_and_tracks_to_db(album, release_info, session):
         session.add(track)
 
     return release
+
+
+def add_track_mapping_to_db(album_info, items_to_trackinfo_mapping, session):
+    # type: (AlbumInfo, Dict[Item, TrackInfo], Session) -> None
+    """
+    Adds track mapping to DB, assumes artist exist in DB.
+    :param album_info: beets AlbumInfo object
+    :param session: A Valid SQLAlchemy Session
+    :param items_to_trackinfo_mapping: A mapping of library items to TrackInfo
+    :return:
+    """
+    first_trackinfo = items_to_trackinfo_mapping.values()[0]  # type: TrackInfo
+    artist_id = first_trackinfo.artist_id
+
+    assert session.query(Artist).filter_by(musicbrainz_id=artist_id).first() \
+        , 'Artist {] does not yet exist in DB! Cannot add tracks'.format(artist_id)
+
+    for item, trackinfo in six.iteritems(items_to_trackinfo_mapping):
+        assert trackinfo.track_id
+
+        track = session.query(Track).filter_by(musicbrainz_id=trackinfo.track_id).first()
+        assert track, "Track {} does not exist in DB!".format(item.mb_trackid)
+
+        assert album_info.album_id
+        release = session.query(Release).filter_by(musicbrainz_id=album_info.album_id).first()
+        assert release, "Release {} does not exist in DB!".format(album_info.album_id)
+
+        mf = MediaFile(path=item.path,
+                       format=os.path.splitext(item.path)[1],
+                       track=track,
+                       release=release)
+
+        session.add(mf)
+
+    with write_lock:
+        session.commit()
+
+
+def fetch_albums_from_root_directory(root_path):
+    results = [FolderResult(folder, match_album_from_list_of_paths(list_of_files)) for folder, list_of_files in
+               list(albums_in_dir(root_path))]
+    return results

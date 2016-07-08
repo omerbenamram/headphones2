@@ -1,29 +1,22 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import logbook
-import musicbrainzngs
-import time
 import sys
 
+import logbook
+import musicbrainzngs
+from beets.autotag.mb import album_info
+from headphones2.tasks.engine import local_redis
 from redis.lock import Lock
 from retry import retry
-import redis
-
-from beets.autotag.mb import album_info
 
 RELEASE_INCLUDES = ['media', 'recordings', 'release-groups', 'labels', 'artist-credits']
-
-MUSICBRAINZ_SLEEP_TIME = 8  # over time, this seems to be a nice sweetspot
 
 musicbrainzngs.set_useragent("headphones2", "0.0", "https://github.com/omerbenamram/headphones2")
 musicbrainzngs.set_hostname("musicbrainz.org:80")
 musicbrainzngs.set_rate_limit()
 logger = logbook.Logger(__name__)
 logger.handlers.append(logbook.StreamHandler(sys.stdout))
-
-# Lock for multi-process workers
-local_redis = redis.Redis()
 
 
 class MusicbrainzLock(Lock):
@@ -36,7 +29,7 @@ class MusicbrainzLock(Lock):
         logger.debug('MusicbrainzLock released')
 
 
-musicbrainz_lock = MusicbrainzLock(local_redis, 'musicbrainz', sleep=MUSICBRAINZ_SLEEP_TIME, thread_local=False)
+musicbrainz_lock = MusicbrainzLock(local_redis, 'musicbrainz', thread_local=False)
 
 
 @retry(musicbrainzngs.MusicBrainzError, tries=3, delay=5, backoff=2, logger=logger)

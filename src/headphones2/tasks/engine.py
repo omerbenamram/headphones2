@@ -2,37 +2,30 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import contextlib
+import logging
 import multiprocessing
 
-from huey import Huey
+import sys
+
+import redis
+from headphones2.configuration import DEFAULT_LOG_PATH
 from huey.consumer import Consumer
 
 NUM_OF_CONSUMER_PROCESSES = 2
-SQLITE_TASK_DB_PATH = r'C:\temp\tasks.db'
-USE_REDIS = True
-
-if USE_REDIS:
-    # Requiers a redis-server instance.
-    # On windows: redis-server.exe --maxheap 30mb
-    from huey import RedisHuey
-
-    huey = RedisHuey('task-queue')
-else:
-    raise NotImplemented
+# Requiers a redis-server instance.
+# On windows: redis-server.exe --maxheap 30mb
 
 
-# else:
-#     # Sqlite is limited to one consumer per db.
-#     NUM_OF_CONSUMER_PROCESSES = 1
-#     from huey.backends.sqlite_backend import SqliteQueue, SqliteDataStore
-#
-#     result_store = SqliteDataStore('results', SQLITE_TASK_DB_PATH)
-#     queue = SqliteQueue('task_queue', SQLITE_TASK_DB_PATH)
-#     huey = Huey(queue, result_store=result_store)
+from huey import RedisHuey
+
+local_redis = redis.Redis()
+huey = RedisHuey('task-queue')
 
 
 def _run_consumer():
     consumer = Consumer(huey)
+    consumer._logger.addHandler(logging.FileHandler(DEFAULT_LOG_PATH))
+    consumer._logger.addHandler(logging.StreamHandler(sys.stdout))
     consumer.run()
 
 

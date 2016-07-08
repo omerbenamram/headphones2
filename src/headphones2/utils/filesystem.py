@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 import errno
 import os
 import sys
@@ -16,16 +18,6 @@ def is_path_creatable(pathname):
     # working directory (CWD) instead.
     dirname = os.path.dirname(pathname) or os.getcwd()
     return os.access(dirname, os.W_OK)
-
-
-'''
-Windows-specific error code indicating an invalid pathname.
-
-See Also
-----------
-https://msdn.microsoft.com/en-us/library/windows/desktop/ms681382%28v=vs.85%29.aspx
-    Official listing of all such codes.
-'''
 
 
 def is_pathname_valid(pathname):

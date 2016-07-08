@@ -13,7 +13,7 @@ Base = declarative_base()
 
 '''
 Many to one relation in ascending order.
-Artist --> Albums --> Releases --> Tracks
+Artist --> Albums --> Releases --> Tracks --> MediaFile
 '''
 
 
@@ -134,10 +134,11 @@ class MediaFile(Base):
     # TODO: this should be an inferred attribute
     format = Column(String)
 
-    matched = Column(String, nullable=True)
-
     track_id = Column(Integer, ForeignKey('tracks.id'))
-    track = relationship('Track')
+    track = relationship('Track', backref='files')
+
+    release_id = Column(Integer, ForeignKey('releases.id'))
+    release = relationship('Release')
 
     def __repr__(self):
         return "<MediaFile {track_name} at {path}>".format(track_name=self.track.title,

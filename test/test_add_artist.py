@@ -5,23 +5,16 @@ import datetime
 import os
 
 import logbook
+import inspect
 import musicbrainzngs
 import pytest
 from headphones2.orm import *
 from headphones2.tasks import add_artist_to_db
 
 from .fixtures import *
-from .conftest import vcr
+from .conftest import vcr, turn_off_musicbrainz_rate_limiting_if_cassette_exists
 
 logger = logbook.Logger(__name__)
-
-# if cassettes exist, turn off rate limiting
-current_dir = os.path.dirname(os.path.realpath(__file__))
-if os.path.exists(os.path.join(current_dir, 'fixtures', 'cassettes')):
-    logger.info('Cassettes directory existsing, turning off rate-limiting')
-    musicbrainzngs.set_rate_limit(False)
-else:
-    logger.warn("Couldn't find cassettes, going to hit real musicbrainz API")
 
 
 @pytest.mark.parametrize("artist_id", [
@@ -29,6 +22,8 @@ else:
 ])
 @vcr.use_cassette(record_mode='new_episodes')
 def test_add_artist_to_db(session, artist_id):
+    turn_off_musicbrainz_rate_limiting_if_cassette_exists('test_add_artist_to_db')
+
     artist_id = artist_id
 
     add_artist_to_db(artist_id, session)
@@ -53,7 +48,10 @@ def test_add_artist_to_db(session, artist_id):
 
 
 # Air has some different resulting dicts structure
+@vcr.use_cassette(record_mode='new_episodes')
 def test_add_artist_type_2_to_db(session):
+    turn_off_musicbrainz_rate_limiting_if_cassette_exists('test_add_artist_type_2_to_db_with_failures')
+
     artist_id = AIR_MBID
 
     add_artist_to_db(artist_id, session)
@@ -64,8 +62,9 @@ def test_add_artist_type_2_to_db(session):
     assert artist.name == 'Air'
 
 
-@vcr.use_cassette()
+@vcr.use_cassette(record_mode='new_episodes')
 def test_delete_artist_from_db(session_with_artist):
+    turn_off_musicbrainz_rate_limiting_if_cassette_exists('test_delete_artist_from_db')
     # add artist test case
     artist_id = AYREON_MBID
     session = session_with_artist

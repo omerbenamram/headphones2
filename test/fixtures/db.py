@@ -2,8 +2,10 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import os
+import pickle as pkl
 
 import pytest
+from beets.library import Item
 from headphones2.orm import connect
 from headphones2.orm.connector import create_all_tables
 from headphones2.tasks import add_artist_to_db
@@ -11,7 +13,7 @@ from headphones2.tasks import add_artist_to_db
 from test.conftest import vcr
 from test.fixtures.ids import AYREON_MBID
 
-__all__ = ['session', 'session_with_artist']
+__all__ = ['session', 'session_with_artist', 'folder_info']
 
 
 # noinspection PyShadowingNames
@@ -41,3 +43,14 @@ def session_with_artist(tmpdir):
     session.commit()
     yield session
     session.close()
+
+
+@pytest.fixture()
+def folder_info():
+    """
+    Album info, track->items mapping pickle
+    :return:
+    """
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'universal_migrator.pkl')
+    with open(path) as f:
+        return pkl.load(f)

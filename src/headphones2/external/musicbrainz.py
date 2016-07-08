@@ -6,7 +6,7 @@ import sys
 import logbook
 import musicbrainzngs
 from beets.autotag.mb import album_info
-from headphones2.tasks.engine import local_redis
+from headphones2 import local_redis
 from redis.lock import Lock
 from retry import retry
 
@@ -54,9 +54,9 @@ def get_artwork_for_album(rgid):
 
 
 @retry(musicbrainzngs.MusicBrainzError, tries=3, delay=5, backoff=2, logger=logger)
-def get_release_groups_for_artist(artist_id, fetch_extras=False):
+def get_release_groups_for_artist(artist_id):
     with musicbrainz_lock:
-        return musicbrainzngs.browse_release_groups(artist=artist_id, release_type=None if fetch_extras else 'album')[
+        return musicbrainzngs.browse_release_groups(artist=artist_id, release_type=musicbrainzngs.VALID_RELEASE_TYPES)[
             'release-group-list']
 
 

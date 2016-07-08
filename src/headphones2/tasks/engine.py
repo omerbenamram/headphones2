@@ -4,10 +4,8 @@ from __future__ import (absolute_import, division,
 import contextlib
 import logging
 import multiprocessing
-
 import sys
 
-import redis
 from headphones2.configuration import DEFAULT_LOG_PATH
 from huey.consumer import Consumer
 
@@ -18,7 +16,6 @@ NUM_OF_CONSUMER_PROCESSES = 2
 
 from huey import RedisHuey
 
-local_redis = redis.Redis()
 huey = RedisHuey('task-queue')
 
 

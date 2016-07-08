@@ -21,7 +21,8 @@ from headphones2.utils.general import ensure_unicode
 from headphones2.utils.structs import FolderResult
 from redis.lock import Lock
 
-from .engine import huey, local_redis
+from .engine import huey
+from headphones2 import local_redis
 from ..orm import connect
 
 logger = logbook.Logger(__name__)
